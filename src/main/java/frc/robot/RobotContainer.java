@@ -35,7 +35,7 @@ public class RobotContainer {
   
   // The robot's commands are defined here...
   private final CycleCenterOfRotation cycleCenterOfRotationUp = new CycleCenterOfRotation(drivebase, Direction.UP);
-  private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(drivebase, Direction.UP);
+  private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(drivebase, Direction.DOWN);
   private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
   private final DifferentialDrive differentialDrive = new DifferentialDrive(drivebase, driverController);
   
