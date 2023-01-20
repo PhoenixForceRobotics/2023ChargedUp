@@ -8,92 +8,93 @@ import frc.robot.Constants.ControllerConstants;
 
 public class PFRController extends XboxController {
 
-  public PFRController(int port) {
-    super(port);
-  }
+    public PFRController(int port) {
+        super(port);
+    }
 
-  public double getLeftXSquared() {
-    return getValueSquaredAndSign(getLeftX());
-  }
+    public double getLeftXSquared() {
+        return getValueSquaredAndSign(getLeftX());
+    }
 
-  public double getLeftYSquared() {
-    
-    return getValueSquaredAndSign(getLeftY());
-  }
+    public double getLeftYSquared() {
 
-  public double getRightXSquared() {
-    
-    return getValueSquaredAndSign(getRightX());
-  }
+        return getValueSquaredAndSign(getLeftY());
+    }
 
-  public double getRightYSquared() {
-    return getValueSquaredAndSign(getRightY());
-  }
+    public double getRightXSquared() {
 
-  public static double getValueSquaredAndSign(double value) {
-    return Math.pow(value, 2) * Math.signum(value);
-  }
-  public JoystickButton aButton() {
-    return new JoystickButton(this, Button.kA.value);
-  }
+        return getValueSquaredAndSign(getRightX());
+    }
 
-  public JoystickButton bButton() {
-    return new JoystickButton(this, Button.kB.value);
-  }
+    public double getRightYSquared() {
+        return getValueSquaredAndSign(getRightY());
+    }
 
-  public JoystickButton yButton() {
-    return new JoystickButton(this, Button.kY.value);
-  }
+    public static double getValueSquaredAndSign(double value) {
+        return Math.pow(value, 2) * Math.signum(value);
+    }
 
-  public JoystickButton xButton() {
-    return new JoystickButton(this, Button.kX.value);
-  }
+    public JoystickButton aButton() {
+        return new JoystickButton(this, Button.kA.value);
+    }
 
-  public JoystickButton lBumper() {
-    return new JoystickButton(this, Button.kLeftBumper.value);
-  }
+    public JoystickButton bButton() {
+        return new JoystickButton(this, Button.kB.value);
+    }
 
-  public JoystickButton rBumper() {
-    return new JoystickButton(this, Button.kRightBumper.value);
-  }
+    public JoystickButton yButton() {
+        return new JoystickButton(this, Button.kY.value);
+    }
 
-  public JoystickButton lJoystickButton() {
-    return new JoystickButton(this, Button.kLeftStick.value);
-  }
+    public JoystickButton xButton() {
+        return new JoystickButton(this, Button.kX.value);
+    }
 
-  public JoystickButton rJoystickButton() {
-    return new JoystickButton(this, Button.kLeftStick.value);
-  }
+    public JoystickButton lBumper() {
+        return new JoystickButton(this, Button.kLeftBumper.value);
+    }
 
-  public POVButton dPadDownButton() {
-    return new POVButton(this, ControllerConstants.DPAD_DOWN);
-  }
+    public JoystickButton rBumper() {
+        return new JoystickButton(this, Button.kRightBumper.value);
+    }
 
-  public POVButton dPadRightButton() {
-    return new POVButton(this, ControllerConstants.DPAD_RIGHT);
-  }
+    public JoystickButton lJoystickButton() {
+        return new JoystickButton(this, Button.kLeftStick.value);
+    }
 
-  public POVButton dPadUpButton() {
-    return new POVButton(this, ControllerConstants.DPAD_UP);
-  }
+    public JoystickButton rJoystickButton() {
+        return new JoystickButton(this, Button.kLeftStick.value);
+    }
 
-  public POVButton dPadLeftButton() {
-    return new POVButton(this, ControllerConstants.DPAD_UP);
-  }
+    public POVButton dPadDownButton() {
+        return new POVButton(this, ControllerConstants.DPAD_DOWN);
+    }
 
-  public Trigger lTriggerButton() {
-    return new Trigger(this::lTriggerPressed);
-  }
+    public POVButton dPadRightButton() {
+        return new POVButton(this, ControllerConstants.DPAD_RIGHT);
+    }
 
-  public Trigger rTriggerButton() {
-    return new Trigger(this::rTriggerPressed);
-  }
+    public POVButton dPadUpButton() {
+        return new POVButton(this, ControllerConstants.DPAD_UP);
+    }
 
-  public boolean lTriggerPressed() {
-    return getLeftTriggerAxis() > ControllerConstants.AXIS_DEADZONE;
-  }
+    public POVButton dPadLeftButton() {
+        return new POVButton(this, ControllerConstants.DPAD_UP);
+    }
 
-  public boolean rTriggerPressed() {
-    return getRightTriggerAxis() > ControllerConstants.AXIS_DEADZONE;
-  }
+    public Trigger lTriggerButton() {
+        return new Trigger(this::lTriggerPressed);
+    }
+
+    public Trigger rTriggerButton() {
+        return new Trigger(this::rTriggerPressed);
+    }
+
+    public boolean lTriggerPressed() {
+        return getLeftTriggerAxis() > ControllerConstants.AXIS_DEADZONE;
+    }
+
+    public boolean rTriggerPressed() {
+        return getRightTriggerAxis() > ControllerConstants.AXIS_DEADZONE;
+    }
 }
