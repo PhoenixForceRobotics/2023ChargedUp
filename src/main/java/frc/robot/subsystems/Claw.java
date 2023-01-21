@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.ColorSensorV3;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
@@ -10,14 +8,21 @@ import frc.robot.utils.Motor;
 public class Claw extends SubsystemBase
 {
     private Motor motor;
-    private ColorSensorV3 colorSensor;
-    private DigitalInput breakBeamSensor;
+    private DigitalInput cubeSensor;
+    private DigitalInput coneSensor;
+
+    public enum BeamBreakStatus
+    {
+      NONE,
+      CUBE,
+      CONE,
+      BOTH;
+    }
 
     public Claw()
     {
         motor = new Motor(ClawConstants.CLAW_MOTOR_PORT, ClawConstants.CLAW_MOTOR_REVERSED, ClawConstants.CLAW_GEAR_RATIO, ClawConstants.CLAW_WHEEL_DIAMETER);
-        colorSensor = new ColorSensorV3(ClawConstants.COLOR_SENSOR_PORT);
-        breakBeamSensor = new DigitalInput(0);
+        cubeSensor = new DigitalInput(0);
     }
 
     public void setMotor(double speed)
@@ -25,14 +30,42 @@ public class Claw extends SubsystemBase
         motor.set(speed);
     }
 
-    public ColorSensorV3 getColorSensor() 
+    public BeamBreakStatus getBreakStatus()
     {
-        return colorSensor;
+        if (cubeSensor.get() && coneSensor.get())
+        {
+            return BeamBreakStatus.BOTH;
+        }
+
+        else if (cubeSensor.get())
+        {
+            return BeamBreakStatus.CUBE;
+        }
+
+        else if (coneSensor.get())
+        {
+            return BeamBreakStatus.CONE;
+        }
+
+        else
+        {
+            return BeamBreakStatus.NONE;
+        }
+    }
+ 
+    public boolean hasPiece()
+    {
+        return cubeSensor.get() || coneSensor.get();
     }
 
-    public DigitalInput getBreakBeamSensor() 
+    public DigitalInput getCubeSensor() 
     {
-        return breakBeamSensor;
+        return cubeSensor;
+    }
+
+    public DigitalInput getConeSensor()
+    {
+        return coneSensor;
     }
 
     public Motor getMotor() 
@@ -46,3 +79,4 @@ public class Claw extends SubsystemBase
 
     }
 }
+    

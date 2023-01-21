@@ -116,5 +116,7 @@ public static final class ClawConstants
   public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
   public static final I2C.Port COLOR_SENSOR_PORT = Port.kOnboard;
+
+  public static final double CLAW_MOTOR_SPEED = 0.3;
 }
 }

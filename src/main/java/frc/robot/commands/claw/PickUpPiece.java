@@ -1,19 +1,17 @@
 package frc.robot.commands.claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
-import frc.robot.utils.PFRController;
 
-public class MoveClaw extends CommandBase
+public class PickUpPiece extends CommandBase
 {
     private Claw claw;
-    private PFRController driverController;
     private boolean isPickingUpCube;
 
-    public MoveClaw(Claw claw, PFRController driverController, boolean isPickingUpCube)
+    public PickUpPiece(Claw claw, boolean isPickingUpCube)
     {
         this.claw = claw;
-        this.driverController = driverController;
         this.isPickingUpCube = isPickingUpCube;
     }
 
@@ -28,18 +26,18 @@ public class MoveClaw extends CommandBase
     {
         if (isPickingUpCube)
         {
-            claw.setMotor(1);
+            claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
         }
         else
         {
-            claw.setMotor(-1);
+            claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
         }
     }
 
     @Override
     public boolean isFinished()
     {
-        return claw.getBreakBeamSensor().get() || driverController.getAButtonReleased();
+        return claw.hasPiece();
     }
 
     @Override
