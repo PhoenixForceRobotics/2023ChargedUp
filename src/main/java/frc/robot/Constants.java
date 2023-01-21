@@ -17,8 +17,7 @@ import edu.wpi.first.math.geometry.Translation2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final class DrivebaseConstants 
-    {
+    public static final class DrivebaseConstants {
         public static final int WHEEL_FL_PORT = 1;
         public static final int WHEEL_FR_PORT = 2;
         public static final int WHEEL_BL_PORT = 3;
@@ -35,9 +34,9 @@ public final class Constants {
 
         public static final double GEAR_RATIO = (double) 12 / (double) 72; // output / input
         public static final double WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
-        
+
         public static final double MAX_MOTOR_PERCENTAGE_OUTPUT = 0.9;
-        
+
         public static final boolean WHEEL_FL_REVERSED = true;
         public static final boolean WHEEL_FR_REVERSED = false;
         public static final boolean WHEEL_BL_REVERSED = true;
@@ -47,10 +46,11 @@ public final class Constants {
         public static final Translation2d WHEEL_FR_LOCATION = new Translation2d(0.381, -0.381);
         public static final Translation2d WHEEL_BL_LOCATION = new Translation2d(-0.381, 0.381);
         public static final Translation2d WHEEL_BR_LOCATION = new Translation2d(-0.381, -0.381);
-        public static final Translation2d FRONT_CENTER_LOCATION = new Translation2d(0, 0.381); // Helpful for evassive manuvers
+        public static final Translation2d FRONT_CENTER_LOCATION =
+                new Translation2d(0, 0.381); // Helpful for evassive manuvers
 
-
-        // public static final HolonomicDriveController HOLONOMIC_DRIVE_CONTROLLER = new HolonomicDriveController(
+        // public static final HolonomicDriveController HOLONOMIC_DRIVE_CONTROLLER = new
+        // HolonomicDriveController(
         //     VELOCITY_PID, // PID to control error in the x direction
         //     POSITION_PID, // PID to control error in the y direction
         //     new ProfiledPIDController(1, 0, 0, // PID to controller error in angle
@@ -60,48 +60,44 @@ public final class Constants {
         // of 1 rotation per second and a max acceleration of 180 degrees
         // per second squared.
 
-        public static final Pose2d STARTING_POSE = new Pose2d(
-            0, 
-            0, 
-            new Rotation2d()
-        );
+        public static final Pose2d STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
 
-        public static final Pose2d WALL = new Pose2d(
-            -1,
-            -1,
-            new Rotation2d()
-        );
+        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
 
-        public static final double MAX_OBTAINABLE_WHEEL_VELOCITY = 6.1; // Absolute max speed of a single wheel (meters per second) *Used for desaturation*
-        public static final double MAX_LINEAR_VELOCITY = 6; // Desired max speed of the chassis (meters per second)
+        public static final double MAX_OBTAINABLE_WHEEL_VELOCITY =
+                6.1; // Absolute max speed of a single wheel (meters per second) *Used for
+        // desaturation*
+        public static final double MAX_LINEAR_VELOCITY =
+                6; // Desired max speed of the chassis (meters per second)
         public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
     }
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
-  public static final class ControllerConstants {
-    public static final double AXIS_DEADZONE = 0.05;
-    public static final int DPAD_UP = 0;
-    public static final int DPAD_RIGHT = 90;
-    public static final int DPAD_DOWN = 180;
-    public static final int DPAD_LEFT = 270;
 
-    public static final int STICK_EXPONENTIAL_CURVE = 2;
-}
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+    }
 
-public static final class UtilConstants {
-    public static final double FALCON_ENCODER_RESOLUTION = 2048;
-    public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
+    public static final class ControllerConstants {
+        public static final double AXIS_DEADZONE = 0.05;
+        public static final int DPAD_UP = 0;
+        public static final int DPAD_RIGHT = 90;
+        public static final int DPAD_DOWN = 180;
+        public static final int DPAD_LEFT = 270;
 
-    public static final int POSITION_PID_SLOT = 0;
-    public static final int VELOCITY_PID_SLOT = 1;
-    public static final int VOLTAGE_PID_SLOT = 2;
-    public static final int BLAN_PID_SLOT = 3;
-    
-    
-  }
+        public static final int STICK_EXPONENTIAL_CURVE = 2;
+    }
 
-public static final class ShuffleboardConstants {
-    public static final String DRIVEBASE_CHOOSER = "Drivebase Chooser"; // Constant to prevent *namespace mismatches* 
-}
+    public static final class UtilConstants {
+        public static final double FALCON_ENCODER_RESOLUTION = 2048;
+        public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
+
+        public static final int POSITION_PID_SLOT = 0;
+        public static final int VELOCITY_PID_SLOT = 1;
+        public static final int VOLTAGE_PID_SLOT = 2;
+        public static final int BLAN_PID_SLOT = 3;
+    }
+
+    public static final class ShuffleboardConstants {
+        public static final String DRIVEBASE_CHOOSER =
+                "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
+    }
 }

@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
+import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
-import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
@@ -26,8 +26,8 @@ import frc.robot.utils.PFRController;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems are defined here...
-  private final Drivebase drivebase = new Drivebase();
+    // The robot's subsystems are defined here...
+    private final Drivebase drivebase = new Drivebase();
 
   // The robot's controllers are defined here...
   private final PFRController operatorController = new PFRController(0);
@@ -43,69 +43,80 @@ public class RobotContainer {
   private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
   private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-    initializeListenersAndSendables();
-  }
+    // The robot's commands are defined here...
+    private final CycleCenterOfRotation cycleCenterOfRotationUp =
+            new CycleCenterOfRotation(drivebase, Direction.UP);
+    private final CycleCenterOfRotation cycleCenterOfRotationDown =
+            new CycleCenterOfRotation(drivebase, Direction.UP);
+    private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
+    private final DifferentialDrive differentialDrive =
+            new DifferentialDrive(drivebase, driverController);
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() 
-  { 
-    driverController.lBumper().onTrue(mecanumDrive);
-    driverController.lBumper().onFalse(differentialDrive);
-    driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-    driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
-  }
+    // And the NetworkTable/NetworkTable/CommandChooser variables :)
+    private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
+    private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
+    ;
 
-  public void initializeListenersAndSendables()
-  {    
-    // Main Tab
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        initializeListenersAndSendables();
+    }
 
-    // Add options for chooser
+    /**
+     * Use this method to define your button->command mappings. Buttons can be created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        driverController.lBumper().onTrue(mecanumDrive);
+        driverController.lBumper().onFalse(differentialDrive);
+        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+    }
 
-    // Places chooser on mainTab (where all configs are)
-    mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser); 
-  }
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;  
-  }
+    public void initializeListenersAndSendables() {
+        // Main Tab
 
-  public void initializeTeleopCommands() {
-    CommandScheduler.getInstance().cancelAll();
-    drivebaseCommandChooser.getSelected().schedule();
-  }
+        // Add options for chooser
 
-  public void teleopPeriodic() {
-    CommandScheduler.getInstance().cancelAll();
-    differentialDrive.schedule();
-  }
+        // Places chooser on mainTab (where all configs are)
+        mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return null;
+    }
 
-  public MecanumDrive getMecanumDrive() {
-      return mecanumDrive;
-  }
+    public void initializeTeleopCommands() {
+        CommandScheduler.getInstance().cancelAll();
+        drivebaseCommandChooser.getSelected().schedule();
+    }
 
-  public DifferentialDrive getDifferentialDrive() {
-      return differentialDrive;
-  }
+    public void teleopPeriodic() {
+        CommandScheduler.getInstance().cancelAll();
+        differentialDrive.schedule();
+    }
 
-  public PFRController getDriverController() {
-    return driverController;
-  }
+    public MecanumDrive getMecanumDrive() {
+        return mecanumDrive;
+    }
 
-  public PFRController getOperatorController() {
-      return operatorController;
-  }
+    public DifferentialDrive getDifferentialDrive() {
+        return differentialDrive;
+    }
 
+    public PFRController getDriverController() {
+        return driverController;
+    }
+
+    public PFRController getOperatorController() {
+        return operatorController;
+    }
 }
