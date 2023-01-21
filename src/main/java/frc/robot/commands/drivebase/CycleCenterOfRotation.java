@@ -5,14 +5,16 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Drivebase.CenterOfRotation;
 
 public class CycleCenterOfRotation extends InstantCommand {
-    
-    public enum Direction { UP, DOWN; }
+
+    public enum Direction {
+        UP,
+        DOWN;
+    }
 
     private Drivebase drivebase;
     private Direction direction;
-    
-    public CycleCenterOfRotation(Drivebase drivebase, Direction direction)
-    {
+
+    public CycleCenterOfRotation(Drivebase drivebase, Direction direction) {
         this.drivebase = drivebase;
         this.direction = direction;
     }
@@ -23,17 +25,12 @@ public class CycleCenterOfRotation extends InstantCommand {
         CenterOfRotation currentCenterOfRotation = drivebase.getCenterOfRotation();
         int lengthOfEnum = CenterOfRotation.values().length;
         int index;
-        
-        if(direction == Direction.UP)
-        {
+
+        if (direction == Direction.UP) {
             index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
-        }
-        else if(direction == Direction.DOWN)
-        {
+        } else if (direction == Direction.DOWN) {
             index = (currentCenterOfRotation.ordinal() + lengthOfEnum - 1) % lengthOfEnum;
-        }
-        else
-        {
+        } else {
             index = currentCenterOfRotation.ordinal();
         }
 

@@ -5,7 +5,6 @@
 package frc.robot;
 
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -13,16 +12,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.claw.PickUpPiece;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
+import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
-import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.utils.Motor;
 import frc.robot.utils.PFRController;
 
 /**
@@ -34,16 +31,7 @@ import frc.robot.utils.PFRController;
 public class RobotContainer {
   // The robot's subsystems are defined here...
   private final Drivebase drivebase = new Drivebase();
-  Motor clawWheel = new Motor(
-          ClawConstants.CLAW_MOTOR_PORT,
-          ClawConstants.CLAW_MOTOR_REVERSED,
-          ClawConstants.CLAW_GEAR_RATIO,
-          ClawConstants.CLAW_WHEEL_DIAMETER);
-  DigitalInput coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
-  DigitalInput cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
-  
-  
-  private final Claw claw = new Claw(clawWheel, cubeSensor, coneSensor);
+  private final Claw claw = new Claw();
 
   // The robot's controllers are defined here...
   private final PFRController operatorController = new PFRController(0);
@@ -60,13 +48,6 @@ public class RobotContainer {
   // And the NetworkTable/NetworkTable/CommandChooser variables :)
   private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
   private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();;
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-    initializeListenersAndSendables();
-  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -85,48 +66,53 @@ public class RobotContainer {
     operatorController.aButton().whileTrue(pickUpCone);
   }
 
-  public void initializeListenersAndSendables()
-  {    
-    // Main Tab
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        initializeListenersAndSendables();
+    }
 
-    // Add options for chooser
+    public void initializeListenersAndSendables() {
+        // Main Tab
 
-    // Places chooser on mainTab (where all configs are)
-    mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser); 
-  }
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;  
-  }
+        // Add options for chooser
 
-  public void initializeTeleopCommands() {
-    CommandScheduler.getInstance().cancelAll();
-    drivebaseCommandChooser.getSelected().schedule();
-  }
+        // Places chooser on mainTab (where all configs are)
+        mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return null;
+    }
 
-  public void teleopPeriodic() {
-    CommandScheduler.getInstance().cancelAll();
-    differentialDrive.schedule();
-  }
+    public void initializeTeleopCommands() {
+        CommandScheduler.getInstance().cancelAll();
+        drivebaseCommandChooser.getSelected().schedule();
+    }
 
-  public MecanumDrive getMecanumDrive() {
-      return mecanumDrive;
-  }
+    public void teleopPeriodic() {
+        CommandScheduler.getInstance().cancelAll();
+        differentialDrive.schedule();
+    }
 
-  public DifferentialDrive getDifferentialDrive() {
-      return differentialDrive;
-  }
+    public MecanumDrive getMecanumDrive() {
+        return mecanumDrive;
+    }
 
-  public PFRController getDriverController() {
-    return driverController;
-  }
+    public DifferentialDrive getDifferentialDrive() {
+        return differentialDrive;
+    }
 
-  public PFRController getOperatorController() {
-      return operatorController;
-  }
+    public PFRController getDriverController() {
+        return driverController;
+    }
 
+    public PFRController getOperatorController() {
+        return operatorController;
+    }
 }

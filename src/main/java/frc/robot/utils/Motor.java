@@ -5,113 +5,137 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public class Motor extends CANSparkMax {
-  private double gearRatio;
-  private double wheelDiameter;
-  private PIDController positionPID;
-  private PIDController velocityPID;
-  private SimpleMotorFeedforward feedforward;
+    private double gearRatio;
+    private double wheelDiameter;
+    private PIDController positionPID;
+    private PIDController velocityPID;
+    private SimpleMotorFeedforward feedforward;
 
-  public Motor(int port, boolean reversed, double gearRatio, double wheelDiameter, PIDValues positionPID, PIDValues velocityPID, SimpleMotorFeedforward feedforward) 
-  {
-    super(port, MotorType.kBrushless);
-    
-    this.gearRatio = gearRatio;
-    this.wheelDiameter = wheelDiameter;
-    this.positionPID = new PIDController(positionPID.getP(), positionPID.getI(), positionPID.getD());
-    this.velocityPID = new PIDController(velocityPID.getP(), velocityPID.getI(), velocityPID.getD());
-    this.feedforward = feedforward;
+    public Motor(
+            int port,
+            boolean reversed,
+            double gearRatio,
+            double wheelDiameter,
+            PIDValues positionPID,
+            PIDValues velocityPID,
+            SimpleMotorFeedforward feedforward) {
+        super(port, MotorType.kBrushless);
 
-    setInverted(reversed);
-  }
+        this.gearRatio = gearRatio;
+        this.wheelDiameter = wheelDiameter;
+        this.positionPID =
+                new PIDController(positionPID.getP(), positionPID.getI(), positionPID.getD());
+        this.velocityPID =
+                new PIDController(velocityPID.getP(), velocityPID.getI(), velocityPID.getD());
+        this.feedforward = feedforward;
 
-  public Motor(int port, boolean reversed, double gearRatio, double wheelDiameter, PIDValues positionPID, PIDValues velocityPID)
-  {
-    this(port, reversed, gearRatio, wheelDiameter, positionPID, velocityPID, new SimpleMotorFeedforward(0, 0));
-  } 
-  public Motor(int port, boolean reversed, double gearRatio, double wheelDiameter)
-  {
-    this(port, reversed, gearRatio, wheelDiameter, new PIDValues(0, 0, 0), new PIDValues(0, 0, 0));
-  }
-  public Motor(int port, boolean reversed)
-  {
-    this(port, reversed, 1, 1);
-  }
+        setInverted(reversed);
+    }
 
-  public void setMetersPerSecond(double metersPerSecond) {
-    double output = velocityPID.calculate(getMetersPerSecond(), metersPerSecond) + feedforward.calculate(metersPerSecond);
-    setVoltage(output);
-  }
+    public Motor(
+            int port,
+            boolean reversed,
+            double gearRatio,
+            double wheelDiameter,
+            PIDValues positionPID,
+            PIDValues velocityPID) {
+        this(
+                port,
+                reversed,
+                gearRatio,
+                wheelDiameter,
+                positionPID,
+                velocityPID,
+                new SimpleMotorFeedforward(0, 0));
+    }
 
-  public void setMeters(double meters) {
-    double output = positionPID.calculate(getMeters(), meters) + feedforward.ks;
-    setVoltage(output);
-  }
+    public Motor(int port, boolean reversed, double gearRatio, double wheelDiameter) {
+        this(
+                port,
+                reversed,
+                gearRatio,
+                wheelDiameter,
+                new PIDValues(0, 0, 0),
+                new PIDValues(0, 0, 0));
+    }
 
-  public void setVelocityP(double kp)
-  {
-    velocityPID.setP(kp);
-  }
+    public Motor(int port, boolean reversed) {
+        this(port, reversed, 1, 1);
+    }
 
-  public void setVelocityI(double ki)
-  {
-    velocityPID.setP(ki);
-  }
+    public void setMetersPerSecond(double metersPerSecond) {
+        double output =
+                velocityPID.calculate(getMetersPerSecond(), metersPerSecond)
+                        + feedforward.calculate(metersPerSecond);
+        setVoltage(output);
+    }
 
-  public void setVelocityD(double kd)
-  {
-    velocityPID.setD(kd);
-  }
+    public void setMeters(double meters) {
+        double output = positionPID.calculate(getMeters(), meters) + feedforward.ks;
+        setVoltage(output);
+    }
 
-  public double getVelocityP() {
-    return velocityPID.getP();
-  }
-  
-  public double getVelocityI() {
-    return velocityPID.getI();
-  }
-  
-  public double getVelocityD() {
-    return velocityPID.getD();
-  }
+    public void setVelocityP(double kp) {
+        velocityPID.setP(kp);
+    }
 
-  public PIDController getVelocityPID() {
-    return velocityPID; 
-  }
+    public void setVelocityI(double ki) {
+        velocityPID.setP(ki);
+    }
 
-  public PIDController getPositionPID() {
-      return positionPID;
-  }
+    public void setVelocityD(double kd) {
+        velocityPID.setD(kd);
+    }
 
-  public double getRotations() {
-    return getEncoder().getPosition() * gearRatio;
-  }
+    public double getVelocityP() {
+        return velocityPID.getP();
+    }
 
-  public double getMeters() {
-    return getRotations() * wheelDiameter * Math.PI;
-  }
+    public double getVelocityI() {
+        return velocityPID.getI();
+    }
 
-  public double getRPM() {
-    return getEncoder().getVelocity() * gearRatio;
-  }
-  
-  public double getMetersPerSecond() {
-    return getRPM() * wheelDiameter * Math.PI / 60;
-  }
+    public double getVelocityD() {
+        return velocityPID.getD();
+    }
 
-  public double getGearRatio() {
-    return gearRatio;
-  }
+    public PIDController getVelocityPID() {
+        return velocityPID;
+    }
 
-  public double getwheelDiameter() {
-    return wheelDiameter;
-  }
+    public PIDController getPositionPID() {
+        return positionPID;
+    }
 
-  public double getVelocityError() {
-    return velocityPID.getVelocityError();
-  }
+    public double getRotations() {
+        return getEncoder().getPosition() * gearRatio;
+    }
 
-  public boolean isReversed()
-  {
-    return getInverted();
-  }
+    public double getMeters() {
+        return getRotations() * wheelDiameter * Math.PI;
+    }
+
+    public double getRPM() {
+        return getEncoder().getVelocity() * gearRatio;
+    }
+
+    public double getMetersPerSecond() {
+        return getRPM() * wheelDiameter * Math.PI / 60;
+    }
+
+    public double getGearRatio() {
+        return gearRatio;
+    }
+
+    public double getwheelDiameter() {
+        return wheelDiameter;
+    }
+
+    public double getVelocityError() {
+        return velocityPID.getVelocityError();
+    }
+
+    public boolean isReversed() {
+        return getInverted();
+    }
 }
