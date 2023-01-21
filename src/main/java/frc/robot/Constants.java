@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -103,5 +105,16 @@ public static final class UtilConstants {
 
 public static final class ShuffleboardConstants {
     public static final String DRIVEBASE_CHOOSER = "Drivebase Chooser"; // Constant to prevent *namespace mismatches* 
+}
+
+public static final class ClawConstants
+{
+  // TODO: Change all of these values when they are known
+  public static final int CLAW_MOTOR_PORT = 8;
+  public static final boolean CLAW_MOTOR_REVERSED = false;
+  public static final double CLAW_GEAR_RATIO = (double) 12 / (double) 72; // output / input
+  public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
+
+  public static final I2C.Port COLOR_SENSOR_PORT = Port.kOnboard;
 }
 }
