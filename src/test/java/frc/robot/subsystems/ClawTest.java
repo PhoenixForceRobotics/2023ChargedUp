@@ -43,4 +43,12 @@ public class ClawTest
         Mockito.when(coneSensor.get()).thenReturn(false);
         assertEquals(Claw.BeamBreakStatus.NONE, claw.getBreakStatus());
     }
+
+    @Test
+    void testForAnyPiece()
+    {
+        Mockito.when(cubeSensor.get()).thenReturn(true);
+        Mockito.when(coneSensor.get()).thenReturn(true);
+        assertEquals(true, claw.hasPiece());
+    }
 }
