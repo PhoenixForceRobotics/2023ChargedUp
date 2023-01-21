@@ -74,35 +74,34 @@ public final class Constants {
 
     public static final int STICK_EXPONENTIAL_CURVE = 2;
 
-public static final class UtilConstants {
-    public static final double FALCON_ENCODER_RESOLUTION = 2048;
-    public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
+    public static final class UtilConstants {
+        public static final double FALCON_ENCODER_RESOLUTION = 2048;
+        public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
 
-    public static final int POSITION_PID_SLOT = 0;
-    public static final int VELOCITY_PID_SLOT = 1;
-    public static final int VOLTAGE_PID_SLOT = 2;
-    public static final int BLAN_PID_SLOT = 3;
-    
-    
-  }
+        public static final int POSITION_PID_SLOT = 0;
+        public static final int VELOCITY_PID_SLOT = 1;
+        public static final int VOLTAGE_PID_SLOT = 2;
+        public static final int BLAN_PID_SLOT = 3;
+    }
 
-public static final class ShuffleboardConstants {
-    public static final String DRIVEBASE_CHOOSER = "Drivebase Chooser"; // Constant to prevent *namespace mismatches* 
-}
+    public static final class ShuffleboardConstants {
+        public static final String DRIVEBASE_CHOOSER =
+                "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
+    }
 
-public static final class ClawConstants
-{
-  // TODO: Change all of these values when they are known
-  public static final int CLAW_MOTOR_PORT = 8;
-  public static final boolean CLAW_MOTOR_REVERSED = false;
-  public static final double CLAW_GEAR_RATIO = (double) 12 / (double) 72; // output / input
-  public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
+    public static final class ClawConstants {
+        // TODO: Change all of these values when they are known
+        public static final int CLAW_MOTOR_PORT = 8;
+        public static final boolean CLAW_MOTOR_REVERSED = false;
+        public static final double CLAW_GEAR_RATIO = (double) 12 / (double) 72; // output / input
+        public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
-  public static final double CLAW_MOTOR_SPEED = 0.3;
+        public static final double CLAW_MOTOR_SPEED = 0.3;
 
-  public static final int CONE_SENSOR_CHANNEL = 0;
-  public static final int CUBE_SENSOR_CHANNEL = 1;
-}
+        public static final int CONE_SENSOR_CHANNEL = 0;
+        public static final int CUBE_SENSOR_CHANNEL = 1;
+    }
+
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
     }

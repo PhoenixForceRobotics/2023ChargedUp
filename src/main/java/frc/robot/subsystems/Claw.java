@@ -2,81 +2,70 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.utils.Motor;
 
-public class Claw extends SubsystemBase
-{
+public class Claw extends SubsystemBase {
     private Motor motor;
     private DigitalInput cubeSensor;
     private DigitalInput coneSensor;
 
-    public enum BeamBreakStatus
-    {
-      NONE,
-      CUBE,
-      CONE,
-      BOTH;
+    public enum BeamBreakStatus {
+        NONE,
+        CUBE,
+        CONE,
+        BOTH;
     }
 
-    public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor)
-    {
+    public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor) {
         this.motor = motor;
         this.cubeSensor = cubeSensor;
         this.coneSensor = coneSensor;
     }
 
-    public void setMotor(double speed)
-    {
+    public Claw() {
+        motor =
+                new Motor(
+                        ClawConstants.CLAW_MOTOR_PORT,
+                        ClawConstants.CLAW_MOTOR_REVERSED,
+                        ClawConstants.CLAW_GEAR_RATIO,
+                        ClawConstants.CLAW_WHEEL_DIAMETER);
+        cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
+        coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
+    }
+
+    public void setMotor(double speed) {
         motor.set(speed);
     }
 
-    public BeamBreakStatus getBreakStatus()
-    {
-        if (cubeSensor.get() && coneSensor.get())
-        {
+    public BeamBreakStatus getBreakStatus() {
+        if (cubeSensor.get() && coneSensor.get()) {
             return BeamBreakStatus.BOTH;
-        }
-
-        else if (cubeSensor.get())
-        {
+        } else if (cubeSensor.get()) {
             return BeamBreakStatus.CUBE;
-        }
-
-        else if (coneSensor.get())
-        {
+        } else if (coneSensor.get()) {
             return BeamBreakStatus.CONE;
-        }
-
-        else
-        {
+        } else {
             return BeamBreakStatus.NONE;
         }
     }
- 
-    public boolean hasPiece()
-    {
+
+    public boolean hasPiece() {
         return cubeSensor.get() || coneSensor.get();
     }
 
-    public DigitalInput getCubeSensor() 
-    {
+    public DigitalInput getCubeSensor() {
         return cubeSensor;
     }
 
-    public DigitalInput getConeSensor()
-    {
+    public DigitalInput getConeSensor() {
         return coneSensor;
     }
 
-    public Motor getMotor() 
-    {
+    public Motor getMotor() {
         return motor;
     }
 
     @Override
-    public void periodic()
-    {
-
-    }
+    public void periodic() {}
 }
-    

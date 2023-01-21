@@ -4,45 +4,36 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
-public class PickUpPiece extends CommandBase
-{
+public class PickUpPiece extends CommandBase {
     private Claw claw;
     private boolean isPickingUpCube;
 
-    public PickUpPiece(Claw claw, boolean isPickingUpCube)
-    {
+    public PickUpPiece(Claw claw, boolean isPickingUpCube) {
         this.claw = claw;
         this.isPickingUpCube = isPickingUpCube;
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         claw.setMotor(0);
     }
 
     @Override
-    public void execute()
-    {
-        if (isPickingUpCube)
-        {
+    public void execute() {
+        if (isPickingUpCube) {
             claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
-        }
-        else
-        {
+        } else {
             claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
         }
     }
 
     @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return claw.hasPiece();
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
         claw.setMotor(0);
     }
 }
