@@ -6,15 +6,17 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
 public class MecanumDrive extends CommandBase {
-    
-    public enum FrameOfReference { ROBOT, FIELD; }
+
+    public enum FrameOfReference {
+        ROBOT,
+        FIELD;
+    }
 
     private final Drivebase drivebase;
     private final PFRController driverController;
     private FrameOfReference frameOfReference;
 
-    public MecanumDrive(Drivebase drivebase, PFRController driverController)
-    {
+    public MecanumDrive(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
         frameOfReference = FrameOfReference.ROBOT;
@@ -26,43 +28,28 @@ public class MecanumDrive extends CommandBase {
         drivebase.setMeccanum(true);
         drivebase.setButterflyModules(Value.kForward);
     }
-    
 
     @Override
     public void execute() {
-        
-        if(driverController.getLeftBumperPressed()) 
-        {
+
+        if (driverController.getLeftBumperPressed()) {
             // allows us to toggle frame of reference when button pressed
-            if(frameOfReference == FrameOfReference.ROBOT) 
-            {
+            if (frameOfReference == FrameOfReference.ROBOT) {
                 frameOfReference = FrameOfReference.FIELD;
             } else {
                 frameOfReference = FrameOfReference.ROBOT;
             }
         }
-        
-        
-        
+
         double xVelocity = driverController.getLeftYSquared();
-        double yVelocity = driverController.getLeftXSquared(); 
+        double yVelocity = driverController.getLeftXSquared();
         double angularVelocity = driverController.getRightXSquared();
 
-        if(frameOfReference == FrameOfReference.ROBOT)
-        {    
-            drivebase.setChassisSpeeds(
-                xVelocity,
-                yVelocity,
-                angularVelocity
-            );
-        }
-        else // frame of reference must be field-relative
+        if (frameOfReference == FrameOfReference.ROBOT) {
+            drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
+        } else // frame of reference must be field-relative
         {
-            drivebase.setFieldRelativeChassisSpeeds(
-                xVelocity, 
-                yVelocity,
-                angularVelocity    
-            );
+            drivebase.setFieldRelativeChassisSpeeds(xVelocity, yVelocity, angularVelocity);
         }
     }
 
