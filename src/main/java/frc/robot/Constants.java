@@ -7,8 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -115,8 +113,9 @@ public static final class ClawConstants
   public static final double CLAW_GEAR_RATIO = (double) 12 / (double) 72; // output / input
   public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
-  public static final I2C.Port COLOR_SENSOR_PORT = Port.kOnboard;
-
   public static final double CLAW_MOTOR_SPEED = 0.3;
+
+  public static final int CONE_SENSOR_CHANNEL = 0;
+  public static final int CUBE_SENSOR_CHANNEL = 1;
 }
 }

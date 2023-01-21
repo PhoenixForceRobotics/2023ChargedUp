@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.claw.PickUpPiece;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
@@ -19,6 +22,7 @@ import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.utils.Motor;
 import frc.robot.utils.PFRController;
 
 /**
@@ -30,7 +34,16 @@ import frc.robot.utils.PFRController;
 public class RobotContainer {
   // The robot's subsystems are defined here...
   private final Drivebase drivebase = new Drivebase();
-  private final Claw claw = new Claw();
+  Motor clawWheel = new Motor(
+          ClawConstants.CLAW_MOTOR_PORT,
+          ClawConstants.CLAW_MOTOR_REVERSED,
+          ClawConstants.CLAW_GEAR_RATIO,
+          ClawConstants.CLAW_WHEEL_DIAMETER);
+  DigitalInput coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
+  DigitalInput cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
+  
+  
+  private final Claw claw = new Claw(clawWheel, cubeSensor, coneSensor);
 
   // The robot's controllers are defined here...
   private final PFRController operatorController = new PFRController(0);

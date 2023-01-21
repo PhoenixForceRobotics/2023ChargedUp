@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClawConstants;
 import frc.robot.utils.Motor;
 
 public class Claw extends SubsystemBase
@@ -19,10 +18,11 @@ public class Claw extends SubsystemBase
       BOTH;
     }
 
-    public Claw()
+    public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor)
     {
-        motor = new Motor(ClawConstants.CLAW_MOTOR_PORT, ClawConstants.CLAW_MOTOR_REVERSED, ClawConstants.CLAW_GEAR_RATIO, ClawConstants.CLAW_WHEEL_DIAMETER);
-        cubeSensor = new DigitalInput(0);
+        this.motor = motor;
+        this.cubeSensor = cubeSensor;
+        this.coneSensor = coneSensor;
     }
 
     public void setMotor(double speed)
