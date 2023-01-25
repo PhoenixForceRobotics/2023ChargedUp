@@ -6,12 +6,16 @@ import frc.robot.subsystems.Claw;
 
 public class PickUpPiece extends CommandBase {
     private Claw claw; // Claw that this command is controlling
-    private boolean isPickingUpCube; // Determines whether the command is set to picking up a cube or a cone, as the motor direction differs between them
+    private boolean
+            isPickingUpCube; // Determines whether the command is set to picking up a cube or a
+    // cone, as the motor direction differs between them
 
     /**
      * This command picks up the specified piece using the claw subsystem
+     *
      * @param claw - claw that this command is controlling
-     * @param isPickingUpCube - determines whether the command is set to picking up a cube or a cone, as the motor direction differs between them
+     * @param isPickingUpCube - determines whether the command is set to picking up a cube or a
+     *     cone, as the motor direction differs between them
      */
     public PickUpPiece(Claw claw, boolean isPickingUpCube) {
         this.claw = claw;
@@ -36,11 +40,9 @@ public class PickUpPiece extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return claw.hasPiece(); // TODO: Check with Raf or Chloe if this is the right condition to check for to be finished with command
+        return claw.hasPiece(); // TODO: Check with Raf or Chloe if this is the right condition
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
+    public void end(boolean interrupted) {}
 }

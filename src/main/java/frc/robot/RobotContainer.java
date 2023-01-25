@@ -109,13 +109,11 @@ public class RobotContainer {
         return differentialDrive;
     }
 
-    public ClawIntakeSequence getPickUpCone()
-    {
+    public ClawIntakeSequence getPickUpCone() {
         return pickUpCone;
     }
 
-    public ClawIntakeSequence getPickUpCube()
-    {
+    public ClawIntakeSequence getPickUpCube() {
         return pickUpCube;
     }
 

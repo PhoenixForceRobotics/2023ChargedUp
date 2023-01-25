@@ -9,6 +9,7 @@ public class TurnOffClaw extends InstantCommand {
 
     /**
      * Turns off and stops the claw motors
+     *
      * @param claw - Claw that this command is telling to stop
      */
     public TurnOffClaw(Claw claw) {

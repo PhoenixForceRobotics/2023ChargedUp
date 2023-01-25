@@ -19,10 +19,15 @@ public class Claw extends SubsystemBase {
     }
 
     /**
-     * This class references the claw subsystem. It is able to pick up game pieces with an intake and it has methods for setting the speed of the motors and checking the status of the beam break sensors that check what game piece is currently in the claw if applicable.
+     * This class references the claw subsystem. It is able to pick up game pieces with an intake
+     * and it has methods for setting the speed of the motors and checking the status of the beam
+     * break sensors that check what game piece is currently in the claw if applicable.
+     *
      * @param motor - references the motor of the claw
-     * @param cubeSensor - a sensor that detects if there is a cube in the claw (two states, true or false)
-     * @param coneSensor - a sensor that detects if there is a cone in the claw (two states, true or false)
+     * @param cubeSensor - a sensor that detects if there is a cube in the claw (two states, true or
+     *     false)
+     * @param coneSensor - a sensor that detects if there is a cone in the claw (two states, true or
+     *     false)
      */
     public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor) {
         this.motor = motor;
@@ -31,7 +36,11 @@ public class Claw extends SubsystemBase {
     }
 
     /**
-     * This class references the claw subsystem. It is able to pick up game pieces with an intake and it has methods for setting the speed of the motors and checking the status of the beam break sensors that check what game piece is currently in the claw if applicable. This particular overload sets the motor and sensors to new objects using values from Constants.java.
+     * This class references the claw subsystem. It is able to pick up game pieces with an intake
+     * and it has methods for setting the speed of the motors and checking the status of the beam
+     * break sensors that check what game piece is currently in the claw if applicable. This
+     * particular overload sets the motor and sensors to new objects using values from
+     * Constants.java.
      */
     public Claw() {
         motor =
@@ -46,6 +55,7 @@ public class Claw extends SubsystemBase {
 
     /**
      * Sets the speed of the claw motor
+     *
      * @param speed - the speed that the motor is set to (percentage in decimals from -1 to 1)
      */
     public void setMotor(double speed) {
@@ -54,7 +64,9 @@ public class Claw extends SubsystemBase {
 
     /**
      * Gets the status of the beam break sensors (what piece is currently in the claw)
-     * @return An enum representing which piece is in the claw currently, if there is any (BOTH: both pieces, CUBE: only cube piece, CONE: only cone piece, NONE: no pieces)
+     *
+     * @return An enum representing which piece is in the claw currently, if there is any (BOTH:
+     *     both pieces, CUBE: only cube piece, CONE: only cone piece, NONE: no pieces)
      */
     public BeamBreakStatus getBreakStatus() {
         if (cubeSensor.get() && coneSensor.get()) {
@@ -70,6 +82,7 @@ public class Claw extends SubsystemBase {
 
     /**
      * Checks if the claw has any piece
+     *
      * @return A boolean that is true if there is a piece, false if not
      */
     public boolean hasPiece() {
@@ -78,6 +91,7 @@ public class Claw extends SubsystemBase {
 
     /**
      * Getter for cube sensor object
+     *
      * @return Cube sensor for current claw object
      */
     public DigitalInput getCubeSensor() {
@@ -86,6 +100,7 @@ public class Claw extends SubsystemBase {
 
     /**
      * Getter for cone sensor object
+     *
      * @return Cone sensor for current claw object
      */
     public DigitalInput getConeSensor() {
@@ -94,6 +109,7 @@ public class Claw extends SubsystemBase {
 
     /**
      * Getter for the motor object
+     *
      * @return Motor for current claw object
      */
     public Motor getMotor() {
