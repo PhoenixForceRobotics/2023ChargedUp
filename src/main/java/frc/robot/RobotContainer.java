@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
-import frc.robot.commands.claw.PickUpPiece;
+import frc.robot.commands.claw.ClawIntakeSequence;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
@@ -44,13 +44,12 @@ public class RobotContainer {
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
-    private final PickUpPiece pickUpCube = new PickUpPiece(claw, true);
-    private final PickUpPiece pickUpCone = new PickUpPiece(claw, false);
+    private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
+    private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
     private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
-    ;
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -108,6 +107,16 @@ public class RobotContainer {
 
     public DifferentialDrive getDifferentialDrive() {
         return differentialDrive;
+    }
+
+    public ClawIntakeSequence getPickUpCone()
+    {
+        return pickUpCone;
+    }
+
+    public ClawIntakeSequence getPickUpCube()
+    {
+        return pickUpCube;
     }
 
     public PFRController getDriverController() {
