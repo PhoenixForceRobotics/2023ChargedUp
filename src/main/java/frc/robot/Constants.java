@@ -104,4 +104,20 @@ public static final class UtilConstants {
 public static final class ShuffleboardConstants {
     public static final String DRIVEBASE_CHOOSER = "Drivebase Chooser"; // Constant to prevent *namespace mismatches* 
 }
+
+public static final class ElevatorConstants
+{
+  // TODO: CHANGE THESE VALUES WHEN NUMBERS ARE DECIDED LOL
+  public static final int WHEEL_1_PORT = 69;
+  public static final int WHEEL_2_PORT = 420;
+  public static final int WHEEL_3_PORT = 21;
+
+  public static final boolean WHEEL_1_REVERSED = false;
+  public static final boolean WHEEL_2_REVERSED = false;
+  public static final boolean WHEEL_3_REVERSED = false;
+
+  public static final double ELEVATOR_GEAR_RATIO = (double) 12 / (double) 72;
+
+  public static final double ELEVATOR_WHEEL_DIAMETER = 0.1524;
+}
 }
