@@ -42,9 +42,9 @@ public class SparkMotorGroup extends MotorControllerGroup {
 
     public void setPID(PIDValues pidValues, double minOutput, double maxOutput) {
         SparkMaxPIDController pidController = leader.getPIDController();
-        pidController.setP(pidValues.getP());
-        pidController.setI(pidValues.getI());
-        pidController.setD(pidValues.getD());
+        pidController.setP(pidValues.P);
+        pidController.setI(pidValues.I);
+        pidController.setD(pidValues.D);
         pidController.setOutputRange(minOutput, maxOutput);
     }
 

@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
@@ -9,11 +12,9 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,17 +47,11 @@ public class Drivebase extends SubsystemBase {
         }
     }
 
-    private Motor flWheel;
-    private Motor frWheel;
-    private Motor blWheel;
-    private Motor brWheel;
+    private Motor flWheel, frWheel, blWheel, brWheel;
 
-    private DoubleSolenoid flPiston;
-    private DoubleSolenoid frPiston;
-    private DoubleSolenoid blPiston;
-    private DoubleSolenoid brPiston;
+    private DoubleSolenoid butteflyPistons;
 
-    private Gyro gyro; // TODO: change to Pigeon 2.0
+    private Pigeon2 inertialMeasurementUnit; // TODO: change to Pigeon 2.0
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -72,6 +67,8 @@ public class Drivebase extends SubsystemBase {
     private MecanumDriveKinematics
             kinematics; // Everything we use to track the robot's location and behavior
     private MecanumDriveOdometry odometry;
+
+    private HolonomicDriveController driveController;
 
     private CenterOfRotation centerOfRotation; // Where the mecanum drive will rotate around
 
@@ -109,28 +106,13 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.GEAR_RATIO,
                         DrivebaseConstants.WHEEL_DIAMETER);
 
-        flPiston =
+        butteflyPistons =
                 new DoubleSolenoid(
                         PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.FL_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.FL_BUTTERFLY_REVERSE_PORT);
-        frPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.FR_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.FR_BUTTERFLY_REVERSE_PORT);
-        blPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.BL_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.BL_BUTTERFLY_REVERSE_PORT);
-        brPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.BR_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.BR_BUTTERFLY_REVERSE_PORT);
+                        DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
+                        DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
-        gyro = new ADXRS450_Gyro();
+        inertialMeasurementUnit = new Pigeon2(20);
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -162,9 +144,11 @@ public class Drivebase extends SubsystemBase {
         odometry =
                 new MecanumDriveOdometry(
                         kinematics,
-                        gyro.getRotation2d(),
+                        getRotation2d(),
                         currentWheelPositions,
                         DrivebaseConstants.STARTING_POSE);
+
+        driveController = new HolonomicDriveController(null, null, null);
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
@@ -180,17 +164,16 @@ public class Drivebase extends SubsystemBase {
     public void periodic() {
         // Ensure butterfly modules are in the right spot
 
-        if (isMeccanum && flPiston.get() != Value.kForward) {
-            setButterflyModules(Value.kForward);
-        } else if (!isMeccanum && flPiston.get() != Value.kReverse) {
-            setButterflyModules(Value.kReverse);
+        if (isMeccanum && butteflyPistons.get() != Value.kForward) {
+            butteflyPistons.set(Value.kForward);
+        } else if (!isMeccanum && butteflyPistons.get() != Value.kReverse) {
+            butteflyPistons.set(Value.kReverse);
         }
 
+        // Causes the math to work like standard differential drive
         if (!isMeccanum) {
             desiredChassisSpeeds.vyMetersPerSecond = 0; // Zero's out the y component
-            centerOfRotation =
-                    CenterOfRotation
-                            .CENTER; // Causes the math to work like standard differential drive
+            centerOfRotation = CenterOfRotation.CENTER;
         }
 
         currentWheelPositions =
@@ -212,20 +195,22 @@ public class Drivebase extends SubsystemBase {
 
         // Update then set the (estimated) pose from odometry (not very accurate, reset odometry
         // often)
-        odometry.update(gyro.getRotation2d(), currentWheelPositions);
+        odometry.update(getRotation2d(), currentWheelPositions);
 
         // Updates the velocities sent to each wheel's PID
         desiredWheelSpeeds = kinematics.toWheelSpeeds(desiredChassisSpeeds, centerOfRotation.get());
 
         // Scales the values to prevent values from being too high (100%, velocity -> output of
         // motor)
-        desiredWheelSpeeds.desaturate(DrivebaseConstants.MAX_MOTOR_PERCENTAGE_OUTPUT);
+        desiredWheelSpeeds.desaturate(DrivebaseConstants.MAX_OBTAINABLE_WHEEL_VELOCITY);
+
+        // Calculate voltages for wheels using feedforward
 
         // Set the output of motors
-        flWheel.set(desiredWheelSpeeds.frontLeftMetersPerSecond);
-        frWheel.set(desiredWheelSpeeds.frontRightMetersPerSecond);
-        blWheel.set(desiredWheelSpeeds.rearLeftMetersPerSecond);
-        brWheel.set(desiredWheelSpeeds.rearRightMetersPerSecond);
+        flWheel.setVoltage(desiredWheelSpeeds.frontLeftMetersPerSecond);
+        frWheel.setVoltage(desiredWheelSpeeds.frontRightMetersPerSecond);
+        blWheel.setVoltage(desiredWheelSpeeds.rearLeftMetersPerSecond);
+        brWheel.setVoltage(desiredWheelSpeeds.rearRightMetersPerSecond);
 
         // Publishes the data to the Shuffleboard Tab
         currentXVelocityEntry.setDouble(currentChassisSpeeds.vxMetersPerSecond);
@@ -251,25 +236,19 @@ public class Drivebase extends SubsystemBase {
 
     public void setFieldRelativeChassisSpeeds(double vx, double vy, double theta) {
         desiredChassisSpeeds =
-                ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, theta, gyro.getRotation2d());
+                ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, theta, getRotation2d());
     }
 
     public void setCenterOfRotation(CenterOfRotation centerOfRotation) {
         this.centerOfRotation = centerOfRotation;
     }
 
-    public void setButterflyModules(Value value) {
-        frPiston.set(value);
-        flPiston.set(value);
-        brPiston.set(value);
-        blPiston.set(value);
+    public void setButterflyPistons(Value value) {
+        butteflyPistons.set(value);
     }
 
     public void toggleButterflyModules() {
-        frPiston.toggle();
-        flPiston.toggle();
-        brPiston.toggle();
-        blPiston.toggle();
+        butteflyPistons.toggle();
     }
 
     public void setMeccanum(boolean isMeccanum) {
@@ -306,7 +285,7 @@ public class Drivebase extends SubsystemBase {
      * @param poseMeters The position on the field that your robot is at.
      */
     public void resetPosition(Pose2d poseMeters) {
-        odometry.resetPosition(gyro.getRotation2d(), currentWheelPositions, poseMeters);
+        odometry.resetPosition(getRotation2d(), currentWheelPositions, poseMeters);
     }
 
     /** Stops the robot */
@@ -316,7 +295,7 @@ public class Drivebase extends SubsystemBase {
 
     /** sets current heading as the "zero" */
     public void zeroHeading() {
-        gyro.reset();
+        yawOffset = inertialMeasurementUnit.getYaw();
     }
 
     /**
@@ -341,7 +320,11 @@ public class Drivebase extends SubsystemBase {
      * @return difference in angle since last reset
      */
     public double getHeading() {
-        return gyro.getRotation2d().getDegrees();
+        return inertialMeasurementUnit.getYaw();
+    }
+
+    public Rotation2d getRotation2d() {
+        return Rotation2d.fromDegrees(getHeading());
     }
 
     public Motor getFlWheel() {

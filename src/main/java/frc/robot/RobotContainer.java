@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
@@ -29,25 +28,15 @@ public class RobotContainer {
     // The robot's subsystems are defined here...
     private final Drivebase drivebase = new Drivebase();
 
-  // The robot's controllers are defined here...
-  private final PFRController operatorController = new PFRController(0);
-  private final PFRController driverController = new PFRController(1);
-  
-  // The robot's commands are defined here...
-  private final CycleCenterOfRotation cycleCenterOfRotationUp = new CycleCenterOfRotation(drivebase, Direction.UP);
-  private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(drivebase, Direction.DOWN);
-  private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-  private final DifferentialDrive differentialDrive = new DifferentialDrive(drivebase, driverController);
-  
-  // And the NetworkTable/NetworkTable/CommandChooser variables :)
-  private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
-  private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();;
+    // The robot's controllers are defined here...
+    private final PFRController operatorController = new PFRController(0);
+    private final PFRController driverController = new PFRController(1);
 
     // The robot's commands are defined here...
     private final CycleCenterOfRotation cycleCenterOfRotationUp =
             new CycleCenterOfRotation(drivebase, Direction.UP);
     private final CycleCenterOfRotation cycleCenterOfRotationDown =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
+            new CycleCenterOfRotation(drivebase, Direction.DOWN);
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
@@ -55,7 +44,6 @@ public class RobotContainer {
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
     private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
-    ;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -83,7 +71,6 @@ public class RobotContainer {
         // Add options for chooser
 
         // Places chooser on mainTab (where all configs are)
-        mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
     }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

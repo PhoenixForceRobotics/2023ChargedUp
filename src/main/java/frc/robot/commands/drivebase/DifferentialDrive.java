@@ -1,32 +1,45 @@
 package frc.robot.commands.drivebase;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
 public class DifferentialDrive extends CommandBase {
     private final Drivebase drivebase;
     private final PFRController driverController;
+    private final SlewRateLimiter vxLimiter, vthetaLimiter;
 
     public DifferentialDrive(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
         addRequirements(drivebase);
+        vxLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
+        vthetaLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
     }
 
     @Override
     public void initialize() {
         drivebase.setMeccanum(false);
-        drivebase.setButterflyModules(Value.kReverse);
+        drivebase.setButterflyPistons(Value.kReverse);
+        vxLimiter.reset(0);
+        vthetaLimiter.reset(0);
     }
 
     @Override
     public void execute() {
 
-        double xVelocity = driverController.getLeftYSquared();
+        double xVelocity =
+                vxLimiter.calculate(
+                        driverController.getLeftYSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
         double yVelocity = 0;
-        double angularVelocity = driverController.getRightXSquared();
+        double angularVelocity =
+                vthetaLimiter.calculate(
+                        driverController.getRightXSquared()
+                                * DrivebaseConstants.MAX_ANGULAR_VELOCITY);
 
         drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }

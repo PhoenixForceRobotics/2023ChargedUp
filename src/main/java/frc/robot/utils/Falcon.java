@@ -28,9 +28,9 @@ public class Falcon extends WPI_TalonFX {
         // Assigns the PID values to each slot
         int index = 0;
         for (PIDValues falconPID : falconConfigFields.getFalconPIDs()) {
-            config_kP(index, falconPID.getD());
-            config_kI(index, falconPID.getI());
-            config_kD(index, falconPID.getD());
+            config_kP(index, falconPID.P);
+            config_kI(index, falconPID.I);
+            config_kD(index, falconPID.D);
 
             // sets the speed of each loop. can be slowed if sensor updates are too fast
             // or  derivative is changing too slowly
