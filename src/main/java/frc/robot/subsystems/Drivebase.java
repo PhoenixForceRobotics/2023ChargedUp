@@ -7,15 +7,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.utils.Motor;
@@ -64,7 +59,6 @@ public class Drivebase extends SubsystemBase {
             currentWheelSpeeds; // the velocities of each wheel (not just "speed" :/)
     private MecanumDriveWheelSpeeds
             desiredWheelSpeeds; // the *velocities* being sent to pid controllers
-    private ChassisSpeeds currentChassisSpeeds; // the VELOCITIES of the robot relative to the robot
     private ChassisSpeeds
             desiredChassisSpeeds; // The ***VELOCITY*** we want to the set the robot to
     // (WPI needs to work on their language and correct terminology)
@@ -77,60 +71,26 @@ public class Drivebase extends SubsystemBase {
 
     private boolean isMeccanum = false; // whether the drivebase is in meccanum or differential mode
 
-    private final ShuffleboardTab drivebaseTab; // The shuffleboard tab we are using for TELEMETRY
-    private final GenericEntry currentXVelocityEntry,
-            currentYVelocityEntry,
-            currentRotationalVelocityEntry; // entries for telemetry
-
-    public Drivebase() {
+    public Drivebase(
+            Motor flWheel,
+            Motor frWheel,
+            Motor blWheel,
+            Motor brWheel,
+            DoubleSolenoid flPiston,
+            DoubleSolenoid frPiston,
+            DoubleSolenoid blPiston,
+            DoubleSolenoid brPiston,
+            Gyro gyro) {
         // creates the components on the drivebase
-        flWheel =
-                new Motor(
-                        DrivebaseConstants.WHEEL_FL_PORT,
-                        DrivebaseConstants.WHEEL_FL_REVERSED,
-                        DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
-        frWheel =
-                new Motor(
-                        DrivebaseConstants.WHEEL_FR_PORT,
-                        DrivebaseConstants.WHEEL_FR_REVERSED,
-                        DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
-        blWheel =
-                new Motor(
-                        DrivebaseConstants.WHEEL_BL_PORT,
-                        DrivebaseConstants.WHEEL_BL_REVERSED,
-                        DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
-        brWheel =
-                new Motor(
-                        DrivebaseConstants.WHEEL_BR_PORT,
-                        DrivebaseConstants.WHEEL_BR_REVERSED,
-                        DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
-
-        flPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.FL_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.FL_BUTTERFLY_REVERSE_PORT);
-        frPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.FR_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.FR_BUTTERFLY_REVERSE_PORT);
-        blPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.BL_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.BL_BUTTERFLY_REVERSE_PORT);
-        brPiston =
-                new DoubleSolenoid(
-                        PneumaticsModuleType.REVPH,
-                        DrivebaseConstants.BR_BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.BR_BUTTERFLY_REVERSE_PORT);
-
-        gyro = new ADXRS450_Gyro();
+        this.flWheel = flWheel;
+        this.frWheel = frWheel;
+        this.blWheel = blWheel;
+        this.brWheel = brWheel;
+        this.flPiston = flPiston;
+        this.frPiston = frPiston;
+        this.blPiston = blPiston;
+        this.brPiston = brPiston;
+        this.gyro = gyro;
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -144,8 +104,6 @@ public class Drivebase extends SubsystemBase {
                 new MecanumDriveWheelSpeeds(); // the velocities of each wheel (not just "speed" :/)
         desiredWheelSpeeds =
                 new MecanumDriveWheelSpeeds(); // the *velocities* being sent to pid controllers
-        currentChassisSpeeds =
-                new ChassisSpeeds(); // the VELOCITIES of the robot relative to the robot
         desiredChassisSpeeds =
                 new ChassisSpeeds(); // The ***VELOCITY*** we want to the set the robot to
         // (WPI needs to work on their language and correct terminology)
@@ -167,13 +125,6 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.STARTING_POSE);
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
-
-        drivebaseTab = Shuffleboard.getTab("Drivebase");
-
-        currentXVelocityEntry = drivebaseTab.add("Current X Velocity", 0).getEntry();
-        currentYVelocityEntry = drivebaseTab.add("Current Y Velocity", 0).getEntry();
-        currentRotationalVelocityEntry =
-                drivebaseTab.add("Current Rotational Velocity", 0).getEntry();
     }
 
     @Override
@@ -207,9 +158,6 @@ public class Drivebase extends SubsystemBase {
                         blWheel.getMetersPerSecond(),
                         brWheel.getMetersPerSecond());
 
-        // convert wheel speeds to chassis speeds (relative to robot)
-        currentChassisSpeeds = kinematics.toChassisSpeeds(currentWheelSpeeds);
-
         // Update then set the (estimated) pose from odometry (not very accurate, reset odometry
         // often)
         odometry.update(gyro.getRotation2d(), currentWheelPositions);
@@ -226,12 +174,6 @@ public class Drivebase extends SubsystemBase {
         frWheel.set(desiredWheelSpeeds.frontRightMetersPerSecond);
         blWheel.set(desiredWheelSpeeds.rearLeftMetersPerSecond);
         brWheel.set(desiredWheelSpeeds.rearRightMetersPerSecond);
-
-        // Publishes the data to the Shuffleboard Tab
-        currentXVelocityEntry.setDouble(currentChassisSpeeds.vxMetersPerSecond);
-        currentYVelocityEntry.setDouble(currentChassisSpeeds.vyMetersPerSecond);
-        currentRotationalVelocityEntry.setDouble(
-                currentChassisSpeeds.omegaRadiansPerSecond * 180 / Math.PI);
     }
 
     public void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {

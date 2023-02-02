@@ -4,19 +4,25 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.utils.Motor;
 import frc.robot.utils.PFRController;
 
 /**
@@ -27,7 +33,58 @@ import frc.robot.utils.PFRController;
  */
 public class RobotContainer {
     // The robot's subsystems are defined here...
-    private final Drivebase drivebase = new Drivebase();
+    Motor flWheel =
+            new Motor(
+                    DrivebaseConstants.WHEEL_FL_PORT,
+                    DrivebaseConstants.WHEEL_FL_REVERSED,
+                    DrivebaseConstants.GEAR_RATIO,
+                    DrivebaseConstants.WHEEL_DIAMETER);
+    Motor frWheel =
+            new Motor(
+                    DrivebaseConstants.WHEEL_FR_PORT,
+                    DrivebaseConstants.WHEEL_FR_REVERSED,
+                    DrivebaseConstants.GEAR_RATIO,
+                    DrivebaseConstants.WHEEL_DIAMETER);
+    Motor blWheel =
+            new Motor(
+                    DrivebaseConstants.WHEEL_BL_PORT,
+                    DrivebaseConstants.WHEEL_BL_REVERSED,
+                    DrivebaseConstants.GEAR_RATIO,
+                    DrivebaseConstants.WHEEL_DIAMETER);
+    Motor brWheel =
+            new Motor(
+                    DrivebaseConstants.WHEEL_BR_PORT,
+                    DrivebaseConstants.WHEEL_BR_REVERSED,
+                    DrivebaseConstants.GEAR_RATIO,
+                    DrivebaseConstants.WHEEL_DIAMETER);
+
+    DoubleSolenoid flPiston =
+            new DoubleSolenoid(
+                    PneumaticsModuleType.REVPH,
+                    DrivebaseConstants.FL_BUTTERFLY_FORWARD_PORT,
+                    DrivebaseConstants.FL_BUTTERFLY_REVERSE_PORT);
+    DoubleSolenoid frPiston =
+            new DoubleSolenoid(
+                    PneumaticsModuleType.REVPH,
+                    DrivebaseConstants.FR_BUTTERFLY_FORWARD_PORT,
+                    DrivebaseConstants.FR_BUTTERFLY_REVERSE_PORT);
+    DoubleSolenoid blPiston =
+            new DoubleSolenoid(
+                    PneumaticsModuleType.REVPH,
+                    DrivebaseConstants.BL_BUTTERFLY_FORWARD_PORT,
+                    DrivebaseConstants.BL_BUTTERFLY_REVERSE_PORT);
+    DoubleSolenoid brPiston =
+            new DoubleSolenoid(
+                    PneumaticsModuleType.REVPH,
+                    DrivebaseConstants.BR_BUTTERFLY_FORWARD_PORT,
+                    DrivebaseConstants.BR_BUTTERFLY_REVERSE_PORT);
+
+    Gyro gyro = new ADXRS450_Gyro();
+
+    private final Drivebase drivebase =
+            new Drivebase(
+                    flWheel, frWheel, blWheel, brWheel, flPiston, frPiston, blPiston, brPiston,
+                    gyro);
 
     // The robot's controllers are defined here...
     private final PFRController operatorController = new PFRController(0);
