@@ -49,9 +49,9 @@ public class Drivebase extends SubsystemBase {
 
     private Motor flWheel, frWheel, blWheel, brWheel;
 
-    private DoubleSolenoid butteflyPistons;
+    private DoubleSolenoid butterflyPistons;
 
-    private Pigeon2 inertialMeasurementUnit; // TODO: change to Pigeon 2.0
+    private Pigeon2 inertialMeasurementUnit;
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -59,7 +59,8 @@ public class Drivebase extends SubsystemBase {
             currentWheelSpeeds; // the velocities of each wheel (not just "speed" :/)
     private MecanumDriveWheelSpeeds
             desiredWheelSpeeds; // the *velocities* being sent to pid controllers
-    private ChassisSpeeds currentChassisSpeeds; // the VELOCITIES of the robot relative to the robot
+    private ChassisSpeeds 
+            currentChassisSpeeds; // the VELOCITIES of the robot relative to the robot
     private ChassisSpeeds
             desiredChassisSpeeds; // The ***VELOCITY*** we want to the set the robot to
     // (WPI needs to work on their language and correct terminology)
@@ -86,27 +87,35 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.WHEEL_FL_PORT,
                         DrivebaseConstants.WHEEL_FL_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
+                        DrivebaseConstants.WHEEL_DIAMETER,
+                        DrivebaseConstants.POSITION_PID,
+                        DrivebaseConstants.VELOCITY_PID);
         frWheel =
                 new Motor(
                         DrivebaseConstants.WHEEL_FR_PORT,
                         DrivebaseConstants.WHEEL_FR_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
+                        DrivebaseConstants.WHEEL_DIAMETER,
+                        DrivebaseConstants.POSITION_PID,
+                        DrivebaseConstants.VELOCITY_PID);
         blWheel =
                 new Motor(
                         DrivebaseConstants.WHEEL_BL_PORT,
                         DrivebaseConstants.WHEEL_BL_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
+                        DrivebaseConstants.WHEEL_DIAMETER,
+                        DrivebaseConstants.POSITION_PID,
+                        DrivebaseConstants.VELOCITY_PID);
         brWheel =
                 new Motor(
                         DrivebaseConstants.WHEEL_BR_PORT,
                         DrivebaseConstants.WHEEL_BR_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
-                        DrivebaseConstants.WHEEL_DIAMETER);
+                        DrivebaseConstants.WHEEL_DIAMETER,
+                        DrivebaseConstants.POSITION_PID,
+                        DrivebaseConstants.VELOCITY_PID);
 
-        butteflyPistons =
+        butterflyPistons =
                 new DoubleSolenoid(
                         PneumaticsModuleType.REVPH,
                         DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
@@ -148,7 +157,7 @@ public class Drivebase extends SubsystemBase {
                         currentWheelPositions,
                         DrivebaseConstants.STARTING_POSE);
 
-        driveController = new HolonomicDriveController(null, null, null);
+        driveController = new HolonomicDriveController(null, null, null); // TODO: figure this out :D
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
@@ -164,10 +173,10 @@ public class Drivebase extends SubsystemBase {
     public void periodic() {
         // Ensure butterfly modules are in the right spot
 
-        if (isMeccanum && butteflyPistons.get() != Value.kForward) {
-            butteflyPistons.set(Value.kForward);
-        } else if (!isMeccanum && butteflyPistons.get() != Value.kReverse) {
-            butteflyPistons.set(Value.kReverse);
+        if (isMeccanum && butterflyPistons.get() != Value.kForward) {
+            butterflyPistons.set(Value.kForward);
+        } else if (!isMeccanum && butterflyPistons.get() != Value.kReverse) {
+            butterflyPistons.set(Value.kReverse);
         }
 
         // Causes the math to work like standard differential drive
@@ -207,10 +216,10 @@ public class Drivebase extends SubsystemBase {
         // Calculate voltages for wheels using feedforward
 
         // Set the output of motors
-        flWheel.setVoltage(desiredWheelSpeeds.frontLeftMetersPerSecond);
-        frWheel.setVoltage(desiredWheelSpeeds.frontRightMetersPerSecond);
-        blWheel.setVoltage(desiredWheelSpeeds.rearLeftMetersPerSecond);
-        brWheel.setVoltage(desiredWheelSpeeds.rearRightMetersPerSecond);
+        flWheel.setMetersPerSecond(desiredWheelSpeeds.frontLeftMetersPerSecond);
+        frWheel.setMetersPerSecond(desiredWheelSpeeds.frontRightMetersPerSecond);
+        blWheel.setMetersPerSecond(desiredWheelSpeeds.rearLeftMetersPerSecond);
+        brWheel.setMetersPerSecond(desiredWheelSpeeds.rearRightMetersPerSecond);
 
         // Publishes the data to the Shuffleboard Tab
         currentXVelocityEntry.setDouble(currentChassisSpeeds.vxMetersPerSecond);
@@ -244,11 +253,11 @@ public class Drivebase extends SubsystemBase {
     }
 
     public void setButterflyPistons(Value value) {
-        butteflyPistons.set(value);
+        butterflyPistons.set(value);
     }
 
     public void toggleButterflyModules() {
-        butteflyPistons.toggle();
+        butterflyPistons.toggle();
     }
 
     public void setMeccanum(boolean isMeccanum) {
@@ -291,11 +300,6 @@ public class Drivebase extends SubsystemBase {
     /** Stops the robot */
     public void stop() {
         desiredChassisSpeeds = new ChassisSpeeds();
-    }
-
-    /** sets current heading as the "zero" */
-    public void zeroHeading() {
-        yawOffset = inertialMeasurementUnit.getYaw();
     }
 
     /**

@@ -52,9 +52,9 @@ public class MecanumDrive extends CommandBase {
             }
         }
 
-        double xVelocity = driverController.getLeftYSquared();
-        double yVelocity = driverController.getLeftXSquared();
-        double angularVelocity = driverController.getRightXSquared();
+        double xVelocity = vxLimiter.calculate(driverController.getLeftYSquared() * DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        double yVelocity = vyLimiter.calculate(driverController.getLeftXSquared() * DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        double angularVelocity = vthetaLimiter.calculate(driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY);
 
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
