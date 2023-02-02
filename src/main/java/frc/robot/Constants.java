@@ -48,10 +48,10 @@ public final class Constants {
 
         public static final double MAX_OBTAINABLE_WHEEL_VELOCITY =
                 UtilConstants.NEO_FREE_SPEED
-                        * GEAR_RATIO
-                        * WHEEL_CIRCUMFERENCE
-                        / 60
-                        * 0.9; // free speed of wheel (meters per second)
+                * GEAR_RATIO
+                * WHEEL_CIRCUMFERENCE
+                / 60
+                * 0.9; // free speed of wheel (meters per second)
         public static final double MAX_LINEAR_ACCELERATION = 4; // Max acceleration
         public static final double MAX_LINEAR_VELOCITY = 3; // Desired max chassis speed
 
