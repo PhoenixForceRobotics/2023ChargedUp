@@ -1,7 +1,6 @@
 package frc.robot.commands.drivebase;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.subsystems.Drivebase;
@@ -16,7 +15,7 @@ public class MecanumDrive extends CommandBase {
 
     private final Drivebase drivebase;
     private final PFRController driverController;
-    private final SlewRateLimiter vxLimiter, vyLimiter, vthetaLimiter;
+    private final SlewRateLimiter vxLimiter, vyLimiter;
 
     private FrameOfReference frameOfReference;
 
@@ -28,16 +27,14 @@ public class MecanumDrive extends CommandBase {
 
         vxLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
         vyLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
-        vthetaLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
     }
 
     @Override
     public void initialize() {
-        drivebase.setMeccanum(true);
-        drivebase.setButterflyPistons(Value.kForward);
+        // drivebase.setMeccanum(true);
+        // drivebase.setButterflyPistons(Value.kForward);
         vxLimiter.reset(0);
         vyLimiter.reset(0);
-        vthetaLimiter.reset(0);
     }
 
     @Override
@@ -52,9 +49,16 @@ public class MecanumDrive extends CommandBase {
             }
         }
 
-        double xVelocity = vxLimiter.calculate(driverController.getLeftYSquared() * DrivebaseConstants.MAX_LINEAR_VELOCITY);
-        double yVelocity = vyLimiter.calculate(driverController.getLeftXSquared() * DrivebaseConstants.MAX_LINEAR_VELOCITY);
-        double angularVelocity = vthetaLimiter.calculate(driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY);
+        double xVelocity =
+                vxLimiter.calculate(
+                        -driverController.getLeftYSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        double yVelocity =
+                vyLimiter.calculate(
+                        -driverController.getLeftXSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        double angularVelocity =
+                -driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);

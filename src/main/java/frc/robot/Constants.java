@@ -32,27 +32,31 @@ public final class Constants {
         public static final boolean WHEEL_BL_REVERSED = true;
         public static final boolean WHEEL_BR_REVERSED = false;
 
-        public static final PIDValues POSITION_PID = new PIDValues(0, 0, 0, 0, 1, 2, 3, 0);
-        public static final PIDValues VELOCITY_PID = new PIDValues(1, 0, 3, 0, 1, 2, 3, 4);
-
-        public static final Translation2d WHEEL_FL_LOCATION = new Translation2d(0.381, 0.381);
-        public static final Translation2d WHEEL_FR_LOCATION = new Translation2d(0.381, -0.381);
-        public static final Translation2d WHEEL_BL_LOCATION = new Translation2d(-0.381, 0.381);
-        public static final Translation2d WHEEL_BR_LOCATION = new Translation2d(-0.381, -0.381);
+        public static final PIDValues POSITION_PID =
+                new PIDValues(4.8538, 0, 3.4846, 0.068311, 1.6687, 0.14842, 7, 4);
+        public static final PIDValues VELOCITY_PID =
+                new PIDValues(0.00032405, 0, 0, 0.068311, 1.6687, 0.14842, 7, 4);
+        public static final PIDValues HOLONOMIC_DRIVE_PID = new PIDValues(1, 0, 0);
+        public static final Translation2d WHEEL_FL_LOCATION = new Translation2d(0.345, 0.305);
+        public static final Translation2d WHEEL_FR_LOCATION = new Translation2d(0.345, -0.305);
+        public static final Translation2d WHEEL_BL_LOCATION = new Translation2d(-0.345, 0.305);
+        public static final Translation2d WHEEL_BR_LOCATION = new Translation2d(-0.345, -0.305);
         public static final Translation2d FRONT_CENTER_LOCATION =
-                new Translation2d(0, 0.381); // Helpful for evassive manuvers
+                new Translation2d(0.345, 0); // Helpful for evassive manuvers
 
-        public static final double GEAR_RATIO = (12.0 / 62.0) * (16.0 / 22.0); // output / input
-        public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
+        // public static final double GEAR_RATIO = (12.0 / 62.0) * (16.0 / 22.0); // output / input
+        public static final double GEAR_RATIO = 12.0 / 72.0;
+        // public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
+        public static final double WHEEL_DIAMETER = 0.1524;
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         public static final double MAX_OBTAINABLE_WHEEL_VELOCITY =
                 UtilConstants.NEO_FREE_SPEED
-                * GEAR_RATIO
-                * WHEEL_CIRCUMFERENCE
-                / 60
-                * 0.9; // free speed of wheel (meters per second)
-        public static final double MAX_LINEAR_ACCELERATION = 4; // Max acceleration
+                        * GEAR_RATIO
+                        * WHEEL_CIRCUMFERENCE
+                        / 60
+                        * 0.9; // free speed of wheel (meters per second)
+        public static final double MAX_LINEAR_ACCELERATION = 2; // Max acceleration
         public static final double MAX_LINEAR_VELOCITY = 3; // Desired max chassis speed
 
         public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
@@ -86,5 +90,10 @@ public final class Constants {
         public static final int BLANK_PID_SLOT = 3;
 
         public static final double NEO_FREE_SPEED = 5820; // RPM
+    }
+
+    public static final class AutonomousConstants {
+        public static final String BLUE_GRID_TO_BOTTOM_PIECE_PATH =
+                "/pathplanner/generatedJSON/BlueGridToBottomPiece.wpilib.json";
     }
 }

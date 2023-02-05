@@ -10,14 +10,13 @@ import frc.robot.utils.PFRController;
 public class DifferentialDrive extends CommandBase {
     private final Drivebase drivebase;
     private final PFRController driverController;
-    private final SlewRateLimiter vxLimiter, vthetaLimiter;
+    private final SlewRateLimiter vxLimiter;
 
     public DifferentialDrive(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
         addRequirements(drivebase);
         vxLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
-        vthetaLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
     }
 
     @Override
@@ -25,7 +24,6 @@ public class DifferentialDrive extends CommandBase {
         drivebase.setMeccanum(false);
         drivebase.setButterflyPistons(Value.kReverse);
         vxLimiter.reset(0);
-        vthetaLimiter.reset(0);
     }
 
     @Override
@@ -37,9 +35,7 @@ public class DifferentialDrive extends CommandBase {
                                 * DrivebaseConstants.MAX_LINEAR_VELOCITY);
         double yVelocity = 0;
         double angularVelocity =
-                vthetaLimiter.calculate(
-                        driverController.getRightXSquared()
-                                * DrivebaseConstants.MAX_ANGULAR_VELOCITY);
+                driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
         drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,6 +51,7 @@ public class Drivebase extends SubsystemBase {
     private DoubleSolenoid butterflyPistons;
 
     private Pigeon2 inertialMeasurementUnit;
+    // private ADXRS450_Gyro gyro;
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -59,8 +59,7 @@ public class Drivebase extends SubsystemBase {
             currentWheelSpeeds; // the velocities of each wheel (not just "speed" :/)
     private MecanumDriveWheelSpeeds
             desiredWheelSpeeds; // the *velocities* being sent to pid controllers
-    private ChassisSpeeds 
-            currentChassisSpeeds; // the VELOCITIES of the robot relative to the robot
+    private ChassisSpeeds currentChassisSpeeds; // the VELOCITIES of the robot relative to the robot
     private ChassisSpeeds
             desiredChassisSpeeds; // The ***VELOCITY*** we want to the set the robot to
     // (WPI needs to work on their language and correct terminology)
@@ -69,11 +68,9 @@ public class Drivebase extends SubsystemBase {
             kinematics; // Everything we use to track the robot's location and behavior
     private MecanumDriveOdometry odometry;
 
-    private HolonomicDriveController driveController;
-
     private CenterOfRotation centerOfRotation; // Where the mecanum drive will rotate around
 
-    private boolean isMeccanum = false; // whether the drivebase is in meccanum or differential mode
+    private boolean isMeccanum = true; // whether the drivebase is in meccanum or differential mode
 
     private final ShuffleboardTab drivebaseTab; // The shuffleboard tab we are using for TELEMETRY
     private final GenericEntry currentXVelocityEntry,
@@ -122,6 +119,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
         inertialMeasurementUnit = new Pigeon2(20);
+        // gyro = new ADXRS450_Gyro();
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -149,15 +147,10 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.WHEEL_BL_LOCATION,
                         DrivebaseConstants.WHEEL_BR_LOCATION);
 
-        // Creates the odometry
+        // Creates the odometry (SET POSE BEFORE AUTO STARTS)
         odometry =
                 new MecanumDriveOdometry(
-                        kinematics,
-                        getRotation2d(),
-                        currentWheelPositions,
-                        DrivebaseConstants.STARTING_POSE);
-
-        driveController = new HolonomicDriveController(null, null, null); // TODO: figure this out :D
+                        kinematics, getRotation2d(), currentWheelPositions, new Pose2d());
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
@@ -324,6 +317,7 @@ public class Drivebase extends SubsystemBase {
      * @return difference in angle since last reset
      */
     public double getHeading() {
+        // return inertialMeasurementUnit.getYaw();
         return inertialMeasurementUnit.getYaw();
     }
 
@@ -345,6 +339,10 @@ public class Drivebase extends SubsystemBase {
 
     public Motor getBrWheel() {
         return brWheel;
+    }
+
+    public MecanumDriveKinematics getKinematics() {
+        return kinematics;
     }
 
     @Override
