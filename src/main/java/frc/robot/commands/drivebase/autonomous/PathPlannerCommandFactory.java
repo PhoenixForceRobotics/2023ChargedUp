@@ -46,7 +46,7 @@ public class PathPlannerCommandFactory {
                         drivebase::getPose,
                         new PIDController(1, 0, 0.05),
                         new PIDController(1, 0, 0.05), // TODO: Set PID values and use constants
-                        new PIDController(Math.PI / 2, 0, 0.025 * Math.PI),
+                        new PIDController(Math.PI / 4, 0, 0.025 * Math.PI),
                         drivebase::setChassisSpeeds,
                         useAllianceColor,
                         drivebase));

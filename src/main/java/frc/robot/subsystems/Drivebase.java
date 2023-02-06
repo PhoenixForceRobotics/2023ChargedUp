@@ -63,9 +63,9 @@ public class Drivebase extends SubsystemBase {
     private ChassisSpeeds
             desiredChassisSpeeds; // The ***VELOCITY*** we want to the set the robot to
     // (WPI needs to work on their language and correct terminology)
-
-    private MecanumDriveKinematics
-            kinematics; // Everything we use to track the robot's location and behavior
+    
+    // Everything we use to track the robot's location and behavior
+    private MecanumDriveKinematics kinematics; 
     private MecanumDriveOdometry odometry;
 
     private CenterOfRotation centerOfRotation; // Where the mecanum drive will rotate around
@@ -73,9 +73,7 @@ public class Drivebase extends SubsystemBase {
     private boolean isMeccanum = true; // whether the drivebase is in meccanum or differential mode
 
     private final ShuffleboardTab drivebaseTab; // The shuffleboard tab we are using for TELEMETRY
-    private final GenericEntry currentXVelocityEntry,
-            currentYVelocityEntry,
-            currentRotationalVelocityEntry; // entries for telemetry
+    private final GenericEntry currentXVelocityEntry, currentYVelocityEntry, currentRotationalVelocityEntry; 
 
     public Drivebase() {
         // creates the components on the drivebase
@@ -150,7 +148,7 @@ public class Drivebase extends SubsystemBase {
         // Creates the odometry (SET POSE BEFORE AUTO STARTS)
         odometry =
                 new MecanumDriveOdometry(
-                        kinematics, getRotation2d(), currentWheelPositions, new Pose2d());
+                        kinematics, getRotation2d(), currentWheelPositions);
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
@@ -221,6 +219,15 @@ public class Drivebase extends SubsystemBase {
                 currentChassisSpeeds.omegaRadiansPerSecond * 180 / Math.PI);
     }
 
+    /**
+     * Sets the position of the robot to a particular position and rotation relative to the field
+     *
+     * @param poseMeters The position on the field that your robot is at.
+     */
+    public void resetPosition(Pose2d poseMeters) {
+        odometry.resetPosition(getRotation2d(), currentWheelPositions, poseMeters);
+    }
+    
     public void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {
         this.desiredChassisSpeeds = desiredChassisSpeeds;
     }
@@ -241,6 +248,11 @@ public class Drivebase extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, theta, getRotation2d());
     }
 
+    /** Stops the robot */
+    public void stop() {
+        desiredChassisSpeeds = new ChassisSpeeds();
+    }
+
     public void setCenterOfRotation(CenterOfRotation centerOfRotation) {
         this.centerOfRotation = centerOfRotation;
     }
@@ -257,43 +269,6 @@ public class Drivebase extends SubsystemBase {
         this.isMeccanum = isMeccanum;
     }
 
-    /**
-     * Sets the "proportational" variable for the PID in each motor
-     *
-     * @param kp what to set each motor's "proportional" parameter to
-     */
-    public void setP(double kp) {
-        flWheel.setVelocityP(kp);
-        frWheel.setVelocityP(kp);
-        blWheel.setVelocityP(kp);
-        brWheel.setVelocityP(kp);
-    }
-
-    /**
-     * Sets the "derivative" variable (slope at one point) for the PID in each motor
-     *
-     * @param kd what to set each motor's "derivative" parameter to
-     */
-    public void setD(double kd) {
-        flWheel.setVelocityD(kd);
-        frWheel.setVelocityD(kd);
-        blWheel.setVelocityD(kd);
-        brWheel.setVelocityD(kd);
-    }
-
-    /**
-     * Sets the position of the robot to a particular position and rotation relative to the field
-     *
-     * @param poseMeters The position on the field that your robot is at.
-     */
-    public void resetPosition(Pose2d poseMeters) {
-        odometry.resetPosition(getRotation2d(), currentWheelPositions, poseMeters);
-    }
-
-    /** Stops the robot */
-    public void stop() {
-        desiredChassisSpeeds = new ChassisSpeeds();
-    }
 
     /**
      * Sets where the robot will rotate
@@ -323,22 +298,6 @@ public class Drivebase extends SubsystemBase {
 
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
-    }
-
-    public Motor getFlWheel() {
-        return flWheel;
-    }
-
-    public Motor getFrWheel() {
-        return frWheel;
-    }
-
-    public Motor getBlWheel() {
-        return blWheel;
-    }
-
-    public Motor getBrWheel() {
-        return brWheel;
     }
 
     public MecanumDriveKinematics getKinematics() {
