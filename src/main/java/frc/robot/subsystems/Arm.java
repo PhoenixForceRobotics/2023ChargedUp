@@ -32,7 +32,9 @@ public class Arm extends SubsystemBase {
             rotationPidP, // tracks the proportional PID value of the rotation pid controller
             rotationPidI, // tracks the integral PID value of the rotation pid controller
             rotationPidD; // tracks the derivative PID value of the rotation pid controller
-
+    /**
+     * The arm that picks up game pieces from the floor through the use of the intake. It can rotate -180 to 180 degrees and can extend a certain distance.
+     */
     public Arm() {
         // Define rotational motors
         rotationMotor1 =
@@ -95,5 +97,37 @@ public class Arm extends SubsystemBase {
         rotationPidP.setDouble(ArmConstants.ROTATION_PID_P);
         rotationPidI.setDouble(ArmConstants.ROTATION_PID_I);
         rotationPidD.setDouble(ArmConstants.ROTATION_PID_D);
+    }
+
+    public void setRotation1Motor(double input)
+    {
+        rotationMotor1.set(input);
+    }
+
+    public void setRotation2Motor(double input)
+    {
+        rotationMotor2.set(input);
+    }
+
+    public void setRotationMotors(double input1, double input2)
+    {
+        setRotation1Motor(input1);
+        setRotation2Motor(input2);
+    }
+
+    public void setExtension1Motor(double input)
+    {
+        extensionMotor1.set(input);
+    }
+
+    public void setExtension2Motor(double input)
+    {
+        extensionMotor2.set(input);
+    }
+
+    public void setExtensionMotors(double input1, double input2)
+    {
+        setExtension1Motor(input1);
+        setExtension2Motor(input2);
     }
 }
