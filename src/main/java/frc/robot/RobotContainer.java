@@ -16,6 +16,7 @@ import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
@@ -28,6 +29,7 @@ import frc.robot.utils.PFRController;
 public class RobotContainer {
     // The robot's subsystems are defined here...
     private final Drivebase drivebase = new Drivebase();
+    private final Arm arm = new Arm();
 
     // The robot's controllers are defined here...
     private final PFRController operatorController = new PFRController(0);

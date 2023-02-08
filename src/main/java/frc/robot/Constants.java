@@ -100,4 +100,31 @@ public final class Constants {
         public static final String DRIVEBASE_CHOOSER =
                 "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
     }
+
+    public static final class ArmConstants {
+        // Constants for extension motors
+        public static final int EXTENSION_MOTOR_1_PORT = 50;
+        public static final int EXTENSION_MOTOR_2_PORT = 100;
+        public static final boolean EXTENSION_MOTOR_1_REVERSED = false;
+        public static final boolean EXTENSION_MOTOR_2_REVERSED = false;
+
+        // Constants for rotation motors
+        public static final int ROTATION_MOTOR_1_PORT = 150;
+        public static final int ROTATION_MOTOR_2_PORT = 200;
+        public static final boolean ROTATION_MOTOR_1_REVERSED = false;
+        public static final boolean ROTATION_MOTOR_2_REVERSED = false;
+
+        // General motor constants
+        public static final double ARM_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double ARM_MOTOR_WHEEL_DIAMETER = 0.1524;
+
+        // PID Constants
+        public static final double EXTENSION_PID_P = 1;
+        public static final double EXTENSION_PID_I = 1;
+        public static final double EXTENSION_PID_D = 1;
+
+        public static final double ROTATION_PID_P = 1;
+        public static final double ROTATION_PID_I = 1;
+        public static final double ROTATION_PID_D = 1;
+    }
 }
