@@ -10,6 +10,7 @@ public class ExtendArm extends CommandBase {
 
     /**
      * This command can extend and retract the arm using the two extension motors on the arm
+     *
      * @param arm - the arm that will be extended/retracted
      * @param operatorController - the controller that will be referenced for input
      */
@@ -19,20 +20,20 @@ public class ExtendArm extends CommandBase {
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         arm.setExtensionMotors(0);
     }
 
     @Override
-    public void execute()
-    {
-        arm.setExtensionMotors(operatorController.getRightYSquared()); // Sets the speed of the extension motors to the input from the right stick of the operator controller
+    public void execute() {
+        arm.setExtensionMotors(
+                operatorController
+                        .getRightYSquared()); // Sets the speed of the extension motors to the input
+        // from the right stick of the operator controller
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
         arm.setExtensionMotors(0);
     }
 }

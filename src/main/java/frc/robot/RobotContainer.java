@@ -121,8 +121,7 @@ public class RobotContainer {
         return rotateArm;
     }
 
-    public ExtendArm getExtendArm()
-    {
+    public ExtendArm getExtendArm() {
         return extendArm;
     }
 }

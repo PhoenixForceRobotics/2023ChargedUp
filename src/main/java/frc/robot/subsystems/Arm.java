@@ -35,6 +35,7 @@ public class Arm extends SubsystemBase {
             rotationPidP, // tracks the proportional PID value of the rotation pid controller
             rotationPidI, // tracks the integral PID value of the rotation pid controller
             rotationPidD; // tracks the derivative PID value of the rotation pid controller
+    private double angleOfIntake = 0;
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
      * -180 to 180 degrees and can extend a certain distance.
@@ -96,7 +97,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         // TODO: Set current angle shuffleboard value to current angle of arm
-        // currentAngle.setDouble(currentAngle);
+        currentAngle.setDouble(angleOfIntake);
         extensionPidP.setDouble(ArmConstants.EXTENSION_PID_P);
         extensionPidI.setDouble(ArmConstants.EXTENSION_PID_I);
         extensionPidD.setDouble(ArmConstants.EXTENSION_PID_D);
