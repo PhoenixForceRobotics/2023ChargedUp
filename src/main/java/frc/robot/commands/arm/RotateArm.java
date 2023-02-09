@@ -26,7 +26,7 @@ public class RotateArm extends CommandBase {
 
     @Override
     public void execute() {
-        arm.setRotationMotors(operatorController.getLeftYSquared());
+        arm.setRotationMotors(operatorController.getLeftYSquared()); // Sets the speed of the rotation motors to the input of the left stick of the operator controller
     }
 
     @Override
