@@ -7,15 +7,18 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.Motor;
+import frc.robot.utils.SparkMotorGroup;
 
 public class Arm extends SubsystemBase {
     // Rotation motors
     private Motor rotationMotor1;
     private Motor rotationMotor2;
+    private SparkMotorGroup rotationMotors;
 
     // Extension motors
     private Motor extensionMotor1;
     private Motor extensionMotor2;
+    private SparkMotorGroup extensionMotors;
 
     // Rotation PID
     private PIDController rotationPid;
@@ -33,7 +36,8 @@ public class Arm extends SubsystemBase {
             rotationPidI, // tracks the integral PID value of the rotation pid controller
             rotationPidD; // tracks the derivative PID value of the rotation pid controller
     /**
-     * The arm that picks up game pieces from the floor through the use of the intake. It can rotate -180 to 180 degrees and can extend a certain distance.
+     * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
+     * -180 to 180 degrees and can extend a certain distance.
      */
     public Arm() {
         // Define rotational motors
@@ -49,6 +53,7 @@ public class Arm extends SubsystemBase {
                         ArmConstants.ROTATION_MOTOR_2_REVERSED,
                         ArmConstants.ARM_MOTOR_GEAR_RATIO,
                         ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        rotationMotors = new SparkMotorGroup(false, rotationMotor1, rotationMotor2);
 
         // Define extension motors
         extensionMotor1 =
@@ -63,6 +68,7 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_MOTOR_2_REVERSED,
                         ArmConstants.ARM_MOTOR_GEAR_RATIO,
                         ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
 
         // Defines pid controllers
         rotationPid =
@@ -99,35 +105,23 @@ public class Arm extends SubsystemBase {
         rotationPidD.setDouble(ArmConstants.ROTATION_PID_D);
     }
 
-    public void setRotation1Motor(double input)
-    {
-        rotationMotor1.set(input);
+    /**
+     * Sets the speed of the rotation motors using a percentage of power
+     *
+     * @param input1 - input for the first rotation motor
+     * @param input2 - input for the second rotation motor
+     */
+    public void setRotationMotors(double input) {
+        rotationMotors.set(input);
     }
 
-    public void setRotation2Motor(double input)
-    {
-        rotationMotor2.set(input);
-    }
-
-    public void setRotationMotors(double input1, double input2)
-    {
-        setRotation1Motor(input1);
-        setRotation2Motor(input2);
-    }
-
-    public void setExtension1Motor(double input)
-    {
-        extensionMotor1.set(input);
-    }
-
-    public void setExtension2Motor(double input)
-    {
-        extensionMotor2.set(input);
-    }
-
-    public void setExtensionMotors(double input1, double input2)
-    {
-        setExtension1Motor(input1);
-        setExtension2Motor(input2);
+    /**
+     * Sets the speed of the extension motors using a percentage of power
+     *
+     * @param input1 - input for the first extension motor
+     * @param input2 - input for the second extension motor
+     */
+    public void setExtensionMotors(double input) {
+        extensionMotors.set(input);
     }
 }
