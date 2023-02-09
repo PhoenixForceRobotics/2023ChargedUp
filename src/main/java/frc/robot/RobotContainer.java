@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
-import frc.robot.commands.arm.ExtendArm;
-import frc.robot.commands.arm.RotateArm;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
@@ -45,13 +43,10 @@ public class RobotContainer {
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
-    private final RotateArm rotateArm = new RotateArm(arm, operatorController);
-    private final ExtendArm extendArm = new ExtendArm(arm, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
     private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
-    ;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -115,13 +110,5 @@ public class RobotContainer {
 
     public PFRController getOperatorController() {
         return operatorController;
-    }
-
-    public RotateArm getRotateArm() {
-        return rotateArm;
-    }
-
-    public ExtendArm getExtendArm() {
-        return extendArm;
     }
 }

@@ -126,5 +126,10 @@ public final class Constants {
         public static final double ROTATION_PID_P = 1;
         public static final double ROTATION_PID_I = 1;
         public static final double ROTATION_PID_D = 1;
+
+        public static final double S_VOLTS = 0;
+        public static final double V_VOLTS_SECONDS_PER_METER = 0;
+        public static final double A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
+        public static final double P_DRIVE_VEL = 0;
     }
 }

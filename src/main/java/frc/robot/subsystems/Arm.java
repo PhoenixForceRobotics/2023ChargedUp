@@ -35,7 +35,8 @@ public class Arm extends SubsystemBase {
             rotationPidP, // tracks the proportional PID value of the rotation pid controller
             rotationPidI, // tracks the integral PID value of the rotation pid controller
             rotationPidD; // tracks the derivative PID value of the rotation pid controller
-    private double angleOfIntake = 0;
+    private double angleOfArm = 0;
+
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
      * -180 to 180 degrees and can extend a certain distance.
@@ -97,32 +98,12 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         // TODO: Set current angle shuffleboard value to current angle of arm
-        currentAngle.setDouble(angleOfIntake);
+        currentAngle.setDouble(angleOfArm);
         extensionPidP.setDouble(ArmConstants.EXTENSION_PID_P);
         extensionPidI.setDouble(ArmConstants.EXTENSION_PID_I);
         extensionPidD.setDouble(ArmConstants.EXTENSION_PID_D);
         rotationPidP.setDouble(ArmConstants.ROTATION_PID_P);
         rotationPidI.setDouble(ArmConstants.ROTATION_PID_I);
         rotationPidD.setDouble(ArmConstants.ROTATION_PID_D);
-    }
-
-    /**
-     * Sets the speed of the rotation motors using a percentage of power
-     *
-     * @param input1 - input for the first rotation motor
-     * @param input2 - input for the second rotation motor
-     */
-    public void setRotationMotors(double input) {
-        rotationMotors.set(input);
-    }
-
-    /**
-     * Sets the speed of the extension motors using a percentage of power
-     *
-     * @param input1 - input for the first extension motor
-     * @param input2 - input for the second extension motor
-     */
-    public void setExtensionMotors(double input) {
-        extensionMotors.set(input);
     }
 }
