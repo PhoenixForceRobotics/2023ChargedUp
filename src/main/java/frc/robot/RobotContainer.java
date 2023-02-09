@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.claw.ClawIntakeSequence;
+import frc.robot.commands.claw.TestClaw;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
@@ -46,6 +47,7 @@ public class RobotContainer {
             new DifferentialDrive(drivebase, driverController);
     private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
     private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
+    private final TestClaw testClaw = new TestClaw(claw, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -123,5 +125,10 @@ public class RobotContainer {
 
     public PFRController getOperatorController() {
         return operatorController;
+    }
+
+    public TestClaw getTestClaw()
+    {
+        return testClaw;
     }
 }
