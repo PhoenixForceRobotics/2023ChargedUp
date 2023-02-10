@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,13 +31,10 @@ public class Arm extends SubsystemBase {
 
     // Shuffleboard Display
     private final ShuffleboardTab armTab; // Tab that will be used for PID tracking
-    private final GenericEntry currentAngle, // tracks current angle of arm
-            extensionPidP, // tracks the proportional PID value of the extension pid controller
-            extensionPidI, // tracks the integral PID value of the extension pid controller
-            extensionPidD, // tracks the derivative PID value of the extension pid controller
-            rotationPidP, // tracks the proportional PID value of the rotation pid controller
-            rotationPidI, // tracks the integral PID value of the rotation pid controller
-            rotationPidD; // tracks the derivative PID value of the rotation pid controller
+    private final GenericEntry currentAngle;
+    private final ComplexWidget rotationPidController;
+    private final ComplexWidget extensionPidController;
+    
     private double angleOfArm = 0;
 
     /**
@@ -87,23 +87,71 @@ public class Arm extends SubsystemBase {
         // Defines shuffleboard entries and tab
         armTab = Shuffleboard.getTab("Arm");
         currentAngle = armTab.add("Current Angle", 0).getEntry();
-        extensionPidP = armTab.add("Extension PID P", 0).getEntry();
-        extensionPidI = armTab.add("Extension PID I", 0).getEntry();
-        extensionPidD = armTab.add("Extension PID D", 0).getEntry();
-        rotationPidP = armTab.add("Rotation PID P", 0).getEntry();
-        rotationPidI = armTab.add("Rotation PID I", 0).getEntry();
-        rotationPidD = armTab.add("Rotation PID D", 0).getEntry();
+        extensionPidController = armTab.add("Extension PID Controller", extensionPid);
+        rotationPidController = armTab.add("Rotation PID Controller", rotationPid);
     }
 
     @Override
     public void periodic() {
-        // TODO: Set current angle shuffleboard value to current angle of arm
+        angleOfArm = (getRotationEncoder().getPosition() * rotationMotor1.getGearRatio()) * 360;
+
         currentAngle.setDouble(angleOfArm);
-        extensionPidP.setDouble(ArmConstants.EXTENSION_PID_P);
-        extensionPidI.setDouble(ArmConstants.EXTENSION_PID_I);
-        extensionPidD.setDouble(ArmConstants.EXTENSION_PID_D);
-        rotationPidP.setDouble(ArmConstants.ROTATION_PID_P);
-        rotationPidI.setDouble(ArmConstants.ROTATION_PID_I);
-        rotationPidD.setDouble(ArmConstants.ROTATION_PID_D);
+    }
+
+    public void setRotationMetersPerSecond(double velocity)
+    {
+        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + rotationPid.calculate(getRotationMetersPerSecond());
+        rotationMotors.setVoltage(voltage);
+    }
+
+    public void setExtensionMetersPerSecond(double velocity)
+    {
+        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + extensionPid.calculate(getExtensionMetersPerSecond());
+        extensionMotors.setVoltage(voltage);
+    }
+
+    public double getExtensionMetersPerSecond()
+    {
+        return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
+    }
+
+    public double getRotationMetersPerSecond()
+    {
+        return getRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
+    }
+
+    public double getRotationAngle()
+    {
+        return angleOfArm;
+    }
+
+    public RelativeEncoder getRotationEncoder()
+    {
+        return rotationMotors.getEncoder();
+    }
+
+    public RelativeEncoder getExtensionEncoder()
+    {
+        return extensionMotors.getEncoder();
+    }
+
+    public PIDController getRotationPid()
+    {
+        return rotationPid;
+    }
+
+    public PIDController getExtensionPid()
+    {
+        return extensionPid;
+    }
+
+    public double getRotationMeters()
+    {
+        return getRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getExtensionMeters()
+    {
+        return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
     }
 }

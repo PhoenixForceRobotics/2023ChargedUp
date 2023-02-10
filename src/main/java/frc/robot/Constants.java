@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -130,6 +131,9 @@ public final class Constants {
         public static final double S_VOLTS = 0;
         public static final double V_VOLTS_SECONDS_PER_METER = 0;
         public static final double A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
-        public static final double P_DRIVE_VEL = 0;
+
+        public static final SimpleMotorFeedforward ARM_FEED_FORWARD = new SimpleMotorFeedforward(ArmConstants.S_VOLTS, ArmConstants.V_VOLTS_SECONDS_PER_METER, ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
+
+        public static final double startingAngle = 0;
     }
 }
