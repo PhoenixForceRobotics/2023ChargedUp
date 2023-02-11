@@ -13,17 +13,17 @@ public class PathPlannerCommandFactory {
     /**
      * @param drivebase MUST contain proper holonomic kinematics and odometry, as well as wheel
      *     veloctiy control
-     * @param jsonPath where to get the path from. ex: "Example Path" would go to
+     * @param pathName where to get the path from. ex: "Example Path" would go to
      *     "src/main/deploy/pathplanner/Example Path.path"
      * @param isFirstPath if true, will resest the odometry (set "true" if first auto path)
      * @param useAllianceColor if true, gets the alliance color and automatically flips the path
-     *     accordingly
+     *     accordingly. MUST PUT ALL PATHS ON THE BLUE SIDE!!!!!
      */
     public static SequentialCommandGroup fromJSON(
-            Drivebase drivebase, String jsonPath, boolean isFirstPath, boolean useAllianceColor) {
+            Drivebase drivebase, String pathName, boolean isFirstPath, boolean useAllianceColor) {
         return fromTrajectory(
                 drivebase,
-                PathPlanner.loadPath(jsonPath, new PathConstraints(2, 2)),
+                PathPlanner.loadPath(pathName, new PathConstraints(2, 2)),
                 isFirstPath,
                 useAllianceColor);
     }
