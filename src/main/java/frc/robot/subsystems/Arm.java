@@ -3,10 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.Motor;
@@ -28,14 +24,6 @@ public class Arm extends SubsystemBase {
 
     // Extension PID
     private PIDController extensionPid;
-
-    // Shuffleboard Display
-    private final ShuffleboardTab armTab; // Tab that will be used for PID tracking
-    private final GenericEntry currentAngle;
-    private final ComplexWidget rotationPidController;
-    private final ComplexWidget extensionPidController;
-    
-    private double angleOfArm = 0;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -83,19 +71,11 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_P,
                         ArmConstants.EXTENSION_PID_I,
                         ArmConstants.EXTENSION_PID_D);
-
-        // Defines shuffleboard entries and tab
-        armTab = Shuffleboard.getTab("Arm");
-        currentAngle = armTab.add("Current Angle", 0).getEntry();
-        extensionPidController = armTab.add("Extension PID Controller", extensionPid);
-        rotationPidController = armTab.add("Rotation PID Controller", rotationPid);
     }
 
     @Override
     public void periodic() {
-        angleOfArm = (getRotationEncoder().getPosition() * rotationMotor1.getGearRatio()) * 360;
 
-        currentAngle.setDouble(angleOfArm);
     }
 
     public void setRotationMetersPerSecond(double velocity)
@@ -122,7 +102,7 @@ public class Arm extends SubsystemBase {
 
     public double getRotationAngle()
     {
-        return angleOfArm;
+        return rotationMotor1.getRotations() * 360;
     }
 
     public RelativeEncoder getRotationEncoder()
