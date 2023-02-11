@@ -73,11 +73,6 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_D);
     }
 
-    @Override
-    public void periodic() {
-
-    }
-
     public void setRotationMetersPerSecond(double velocity)
     {
         double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + rotationPid.calculate(getRotationMetersPerSecond());
@@ -103,6 +98,11 @@ public class Arm extends SubsystemBase {
     public double getRotationAngle()
     {
         return rotationMotor1.getRotations() * 360;
+    }
+
+    public double getExtensionLength()
+    {
+        return extensionMotor1.getMeters();
     }
 
     public RelativeEncoder getRotationEncoder()

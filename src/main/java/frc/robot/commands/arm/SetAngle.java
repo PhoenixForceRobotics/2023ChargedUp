@@ -55,10 +55,4 @@ public class SetAngle extends CommandBase {
     {
         return pidController.atSetpoint();
     }
-
-    @Override
-    public void end(boolean interrupted)
-    {
-
-    }
 }
