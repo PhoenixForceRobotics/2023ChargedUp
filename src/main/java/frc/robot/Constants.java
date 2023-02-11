@@ -121,11 +121,11 @@ public final class Constants {
 
         // PID Constants
         public static final double EXTENSION_PID_P = 1;
-        public static final double EXTENSION_PID_I = 1;
+        public static final double EXTENSION_PID_I = 0;
         public static final double EXTENSION_PID_D = 1;
 
         public static final double ROTATION_PID_P = 1;
-        public static final double ROTATION_PID_I = 1;
+        public static final double ROTATION_PID_I = 0;
         public static final double ROTATION_PID_D = 1;
 
         public static final double S_VOLTS = 0;

@@ -46,7 +46,7 @@ public class SetAngle extends CommandBase {
         double error = desiredAngle - arm.getRotationAngle();
         angleError.setDouble(error);
 
-        double output = MathUtil.clamp(pidController.calculate(arm.getRotationAngle()), -0.1, 0.1);
+        double output = MathUtil.clamp(pidController.calculate(arm.getRotationAngle()), -0.9, 0.9);
         arm.setRotationMetersPerSecond(output);
     }
 
