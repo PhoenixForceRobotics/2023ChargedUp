@@ -1,5 +1,6 @@
 package frc.robot.commands.claw;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
@@ -9,6 +10,7 @@ public class PickUpPiece extends CommandBase {
     private boolean
             isPickingUpCube; // Determines whether the command is set to picking up a cube or a
     // cone, as the motor direction differs between them
+    private Timer timer;
 
     /**
      * This command picks up the specified piece using the claw subsystem
@@ -20,15 +22,11 @@ public class PickUpPiece extends CommandBase {
     public PickUpPiece(Claw claw, boolean isPickingUpCube) {
         this.claw = claw;
         this.isPickingUpCube = isPickingUpCube;
+        timer = new Timer();
     }
 
     @Override
     public void initialize() {
-        claw.setMotor(0); // As soon as this command is called the motor speed is set to 0
-    }
-
-    @Override
-    public void execute() {
         if (isPickingUpCube) {
             // If we are picking up the cube, then we use a positive motor speed
             claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
@@ -36,13 +34,27 @@ public class PickUpPiece extends CommandBase {
             // Otherwise, we use a negative motor speed to spin the motor the opposite direction
             claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
         }
+        timer.reset();
+        timer.stop();
+    }
+
+    @Override
+    public void execute() {
+        if (claw.hasPiece())
+        {
+            timer.start();
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return claw.hasPiece(); // TODO: Check with Raf or Chloe if this is the right condition
+        return timer.get() >= ClawConstants.TIMER_DELAY_LENGTH;
     }
-
+    
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        claw.setMotor(0);
+        timer.reset();
+        timer.stop();
+    }
 }

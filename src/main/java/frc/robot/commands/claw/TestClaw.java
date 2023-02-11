@@ -8,27 +8,23 @@ public class TestClaw extends CommandBase {
     private Claw claw;
     private PFRController operatorController;
 
-    public TestClaw(Claw claw, PFRController operatorController)
-    {
+    public TestClaw(Claw claw, PFRController operatorController) {
         this.claw = claw;
         this.operatorController = operatorController;
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         claw.setMotor(0);
     }
-    
+
     @Override
-    public void execute()
-    {
+    public void execute() {
         claw.setMotor(operatorController.getLeftYSquared());
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
         claw.setMotor(0);
     }
 }

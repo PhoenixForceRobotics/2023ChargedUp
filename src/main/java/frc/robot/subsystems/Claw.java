@@ -29,11 +29,11 @@ public class Claw extends SubsystemBase {
      * @param coneSensor - a sensor that detects if there is a cone in the claw (two states, true or
      *     false)
      */
-    public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor) {
-        this.motor = motor;
-        this.cubeSensor = cubeSensor;
-        this.coneSensor = coneSensor;
-    }
+    // public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor) {
+    //     this.motor = motor;
+    //     this.cubeSensor = cubeSensor;
+    //     this.coneSensor = coneSensor;
+    // }
 
     /**
      * This class references the claw subsystem. It is able to pick up game pieces with an intake
@@ -86,7 +86,7 @@ public class Claw extends SubsystemBase {
      * @return A boolean that is true if there is a piece, false if not
      */
     public boolean hasPiece() {
-        return cubeSensor.get() || coneSensor.get();
+        return cubeSensor.get() != coneSensor.get();
     }
 
     /**

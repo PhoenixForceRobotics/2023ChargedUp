@@ -6,7 +6,6 @@ import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 public class ClawIntakeSequence extends SequentialCommandGroup {
-    private Claw claw; // The claw that this command is controlling
 
     /**
      * This command combines the PickUpPiece and TurnOffClaw commands to first pick up the piece,
@@ -18,11 +17,7 @@ public class ClawIntakeSequence extends SequentialCommandGroup {
      */
     public ClawIntakeSequence(Claw claw, boolean isPickingUpCube) {
         super(
-                new PickUpPiece(claw, isPickingUpCube), // Picks up the piece on the field
-                new WaitCommand(
-                        ClawConstants
-                                .TIMER_DELAY_LENGTH), // Waits for a set amount of seconds defined
-                // in the Constants file
-                new TurnOffClaw(claw)); // Turns off the claw motors
+                new PickUpPiece(claw, isPickingUpCube) // Picks up the piece on the field
+        );
     }
 }
