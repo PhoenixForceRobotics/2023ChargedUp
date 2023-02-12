@@ -51,6 +51,12 @@ public class RobotContainer {
                     drivebase, "MiddleGridToChargeStation", false, false);
     private final ExampleAutonomousRoutine exampleAutonomousRoutine =
             new ExampleAutonomousRoutine(drivebase);
+    private final Command chargeStationToBottomPiece =
+            PathPlannerCommandFactory.fromJSON(
+                    drivebase,
+                    "src/main/deploy/pathplanner/ChargeStationToBottomPiece.path",
+                    false,
+                    true);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -79,6 +85,8 @@ public class RobotContainer {
     public void initializeListenersAndSendables() {
         // Add options for chooser
         autonomousCommandChooser.addOption("Middle Grid To Bottom Piece", middleGridToBottomPiece);
+        autonomousCommandChooser.addOption(
+                "Charge Station to Bottom Piece", chargeStationToBottomPiece);
         autonomousCommandChooser.addOption(
                 "Middle Grid to Charge Station", middleGridToChargeStation);
         autonomousCommandChooser.setDefaultOption(
