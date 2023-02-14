@@ -8,6 +8,11 @@ public class TeleopClaw extends CommandBase {
     private Claw claw;
     private PFRController operatorController;
 
+    /**
+     * Moves the claw motors using joystick input from the operator controller
+     * @param claw - the claw that will be moved
+     * @param operatorController - the controller that will be referenced for joystick input
+     */
     public TeleopClaw(Claw claw, PFRController operatorController) {
         this.claw = claw;
         this.operatorController = operatorController;
@@ -15,11 +20,17 @@ public class TeleopClaw extends CommandBase {
 
     @Override
     public void initialize() {
-        claw.setMotor(0);
+        claw.setMotor(0); // Stops any movement of the motor
     }
 
     @Override
     public void execute() {
-        claw.setMotor(operatorController.getRightYSquared());
+        claw.setMotor(operatorController.getRightYSquared()); // Maps the movement of the claw motors to the right joystick of the operator controller
+    }
+
+    @Override
+    public void end(boolean interrupted)
+    {
+        claw.setMotor(0); // Stops any movement of the motor
     }
 }
