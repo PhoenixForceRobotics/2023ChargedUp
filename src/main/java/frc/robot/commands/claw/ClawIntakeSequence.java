@@ -1,8 +1,6 @@
 package frc.robot.commands.claw;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 public class ClawIntakeSequence extends SequentialCommandGroup {
