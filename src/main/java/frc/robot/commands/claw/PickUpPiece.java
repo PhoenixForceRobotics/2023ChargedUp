@@ -40,8 +40,7 @@ public class PickUpPiece extends CommandBase {
 
     @Override
     public void execute() {
-        if (claw.hasPiece())
-        {
+        if (claw.hasPiece()) {
             timer.start();
         }
     }
@@ -50,7 +49,7 @@ public class PickUpPiece extends CommandBase {
     public boolean isFinished() {
         return timer.get() >= ClawConstants.TIMER_DELAY_LENGTH;
     }
-    
+
     @Override
     public void end(boolean interrupted) {
         claw.setMotor(0);

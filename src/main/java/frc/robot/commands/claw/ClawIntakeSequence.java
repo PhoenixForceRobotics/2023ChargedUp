@@ -16,6 +16,6 @@ public class ClawIntakeSequence extends SequentialCommandGroup {
     public ClawIntakeSequence(Claw claw, boolean isPickingUpCube) {
         super(
                 new PickUpPiece(claw, isPickingUpCube) // Picks up the piece on the field
-        );
+                );
     }
 }

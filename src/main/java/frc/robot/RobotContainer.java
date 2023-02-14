@@ -43,7 +43,7 @@ public class RobotContainer {
             new CycleCenterOfRotation(drivebase, Direction.DOWN);
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
-           new DifferentialDrive(drivebase, driverController);
+            new DifferentialDrive(drivebase, driverController);
     private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
     private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
 

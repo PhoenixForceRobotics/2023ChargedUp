@@ -8,21 +8,18 @@ public class TeleopClaw extends CommandBase {
     private Claw claw;
     private PFRController operatorController;
 
-    public TeleopClaw(Claw claw, PFRController operatorController)
-    {
+    public TeleopClaw(Claw claw, PFRController operatorController) {
         this.claw = claw;
         this.operatorController = operatorController;
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         claw.setMotor(0);
     }
 
     @Override
-    public void execute()
-    {
+    public void execute() {
         claw.setMotor(operatorController.getRightYSquared());
     }
 }
