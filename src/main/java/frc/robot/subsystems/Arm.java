@@ -73,63 +73,111 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_D);
     }
 
-    public void setRotationMetersPerSecond(double velocity)
+    /**
+     * Sets the angular velocity of the rotation motors in radians per second
+     * @param angularVelocity - velocity of the rotation motors in radians per second
+     */
+    public void setRotationRadiansPerSecond(double angularVelocity)
     {
-        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + rotationPid.calculate(getRotationMetersPerSecond());
+        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(angularVelocity) + rotationPid.calculate(getRotationRadiansPerSecond());
         rotationMotors.setVoltage(voltage);
     }
 
+    /**
+     * Sets the velocity for the extension motors
+     * @param velocity - velocity in meters per second you want to set it to
+     */
     public void setExtensionMetersPerSecond(double velocity)
     {
         double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + extensionPid.calculate(getExtensionMetersPerSecond());
         extensionMotors.setVoltage(voltage);
     }
 
+    /**
+     * Gets the velocity for the extension motors
+     * @return the velocity of the motors in meters per second
+     */
     public double getExtensionMetersPerSecond()
     {
         return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
     }
 
-    public double getRotationMetersPerSecond()
+    /**
+     * Gets the rotational velocity of the arm in radians per second
+     * @return the rotational velocity of the arm in radians per second
+     */
+    public double getRotationRadiansPerSecond()
     {
-        return getRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
+        return rotationMotor1.getRPM() / 60 * Math.PI * 2;
     }
 
+    /**
+     * Gets the angle of rotation of the arm in degrees
+     * @return the angle of the arm in degrees
+     */
     public double getRotationAngle()
     {
         return rotationMotor1.getRotations() * 360;
     }
 
+    /**
+     * Gets the length of the extension arm from the center of rotation
+     * @return the length in meters of the arm from the center of rotation
+     */
     public double getExtensionLength()
     {
         return extensionMotor1.getMeters();
     }
 
+    /**
+     * Gets the encoder for the rotation motors
+     * @return an encoder for the rotation motors
+     */
     public RelativeEncoder getRotationEncoder()
     {
         return rotationMotors.getEncoder();
     }
 
+    /**
+     * Gets the encoder for the extension motors
+     * @return an encoder for the extension motors
+     */
     public RelativeEncoder getExtensionEncoder()
     {
         return extensionMotors.getEncoder();
     }
 
+    /**
+     * Gets the pid controller for rotation
+     * @return the pid controller object for rotation
+     */
     public PIDController getRotationPid()
     {
         return rotationPid;
     }
 
+    /**
+     * Gets the pid controller for extension
+     * @return the pid controller object for extension
+     */
     public PIDController getExtensionPid()
     {
         return extensionPid;
     }
 
+    /**
+     * Gets the amount of meters traveled by the rotation motors
+     * @return the amount of meters traveled by the rotation motors in meters
+     */
     public double getRotationMeters()
     {
         return getRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
     }
 
+    /**
+     * Gets the amount of meters traveled by the extension motors
+     * @return the amount of meters traveled by the extension motors in meters
+     */
     public double getExtensionMeters()
     {
         return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;

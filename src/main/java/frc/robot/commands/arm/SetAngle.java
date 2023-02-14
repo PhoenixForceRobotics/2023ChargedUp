@@ -41,18 +41,23 @@ public class SetAngle extends CommandBase {
     @Override
     public void execute()
     {
-        currentAngle.setDouble(arm.getRotationAngle());
-
+        double output = MathUtil.clamp(pidController.calculate(arm.getRotationAngle()), -0.9, 0.9);
+        arm.setRotationRadiansPerSecond(output);
+        
         double error = desiredAngle - arm.getRotationAngle();
         angleError.setDouble(error);
-
-        double output = MathUtil.clamp(pidController.calculate(arm.getRotationAngle()), -0.9, 0.9);
-        arm.setRotationMetersPerSecond(output);
+        currentAngle.setDouble(arm.getRotationAngle());
+        
     }
 
     @Override
     public boolean isFinished()
     {
         return pidController.atSetpoint();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        arm.setRotationRadiansPerSecond(0);
     }
 }
