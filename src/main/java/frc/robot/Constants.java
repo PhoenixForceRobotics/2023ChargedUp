@@ -119,6 +119,10 @@ public final class Constants {
         public static final double ARM_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
         public static final double ARM_MOTOR_WHEEL_DIAMETER = 0.1524;
 
+        // Numbers to caulcuate height and distance
+        public static final double DISTANCE_GROUND_TO_FULCRUM = 0.5; // In meters
+        public static final double DISTANCE_BUMPER_TO_FULCRUM = 0.5; // In meters
+
         // PID Constants
         public static final double EXTENSION_PID_P = 1;
         public static final double EXTENSION_PID_I = 0;
