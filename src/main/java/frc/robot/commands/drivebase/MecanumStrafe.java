@@ -2,10 +2,11 @@ package frc.robot.commands.drivebase;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
-public class MecanumDrive extends CommandBase {
+public class MecanumStrafe extends CommandBase {
 
     public enum FrameOfReference {
         ROBOT,
@@ -16,7 +17,7 @@ public class MecanumDrive extends CommandBase {
     private final PFRController driverController;
     private FrameOfReference frameOfReference;
 
-    public MecanumDrive(Drivebase drivebase, PFRController driverController) {
+    public MecanumStrafe(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
         frameOfReference = FrameOfReference.ROBOT;
@@ -41,14 +42,18 @@ public class MecanumDrive extends CommandBase {
             }
         }
 
-        double xVelocity = driverController.getLeftYSquared();
-        double yVelocity = driverController.getLeftXSquared();
-        double angularVelocity = driverController.getRightXSquared();
+        //now for the funny (pain)
+        int xIntent = (driverController.getPOV() == ControllerConstants.DPAD_LEFT ? 1 : 0) -
+            (driverController.getPOV() == ControllerConstants.DPAD_RIGHT ? 1 : 0);
+        xIntent *= .1; //damper
+
+        //TODO: add snap to grid in order to actually make it helpful for drivers
+        //TODO: make useful by having it automatically align parallel with the apriltag
 
         if (frameOfReference == FrameOfReference.ROBOT) {
-            drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
-        } else { // frame of reference must be field-relative
-            drivebase.setFieldRelativeChassisSpeeds(xVelocity, yVelocity, angularVelocity);
+            drivebase.setChassisSpeeds(xIntent, 0, 0);
+        } else {
+            drivebase.setFieldRelativeChassisSpeeds(xIntent, 0, 0);
         }
     }
 

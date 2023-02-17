@@ -1,4 +1,4 @@
-package util;
+package frc.robot.utils.vision;
 
 import frc.robot.constants.Constants;
 

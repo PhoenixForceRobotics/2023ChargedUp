@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.utils.vision;
 
 public class UnitConverter {
     public static double FeetToInches(double distFeet) {
