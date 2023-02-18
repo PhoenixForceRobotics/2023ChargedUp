@@ -10,11 +10,12 @@ public class SetArm extends CommandBase {
     private final Arm arm;
     private final double targetLength;
     private final double targetAngle;
+    private final double targetClawAngle;
     private PIDController lengthPID;
     private PIDController anglePID;
     private PIDController clawAnglePID;
     
-    public SetArm(Arm arm, double distanceFromBumperMeters, double distanceFromGroundMeters)
+    public SetArm(Arm arm, double distanceFromBumperMeters, double distanceFromGroundMeters, double targetClawAngle)
     {
         this.arm = arm;
 
@@ -26,6 +27,8 @@ public class SetArm extends CommandBase {
         anglePID = new PIDController(ArmConstants.ROTATION_PID_P, ArmConstants.ROTATION_PID_I, ArmConstants.ROTATION_PID_D);
         lengthPID = new PIDController(ArmConstants.EXTENSION_PID_P, ArmConstants.EXTENSION_PID_I, ArmConstants.EXTENSION_PID_D);
         clawAnglePID = new PIDController(ArmConstants.CLAW_ROTATION_PID_P, ArmConstants.CLAW_ROTATION_PID_I, ArmConstants.CLAW_ROTATION_PID_D);
+
+        this.targetClawAngle = targetClawAngle;
     }
 
     @Override
