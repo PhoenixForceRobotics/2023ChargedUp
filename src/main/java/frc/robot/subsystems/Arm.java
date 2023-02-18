@@ -10,17 +10,23 @@ import frc.robot.utils.SparkMotorGroup;
 
 public class Arm extends SubsystemBase {
     // Rotation motors
-    private Motor rotationMotor1;
-    private Motor rotationMotor2;
-    private SparkMotorGroup rotationMotors;
+    private Motor armRotationMotor1;
+    private Motor armRotationMotor2;
+    private SparkMotorGroup armRotationMotors;
 
     // Extension motors
     private Motor extensionMotor1;
     private Motor extensionMotor2;
     private SparkMotorGroup extensionMotors;
 
+    private Motor clawRotationMotor1;
+    private Motor clawRotationMotor2;
+    private SparkMotorGroup clawRotationMotors;
+
+    private PIDController clawRotationPid;
+
     // Rotation PID
-    private PIDController rotationPid;
+    private PIDController armRotationPid;
 
     // Extension PID
     private PIDController extensionPid;
@@ -30,20 +36,24 @@ public class Arm extends SubsystemBase {
      * -180 to 180 degrees and can extend a certain distance.
      */
     public Arm() {
+        clawRotationMotor1 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_1_PORT, ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED, ArmConstants.ARM_MOTOR_WHEEL_DIAMETER, ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO);
+        clawRotationMotor2 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_2_PORT, ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED, ArmConstants.ARM_MOTOR_GEAR_RATIO, ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        clawRotationPid = new PIDController(ArmConstants.CLAW_ROTATION_PID_P, ArmConstants.CLAW_ROTATION_PID_I, ArmConstants.CLAW_ROTATION_PID_D);
+
         // Define rotational motors
-        rotationMotor1 =
+        armRotationMotor1 =
                 new Motor(
                         ArmConstants.ROTATION_MOTOR_1_PORT,
                         ArmConstants.ROTATION_MOTOR_1_REVERSED,
                         ArmConstants.ARM_MOTOR_GEAR_RATIO,
                         ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        rotationMotor2 =
+        armRotationMotor2 =
                 new Motor(
                         ArmConstants.ROTATION_MOTOR_2_PORT,
                         ArmConstants.ROTATION_MOTOR_2_REVERSED,
                         ArmConstants.ARM_MOTOR_GEAR_RATIO,
                         ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        rotationMotors = new SparkMotorGroup(false, rotationMotor1, rotationMotor2);
+        armRotationMotors = new SparkMotorGroup(false, armRotationMotor1, armRotationMotor2);
 
         // Define extension motors
         extensionMotor1 =
@@ -61,7 +71,7 @@ public class Arm extends SubsystemBase {
         extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
 
         // Defines pid controllers
-        rotationPid =
+        armRotationPid =
                 new PIDController(
                         ArmConstants.ROTATION_PID_P,
                         ArmConstants.ROTATION_PID_I,
@@ -79,8 +89,8 @@ public class Arm extends SubsystemBase {
      */
     public void setRotationRadiansPerSecond(double angularVelocity)
     {
-        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(angularVelocity) + rotationPid.calculate(getRotationRadiansPerSecond());
-        rotationMotors.setVoltage(voltage);
+        double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(angularVelocity) + armRotationPid.calculate(getRotationRadiansPerSecond());
+        armRotationMotors.setVoltage(voltage);
     }
 
     /**
@@ -91,6 +101,17 @@ public class Arm extends SubsystemBase {
     {
         double voltage = ArmConstants.ARM_FEED_FORWARD.calculate(velocity) + extensionPid.calculate(getExtensionMetersPerSecond());
         extensionMotors.setVoltage(voltage);
+    }
+
+    public void setClawRotationRadiansPerSecond(double angularVelocity)
+    {
+        double voltage = ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(angularVelocity) + clawRotationPid.calculate(getClawRotationRadiansPerSecond());
+        clawRotationMotors.setVoltage(voltage);
+    }
+
+    public double getClawRotationRadiansPerSecond()
+    {
+        return clawRotationMotor1.getRPM() / 60 * Math.PI * 2;
     }
 
     /**
@@ -108,7 +129,7 @@ public class Arm extends SubsystemBase {
      */
     public double getRotationRadiansPerSecond()
     {
-        return rotationMotor1.getRPM() / 60 * Math.PI * 2;
+        return armRotationMotor1.getRPM() / 60 * Math.PI * 2;
     }
 
     /**
@@ -117,7 +138,12 @@ public class Arm extends SubsystemBase {
      */
     public double getRotationAngle()
     {
-        return rotationMotor1.getRotations() * 360;
+        return armRotationMotor1.getRotations() * 360;
+    }
+
+    public double getClawRotationAngle()
+    {
+        return clawRotationMotor1.getRotations() * 360;
     }
 
     /**
@@ -135,7 +161,7 @@ public class Arm extends SubsystemBase {
      */
     public RelativeEncoder getRotationEncoder()
     {
-        return rotationMotors.getEncoder();
+        return armRotationMotors.getEncoder();
     }
 
     /**
@@ -147,13 +173,18 @@ public class Arm extends SubsystemBase {
         return extensionMotors.getEncoder();
     }
 
+    public RelativeEncoder getClawRotationEncoder()
+    {
+        return clawRotationMotors.getEncoder();
+    }
+
     /**
      * Gets the pid controller for rotation
      * @return the pid controller object for rotation
      */
     public PIDController getRotationPid()
     {
-        return rotationPid;
+        return armRotationPid;
     }
 
     /**
@@ -163,6 +194,11 @@ public class Arm extends SubsystemBase {
     public PIDController getExtensionPid()
     {
         return extensionPid;
+    }
+
+    public PIDController getClawRotationPid()
+    {
+        return clawRotationPid;
     }
 
     /**
@@ -181,5 +217,10 @@ public class Arm extends SubsystemBase {
     public double getExtensionMeters()
     {
         return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getClawRotationMeters()
+    {
+        return getClawRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
     }
 }

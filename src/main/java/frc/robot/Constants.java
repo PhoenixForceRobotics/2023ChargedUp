@@ -119,6 +119,16 @@ public final class Constants {
         public static final double ARM_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
         public static final double ARM_MOTOR_WHEEL_DIAMETER = 0.1524;
 
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 250;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 300;
+        public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = true;
+        public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
+        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+
+        public static final double CLAW_ROTATION_PID_P = 1;
+        public static final double CLAW_ROTATION_PID_I = 0;
+        public static final double CLAW_ROTATION_PID_D = 1;
+
         // PID Constants
         public static final double EXTENSION_PID_P = 1;
         public static final double EXTENSION_PID_I = 0;
@@ -132,8 +142,15 @@ public final class Constants {
         public static final double V_VOLTS_SECONDS_PER_METER = 0;
         public static final double A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
 
+        public static final double CLAW_S_VOLTS = 0;
+        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 0;
+        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
+
         public static final SimpleMotorFeedforward ARM_FEED_FORWARD = new SimpleMotorFeedforward(ArmConstants.S_VOLTS, ArmConstants.V_VOLTS_SECONDS_PER_METER, ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final SimpleMotorFeedforward CLAW_ROTATION_FEEDFORWARD = new SimpleMotorFeedforward(ArmConstants.CLAW_S_VOLTS, ArmConstants.CLAW_V_VOLTS_SECONDS_PER_METER, ArmConstants.CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
 
         public static final double startingAngle = 0;
+        public static final double DISTANCE_BUMPER_TO_FULCRUM = 0;
+        public static final double DISTANCE_GROUND_TO_FULCRUM = 0;
     }
 }
