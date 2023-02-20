@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-//import frc.robot.commands.vision.UpdateVisionData;
+import frc.robot.commands.vision.UpdateVisionData;
 // import frc.robot.commands.drivebase.CycleCenterOfRotation;
 // import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 // import frc.robot.commands.drivebase.DifferentialDrive;
@@ -42,7 +42,7 @@ public class RobotContainer {
     // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     // private final DifferentialDrive differentialDrive =
     //         new DifferentialDrive(drivebase, driverController);
-    //private final UpdateVisionData updateVisionData = new UpdateVisionData(tagProcessing);
+    private final UpdateVisionData updateVisionData = new UpdateVisionData(tagProcessing);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -89,14 +89,14 @@ public class RobotContainer {
     public void initializeTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
         // drivebaseCommandChooser.getSelected().schedule();
-        //updateVisionData.schedule();
+        updateVisionData.schedule();
         System.out.println("i");
     }
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
         // differentialDrive.schedule();
-        //updateVisionData.schedule();
+        
     }
 
     // public MecanumDrive getMecanumDrive() {
