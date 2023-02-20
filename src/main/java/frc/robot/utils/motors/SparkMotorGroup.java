@@ -1,10 +1,11 @@
-package frc.robot.utils;
+package frc.robot.utils.motors;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import frc.robot.utils.PIDValues;
 
 public class SparkMotorGroup extends MotorControllerGroup {
 

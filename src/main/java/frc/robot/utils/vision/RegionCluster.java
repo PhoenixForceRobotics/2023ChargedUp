@@ -1,17 +1,29 @@
-package frc.robot.subsystems.vision;
-
-import org.opencv.core.Point;
+package frc.robot.utils.vision;
 
 import frc.robot.constants.Constants.VisionConstants.ProcessingConstants;
+import org.opencv.core.Point;
 
-//A collection of regions
+/**
+ * A grid of regions, with functions to skew it. Details on functionality can be found in the 2023
+ * engineering notebook. Used for vision processing.
+ */
 public class RegionCluster {
     Region[] cluster;
     Region[] skewedCluster;
     Region tagRegion;
 
+    /**
+     * Creates a RegionCluster from an array of regions (seeing as that's all this class is a
+     * wrapper for). Regions are numbered as follows:\n [0][1][2] [3][4][5] [6] (the aprilTag
+     * itself) [7][8][9]
+     *
+     * @param newCluster
+     * @exception MapWrongSizeException Thrown if the given map is incorrectly sized (i.e. not size
+     *     10, indices 0-9).
+     */
     public RegionCluster(Region[] newCluster) throws MapWrongSizeException {
-        //Create new RegionCluster from an array of regions; if the map isn't the right size, throw an exception
+        // Create new RegionCluster from an array of regions; if the map isn't the right size, throw
+        // an exception
         cluster = newCluster.clone();
         if (cluster.length == 10) {
             tagRegion = cluster[6];
@@ -22,9 +34,11 @@ public class RegionCluster {
     }
 
     public RegionCluster() throws MapWrongSizeException {
-        //If not given arguments, a cluster will be produced from the primary map
+        // If not given arguments, a cluster will be produced from the primary map
         cluster = new Region[10];
-        for(int regionIndex = 0; regionIndex < ProcessingConstants.PRIMARY_MAP.length; regionIndex++) {
+        for (int regionIndex = 0;
+                regionIndex < ProcessingConstants.PRIMARY_MAP.length;
+                regionIndex++) {
             double[][] regionPoints = ProcessingConstants.PRIMARY_MAP[regionIndex];
             Point[] points = {
                 new Point(regionPoints[0]),
@@ -41,7 +55,5 @@ public class RegionCluster {
         }
     }
 
-    public void updateToAccountForSkew(double x, double y, double angle) {
-        
-    }
+    public void updateToAccountForSkew(double x, double y, double angle) {}
 }

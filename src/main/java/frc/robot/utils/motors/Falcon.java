@@ -1,9 +1,10 @@
-package frc.robot.utils;
+package frc.robot.utils.motors;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.constants.Constants.UtilConstants;
+import frc.robot.utils.PIDValues;
 
 public class Falcon extends WPI_TalonFX {
 

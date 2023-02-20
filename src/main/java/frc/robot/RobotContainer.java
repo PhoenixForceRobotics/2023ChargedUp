@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.Constants.ShuffleboardConstants;
+//import frc.robot.commands.vision.UpdateVisionData;
 // import frc.robot.commands.drivebase.CycleCenterOfRotation;
 // import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 // import frc.robot.commands.drivebase.DifferentialDrive;
 // import frc.robot.commands.drivebase.MecanumDrive;
 // import frc.robot.subsystems.Drivebase;
 // import frc.robot.utils.PFRController;
+import frc.robot.subsystems.vision.TagProcessing;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,6 +28,7 @@ import frc.robot.constants.Constants.ShuffleboardConstants;
 public class RobotContainer {
     // The robot's subsystems are defined here...
     // private final Drivebase drivebase = new Drivebase();
+    private final TagProcessing tagProcessing = new TagProcessing();
 
     // // The robot's controllers are defined here...
     // private final PFRController operatorController = new PFRController(0);
@@ -41,15 +42,16 @@ public class RobotContainer {
     // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     // private final DifferentialDrive differentialDrive =
     //         new DifferentialDrive(drivebase, driverController);
+    //private final UpdateVisionData updateVisionData = new UpdateVisionData(tagProcessing);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
-    private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
-    ;
+    // private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Configure the button bindings
+        System.out.println("Initializing robotContainer");
         configureButtonBindings();
         initializeListenersAndSendables();
     }
@@ -61,10 +63,10 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        //driverController.lBumper().onTrue(mecanumDrive);
-        //driverController.lBumper().onFalse(differentialDrive);
-        //driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        //driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        // driverController.lBumper().onTrue(mecanumDrive);
+        // driverController.lBumper().onFalse(differentialDrive);
+        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
     }
 
     public void initializeListenersAndSendables() {
@@ -73,7 +75,7 @@ public class RobotContainer {
         // Add options for chooser
 
         // Places chooser on mainTab (where all configs are)
-        mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
+        // mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
     }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -86,12 +88,15 @@ public class RobotContainer {
 
     public void initializeTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        drivebaseCommandChooser.getSelected().schedule();
+        // drivebaseCommandChooser.getSelected().schedule();
+        //updateVisionData.schedule();
+        System.out.println("i");
     }
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
         // differentialDrive.schedule();
+        //updateVisionData.schedule();
     }
 
     // public MecanumDrive getMecanumDrive() {

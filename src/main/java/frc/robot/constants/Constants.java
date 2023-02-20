@@ -6,6 +6,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.utils.vision.UnitConverter;
 
@@ -101,24 +102,36 @@ public final class Constants {
         public static final String DRIVEBASE_CHOOSER =
                 "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
     }
-    
-    public static final class VisionConstants { //Constants relevant to vision processing in general
 
+    public static final
+    class VisionConstants { // Constants relevant to vision processing in general
 
-        public static final class CameraNames { //The names of cameras on the coprocessor side
+        public static final class CameraNames { // The names of cameras on the coprocessor side
             public static final String CAM_TAG = "Camera_F_Tag";
             public static final String CAM_BLOB = "Camera_F_ColorBlob";
         }
-        public static final class CameraSpecConstants { //Constants relevant to physical attributes of the camera
-            public static final int CAM_RES_X = 1920;   //Horizontal camera resolution
-            public static final int CAM_RES_Y = 1080;   //Vertical camera resolution
+
+        public static final
+        class CameraSpecConstants { // Constants relevant to physical attributes of the camera
+            public static final int CAM_RES_X = 1920; // Horizontal camera resolution
+            public static final int CAM_RES_Y = 1080; // Vertical camera resolution
+
+            public static final Transform3d ROBOT_TO_CAM_TAG = new Transform3d();
         }
-        public static final class ProcessingConstants { //Constants relevant to the vision pipeline
-            //Position and angle of the robot relative to the AprilTag for the primary map
-            //Remember: THIS IS IN INCHES (1 meter away)
-            //TODO: Does this need to additionally compensate for positional difference between blob detection and apriltag detection cameras? If so, add a way to do that
-            public static final Pose2d PRIMARY_MAP_TAKEN_FROM = new Pose2d(UnitConverter.MetersToInches(1), 0, new Rotation2d(0)); 
-            public static final double[][][] PRIMARY_MAP =  { //Primary vision map
+
+        public static final class ProcessingConstants { // Constants relevant to the vision pipeline
+
+            // The size of MedianFilters for processing apriltags.
+            // Essentially: how much of a delay there will be, in frames.
+            public static final int MEDIAN_FILTER_SIZE_TAG = 5;
+
+            // Position and angle of the robot relative to the AprilTag for the primary map
+            // Remember: THIS IS IN INCHES (1 meter away)
+            // TODO: Does this need to additionally compensate for positional difference between
+            // blob detection and apriltag detection cameras? If so, add a way to do that
+            public static final Pose2d PRIMARY_MAP_TAKEN_FROM =
+                    new Pose2d(UnitConverter.MetersToInches(1), 0, new Rotation2d(0));
+            public static final double[][][] PRIMARY_MAP = { // Primary vision map
                 {
                     {-0.309375, -0.5675925925925926},
                     {-0.246875, -0.5675925925925926},

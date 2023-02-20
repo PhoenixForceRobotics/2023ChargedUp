@@ -1,7 +1,8 @@
-package frc.robot.subsystems.vision;
+package frc.robot.utils.vision;
 
 public class MapWrongSizeException extends RuntimeException {
     public MapWrongSizeException() {
-        super("Provided primary tag map incorrect size; should be array of Region size 10, indices 0-9");
+        super(
+                "Provided primary tag map incorrect size; should be array of Region size 10, indices 0-9");
     }
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.DrivebaseConstants;
-import frc.robot.utils.Motor;
+import frc.robot.utils.motors.Motor;
 
 public class Drivebase extends SubsystemBase {
 
@@ -72,6 +72,7 @@ public class Drivebase extends SubsystemBase {
     private MecanumDriveKinematics
             kinematics; // Everything we use to track the robot's location and behavior
     private MecanumDriveOdometry odometry;
+    //TODO: either forcibly override odometry or make a utility wrapper class for it that allows for resetting via tags
 
     private CenterOfRotation centerOfRotation; // Where the mecanum drive will rotate around
 

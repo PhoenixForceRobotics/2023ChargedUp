@@ -42,13 +42,14 @@ public class MecanumStrafe extends CommandBase {
             }
         }
 
-        //now for the funny (pain)
-        int xIntent = (driverController.getPOV() == ControllerConstants.DPAD_LEFT ? 1 : 0) -
-            (driverController.getPOV() == ControllerConstants.DPAD_RIGHT ? 1 : 0);
-        xIntent *= .1; //damper
+        // now for the funny (pain)
+        int xIntent =
+                (driverController.getPOV() == ControllerConstants.DPAD_LEFT ? 1 : 0)
+                        - (driverController.getPOV() == ControllerConstants.DPAD_RIGHT ? 1 : 0);
+        xIntent *= .1; // damper
 
-        //TODO: add snap to grid in order to actually make it helpful for drivers
-        //TODO: make useful by having it automatically align parallel with the apriltag
+        // TODO: add snap to grid in order to actually make it helpful for drivers
+        // TODO: make useful by having it automatically align parallel with the apriltag
 
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xIntent, 0, 0);

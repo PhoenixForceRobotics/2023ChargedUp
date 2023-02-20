@@ -13,6 +13,20 @@ public class UpdateVisionData extends CommandBase {
 
     @Override
     public void initialize() {
-
+        System.out.println("h");
     }
+
+    @Override
+    public void execute() {
+        this.tagProcessor.update();
+        System.out.println("UPDATED BY COMMAND");
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {}
 }

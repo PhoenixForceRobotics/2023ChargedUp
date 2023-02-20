@@ -1,4 +1,6 @@
-package frc.robot.utils;
+package frc.robot.utils.motors;
+
+import frc.robot.utils.PIDValues;
 
 public class FalconConfigFields {
     private PIDValues[] falconPIDs;

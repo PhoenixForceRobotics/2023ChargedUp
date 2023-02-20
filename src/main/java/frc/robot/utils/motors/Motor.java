@@ -1,8 +1,9 @@
-package frc.robot.utils;
+package frc.robot.utils.motors;
 
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.utils.PIDValues;
 
 public class Motor extends CANSparkMax {
     private double gearRatio;
