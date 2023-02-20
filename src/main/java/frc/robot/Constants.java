@@ -103,7 +103,8 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel diameters, ports, etc.)
+        // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel
+        // diameters, ports, etc.)
 
         // Constants for extension motors
         public static final int EXTENSION_MOTOR_1_PORT = 11;
@@ -112,7 +113,7 @@ public final class Constants {
         public static final boolean EXTENSION_MOTOR_2_REVERSED = false;
         public static final double EXTENSION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
         public static final double EXTENSION_MOTOR_WHEEL_DIAMETER = 0.1524;
- 
+
         // Constants for rotation motors
         public static final int ROTATION_MOTOR_1_PORT = 13;
         public static final int ROTATION_MOTOR_2_PORT = 14;
@@ -151,9 +152,19 @@ public final class Constants {
         public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 1;
         public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
 
-        public static final SimpleMotorFeedforward ARM_FEED_FORWARD = new SimpleMotorFeedforward(ArmConstants.S_VOLTS, ArmConstants.V_VOLTS_SECONDS_PER_METER, ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final SimpleMotorFeedforward CLAW_ROTATION_FEEDFORWARD = new SimpleMotorFeedforward(CLAW_S_VOLTS, CLAW_V_VOLTS_SECONDS_PER_METER, CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final SimpleMotorFeedforward ARM_FEED_FORWARD =
+                new SimpleMotorFeedforward(
+                        ArmConstants.S_VOLTS,
+                        ArmConstants.V_VOLTS_SECONDS_PER_METER,
+                        ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final SimpleMotorFeedforward CLAW_ROTATION_FEEDFORWARD =
+                new SimpleMotorFeedforward(
+                        CLAW_S_VOLTS,
+                        CLAW_V_VOLTS_SECONDS_PER_METER,
+                        CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
 
-        public static final double startingAngle = 0;
+        public static final double CLAW_STARTING_ANGLE =
+                0; // Change this when we figure out the default starting angle of the claw when
+        // testing
     }
 }

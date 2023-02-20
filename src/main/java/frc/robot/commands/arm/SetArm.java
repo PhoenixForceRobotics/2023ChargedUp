@@ -12,51 +12,60 @@ public class SetArm extends CommandBase {
     private final double targetAngle;
     private PIDController lengthPID;
     private PIDController anglePID;
-    
-    public SetArm(Arm arm, double distanceFromBumperMeters, double distanceFromGroundMeters)
-    {
+
+    public SetArm(Arm arm, double distanceFromBumperMeters, double distanceFromGroundMeters) {
         this.arm = arm;
 
-        double xDistanceToFulcrum = distanceFromBumperMeters + ArmConstants.DISTANCE_BUMPER_TO_FULCRUM;
-        double yDistanceToFulcrum = distanceFromGroundMeters + ArmConstants.DISTANCE_GROUND_TO_FULCRUM; 
+        double xDistanceToFulcrum =
+                distanceFromBumperMeters + ArmConstants.DISTANCE_BUMPER_TO_FULCRUM;
+        double yDistanceToFulcrum =
+                distanceFromGroundMeters + ArmConstants.DISTANCE_GROUND_TO_FULCRUM;
 
-        this.targetLength = Math.sqrt(Math.pow(xDistanceToFulcrum, 2) + Math.pow(yDistanceToFulcrum, 2));
+        this.targetLength =
+                Math.sqrt(Math.pow(xDistanceToFulcrum, 2) + Math.pow(yDistanceToFulcrum, 2));
         this.targetAngle = Math.atan(xDistanceToFulcrum / yDistanceToFulcrum);
 
-        anglePID = new PIDController(ArmConstants.ROTATION_PID_P, ArmConstants.ROTATION_PID_I, ArmConstants.ROTATION_PID_D);
-        lengthPID = new PIDController(ArmConstants.EXTENSION_PID_P, ArmConstants.EXTENSION_PID_I, ArmConstants.EXTENSION_PID_D);
+        anglePID =
+                new PIDController(
+                        ArmConstants.ROTATION_PID_P,
+                        ArmConstants.ROTATION_PID_I,
+                        ArmConstants.ROTATION_PID_D);
+        lengthPID =
+                new PIDController(
+                        ArmConstants.EXTENSION_PID_P,
+                        ArmConstants.EXTENSION_PID_I,
+                        ArmConstants.EXTENSION_PID_D);
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         anglePID.setSetpoint(targetAngle);
         lengthPID.setSetpoint(targetLength);
-        // Calculate setpoint for the claw angle using the arm's angle (making them both alternate interior angles thus them being the same angle)
     }
 
     @Override
-    public void execute()
-    {
-        double lengthOutput = MathUtil.clamp(lengthPID.calculate(arm.getExtensionLength()), -0.9, 0.9);
+    public void execute() {
+        double lengthOutput =
+                MathUtil.clamp(lengthPID.calculate(arm.getExtensionLength()), -0.9, 0.9);
         arm.setExtensionMetersPerSecond(lengthOutput);
 
         double angleOutput = MathUtil.clamp(lengthPID.calculate(arm.getRotationAngle()), -0.9, 0.9);
         arm.setRotationRadiansPerSecond(angleOutput);
 
-        // Use claw rotation error variable created in Arm subsystem class to calculate the output required to put into the set command for the motors. Also make sure to clamp them like the other outputs so it doesn't accelerate too much.
+        /* 
+        * TODO: Find a way to get the output that needs to be used as a parameter for the set
+        * TODO: function of the claw rotation motors
+        */
     }
 
     @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
+        // Add a check to this return for if the claw is level
         return anglePID.atSetpoint() && lengthPID.atSetpoint();
-        // Use the setpoint calculated in the initialize function to check if the claw is at level
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
         arm.setRotationRadiansPerSecond(0);
         arm.setExtensionMetersPerSecond(0);
         arm.setClawRotationRadiansPerSecond(0);
