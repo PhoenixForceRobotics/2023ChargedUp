@@ -103,21 +103,31 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
+        // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel diameters, ports, etc.)
+
         // Constants for extension motors
-        public static final int EXTENSION_MOTOR_1_PORT = 50;
-        public static final int EXTENSION_MOTOR_2_PORT = 100;
+        public static final int EXTENSION_MOTOR_1_PORT = 11;
+        public static final int EXTENSION_MOTOR_2_PORT = 12;
         public static final boolean EXTENSION_MOTOR_1_REVERSED = false;
         public static final boolean EXTENSION_MOTOR_2_REVERSED = false;
-
+        public static final double EXTENSION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double EXTENSION_MOTOR_WHEEL_DIAMETER = 0.1524;
+ 
         // Constants for rotation motors
-        public static final int ROTATION_MOTOR_1_PORT = 150;
-        public static final int ROTATION_MOTOR_2_PORT = 200;
+        public static final int ROTATION_MOTOR_1_PORT = 13;
+        public static final int ROTATION_MOTOR_2_PORT = 14;
         public static final boolean ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean ROTATION_MOTOR_2_REVERSED = false;
+        public static final double ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
-        // General motor constants
-        public static final double ARM_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
-        public static final double ARM_MOTOR_WHEEL_DIAMETER = 0.1524;
+        // Constants for claw rotation motors
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 15;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 16;
+        public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
+        public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
+        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
         // Numbers to caulcuate height and distance
         public static final double DISTANCE_GROUND_TO_FULCRUM = 0.5; // In meters
@@ -136,7 +146,13 @@ public final class Constants {
         public static final double V_VOLTS_SECONDS_PER_METER = 0;
         public static final double A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
 
+        // TODO: Use Sysid to get claw rotation feedforward values
+        public static final double CLAW_S_VOLTS = 1;
+        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 1;
+        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
+
         public static final SimpleMotorFeedforward ARM_FEED_FORWARD = new SimpleMotorFeedforward(ArmConstants.S_VOLTS, ArmConstants.V_VOLTS_SECONDS_PER_METER, ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final SimpleMotorFeedforward CLAW_ROTATION_FEEDFORWARD = new SimpleMotorFeedforward(CLAW_S_VOLTS, CLAW_V_VOLTS_SECONDS_PER_METER, CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
 
         public static final double startingAngle = 0;
     }

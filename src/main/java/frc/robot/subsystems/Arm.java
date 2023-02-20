@@ -19,6 +19,13 @@ public class Arm extends SubsystemBase {
     private Motor extensionMotor2;
     private SparkMotorGroup extensionMotors;
 
+    // Motors for rotating claw independently to keep it level when arm has rotated
+    private Motor clawRotationMotor1;
+    private Motor clawRotationMotor2;
+    private SparkMotorGroup clawRotationMotors;
+
+    private double clawRotationError;
+
     // Rotation PID
     private PIDController rotationPid;
 
@@ -35,14 +42,14 @@ public class Arm extends SubsystemBase {
                 new Motor(
                         ArmConstants.ROTATION_MOTOR_1_PORT,
                         ArmConstants.ROTATION_MOTOR_1_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+                        ArmConstants.ROTATION_MOTOR_GEAR_RATIO,
+                        ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
         rotationMotor2 =
                 new Motor(
                         ArmConstants.ROTATION_MOTOR_2_PORT,
                         ArmConstants.ROTATION_MOTOR_2_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+                        ArmConstants.ROTATION_MOTOR_GEAR_RATIO,
+                        ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
         rotationMotors = new SparkMotorGroup(false, rotationMotor1, rotationMotor2);
 
         // Define extension motors
@@ -50,15 +57,20 @@ public class Arm extends SubsystemBase {
                 new Motor(
                         ArmConstants.EXTENSION_MOTOR_1_PORT,
                         ArmConstants.EXTENSION_MOTOR_1_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
+                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
         extensionMotor2 =
                 new Motor(
                         ArmConstants.EXTENSION_MOTOR_2_PORT,
                         ArmConstants.EXTENSION_MOTOR_2_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
+                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
         extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
+
+        // Define claw rotational motors
+        clawRotationMotor1 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_1_PORT, ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED, ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO, ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
+        clawRotationMotor2 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_2_PORT, ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED, ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO, ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
+        clawRotationMotors = new SparkMotorGroup(false, clawRotationMotor1, clawRotationMotor2);
 
         // Defines pid controllers
         rotationPid =
@@ -71,6 +83,12 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_P,
                         ArmConstants.EXTENSION_PID_I,
                         ArmConstants.EXTENSION_PID_D);
+    }
+
+    @Override
+    public void periodic()
+    {
+        // Update error for the claw to stay level
     }
 
     /**
@@ -94,12 +112,22 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Sets the angular velocity of the claw rotations motors in radians per second
+     * @param angularVelocity - velocity of the claw rotation motors in radians per second
+     */
+    public void setClawRotationRadiansPerSecond(double angularVelocity)
+    {
+        double voltage = ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(angularVelocity); // TODO: Check with Vi on what to replace PID for to calculate accurate voltage
+        clawRotationMotors.setVoltage(voltage);
+    }
+
+    /**
      * Gets the velocity for the extension motors
      * @return the velocity of the motors in meters per second
      */
     public double getExtensionMetersPerSecond()
     {
-        return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
+        return getExtensionEncoder().getPosition() * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO * ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER * Math.PI / 60;
     }
 
     /**
@@ -109,6 +137,15 @@ public class Arm extends SubsystemBase {
     public double getRotationRadiansPerSecond()
     {
         return rotationMotor1.getRPM() / 60 * Math.PI * 2;
+    }
+
+    /**
+     * Gets the rotational velocity of the claw in radians per second
+     * @return the rotational velocity of the claw rotation motors in radians per second
+     */
+    public double getClawRotationRadiansPerSecond()
+    {
+        return clawRotationMotor1.getRPM() / 60 * Math.PI * 2;
     }
 
     /**
@@ -130,6 +167,15 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Gets the angle of the rotation of the claw in degrees
+     * @return the rotation of the claw in degrees
+     */
+    public double getClawRotationAngle()
+    {
+        return clawRotationMotor1.getRotations() * 360;
+    }
+
+    /**
      * Gets the encoder for the rotation motors
      * @return an encoder for the rotation motors
      */
@@ -145,6 +191,15 @@ public class Arm extends SubsystemBase {
     public RelativeEncoder getExtensionEncoder()
     {
         return extensionMotors.getEncoder();
+    }
+
+    /**
+     * Gets the encoder for the claw rotation motors
+     * @return an encoder for the claw rotation motors
+     */
+    public RelativeEncoder getClawRotationEncoder()
+    {
+        return clawRotationMotors.getEncoder();
     }
 
     /**
@@ -167,19 +222,37 @@ public class Arm extends SubsystemBase {
 
     /**
      * Gets the amount of meters traveled by the rotation motors
-     * @return the amount of meters traveled by the rotation motors in meters
+     * @return the amount of meters traveled by the rotation motors
      */
     public double getRotationMeters()
     {
-        return getRotationEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
+        return getRotationEncoder().getPosition() * ArmConstants.ROTATION_MOTOR_GEAR_RATIO * ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER * Math.PI;
     }
 
     /**
      * Gets the amount of meters traveled by the extension motors
-     * @return the amount of meters traveled by the extension motors in meters
+     * @return the amount of meters traveled by the extension motors
      */
     public double getExtensionMeters()
     {
-        return getExtensionEncoder().getPosition() * ArmConstants.ARM_MOTOR_GEAR_RATIO * ArmConstants.ARM_MOTOR_WHEEL_DIAMETER * Math.PI;
+        return getExtensionEncoder().getPosition() * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO * ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER * Math.PI;
+    }
+
+    /**
+     * Gets the amount of meters traveled by the claw rotation motors
+     * @return the amount of meters traveled by the claw rotation motors
+     */
+    public double getClawRotationMeters()
+    {
+        return getClawRotationEncoder().getPosition() * ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO * ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER * Math.PI;
+    }
+
+    /**
+     * Gets the error for the claw rotation
+     * @return the difference between the current claw angle and the desired angle (which is always level)
+     */
+    public double getClawRotationError()
+    {
+        return clawRotationError;
     }
 }
