@@ -38,49 +38,51 @@ public class Arm extends SubsystemBase {
     public Arm() {
         clawRotationMotor1 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_1_PORT, ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED, ArmConstants.ARM_MOTOR_WHEEL_DIAMETER, ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO);
         clawRotationMotor2 = new Motor(ArmConstants.CLAW_ROTATION_MOTOR_2_PORT, ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED, ArmConstants.ARM_MOTOR_GEAR_RATIO, ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        
+        clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
         clawRotationPid = new PIDController(ArmConstants.CLAW_ROTATION_PID_P, ArmConstants.CLAW_ROTATION_PID_I, ArmConstants.CLAW_ROTATION_PID_D);
 
         // Define rotational motors
-        armRotationMotor1 =
-                new Motor(
-                        ArmConstants.ROTATION_MOTOR_1_PORT,
-                        ArmConstants.ROTATION_MOTOR_1_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        armRotationMotor2 =
-                new Motor(
-                        ArmConstants.ROTATION_MOTOR_2_PORT,
-                        ArmConstants.ROTATION_MOTOR_2_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        armRotationMotors = new SparkMotorGroup(false, armRotationMotor1, armRotationMotor2);
+        // armRotationMotor1 =
+        //         new Motor(
+        //                 ArmConstants.ROTATION_MOTOR_1_PORT,
+        //                 ArmConstants.ROTATION_MOTOR_1_REVERSED,
+        //                 ArmConstants.ARM_MOTOR_GEAR_RATIO,
+        //                 ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        // armRotationMotor2 =
+        //         new Motor(
+        //                 ArmConstants.ROTATION_MOTOR_2_PORT,
+        //                 ArmConstants.ROTATION_MOTOR_2_REVERSED,
+        //                 ArmConstants.ARM_MOTOR_GEAR_RATIO,
+        //                 ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        // armRotationMotors = new SparkMotorGroup(false, armRotationMotor1, armRotationMotor2);
 
-        // Define extension motors
-        extensionMotor1 =
-                new Motor(
-                        ArmConstants.EXTENSION_MOTOR_1_PORT,
-                        ArmConstants.EXTENSION_MOTOR_1_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        extensionMotor2 =
-                new Motor(
-                        ArmConstants.EXTENSION_MOTOR_2_PORT,
-                        ArmConstants.EXTENSION_MOTOR_2_REVERSED,
-                        ArmConstants.ARM_MOTOR_GEAR_RATIO,
-                        ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
-        extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
+        // // Define extension motors
+        // // extensionMotor1 =
+        // //         new Motor(
+        // //                 ArmConstants.EXTENSION_MOTOR_1_PORT,
+        // //                 ArmConstants.EXTENSION_MOTOR_1_REVERSED,
+        // //                 ArmConstants.ARM_MOTOR_GEAR_RATIO,
+        // //                 ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        // // extensionMotor2 =
+        // //         new Motor(
+        // //                 ArmConstants.EXTENSION_MOTOR_2_PORT,
+        // //                 ArmConstants.EXTENSION_MOTOR_2_REVERSED,
+        // //                 ArmConstants.ARM_MOTOR_GEAR_RATIO,
+        // //                 ArmConstants.ARM_MOTOR_WHEEL_DIAMETER);
+        // // extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
 
-        // Defines pid controllers
-        armRotationPid =
-                new PIDController(
-                        ArmConstants.ROTATION_PID_P,
-                        ArmConstants.ROTATION_PID_I,
-                        ArmConstants.ROTATION_PID_D);
-        extensionPid =
-                new PIDController(
-                        ArmConstants.EXTENSION_PID_P,
-                        ArmConstants.EXTENSION_PID_I,
-                        ArmConstants.EXTENSION_PID_D);
+        // // Defines pid controllers
+        // armRotationPid =
+        //         new PIDController(
+        //                 ArmConstants.ROTATION_PID_P,
+        //                 ArmConstants.ROTATION_PID_I,
+        //                 ArmConstants.ROTATION_PID_D);
+        // extensionPid =
+        //         new PIDController(
+        //                 ArmConstants.EXTENSION_PID_P,
+        //                 ArmConstants.EXTENSION_PID_I,
+        //                 ArmConstants.EXTENSION_PID_D);
     }
 
     /**
@@ -107,6 +109,11 @@ public class Arm extends SubsystemBase {
     {
         double voltage = ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(angularVelocity) + clawRotationPid.calculate(getClawRotationRadiansPerSecond());
         clawRotationMotors.setVoltage(voltage);
+    }
+
+    public void setClawRotation(double value)
+    {
+        clawRotationMotors.set(value);
     }
 
     public double getClawRotationRadiansPerSecond()

@@ -119,8 +119,8 @@ public final class Constants {
         public static final double ARM_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
         public static final double ARM_MOTOR_WHEEL_DIAMETER = 0.1524;
 
-        public static final int CLAW_ROTATION_MOTOR_1_PORT = 250;
-        public static final int CLAW_ROTATION_MOTOR_2_PORT = 300;
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 1;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 2;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = true;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
         public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
@@ -130,9 +130,9 @@ public final class Constants {
         public static final double CLAW_ROTATION_PID_D = 1;
 
         // PID Constants
-        public static final double EXTENSION_PID_P = 1;
+        public static final double EXTENSION_PID_P = .5;
         public static final double EXTENSION_PID_I = 0;
-        public static final double EXTENSION_PID_D = 1;
+        public static final double EXTENSION_PID_D = 0.1;
 
         public static final double ROTATION_PID_P = 1;
         public static final double ROTATION_PID_I = 0;

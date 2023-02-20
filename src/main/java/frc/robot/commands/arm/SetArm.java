@@ -36,7 +36,7 @@ public class SetArm extends CommandBase {
     {
         anglePID.setSetpoint(targetAngle);
         lengthPID.setSetpoint(targetLength);
-        clawAnglePID.setSetpoint(0);
+        clawAnglePID.setSetpoint(targetClawAngle);
     }
 
     @Override

@@ -19,10 +19,9 @@ public class SparkMotorGroup extends MotorControllerGroup {
 
         // Set settings for followers
         for (CANSparkMax motor : this.followers) {
-            motor.follow(leader);
+            motor.follow(leader, isInverted);
         }
 
-        this.leader.setInverted(isInverted);
         encoder = this.leader.getEncoder();
     }
 
