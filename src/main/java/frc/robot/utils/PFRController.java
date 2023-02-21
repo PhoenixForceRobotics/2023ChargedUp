@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -15,22 +16,22 @@ public class PFRController extends XboxController {
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getLeftX() {
-        return super.getLeftX() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getLeftX();
+        return MathUtil.applyDeadband(super.getLeftX(), ControllerConstants.AXIS_DEADZONE);
     }
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getLeftY() {
-        return super.getLeftY() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getLeftY();
+        return MathUtil.applyDeadband(super.getLeftY(), ControllerConstants.AXIS_DEADZONE);
     }
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getRightX() {
-        return super.getRightX() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getRightX();
+        return MathUtil.applyDeadband(super.getRightX(), ControllerConstants.AXIS_DEADZONE);
     }
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getRightY() {
-        return super.getRightY() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getRightY();
+        return MathUtil.applyDeadband(super.getRightY(), ControllerConstants.AXIS_DEADZONE);
     }
 
     public double getLeftXSquared() {

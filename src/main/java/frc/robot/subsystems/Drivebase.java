@@ -215,20 +215,12 @@ public class Drivebase extends SubsystemBase {
                 currentChassisSpeeds.omegaRadiansPerSecond * 180 / Math.PI);
     }
 
-    /**
-     * Sets the position of the robot to a particular position and rotation relative to the field
-     *
-     * @param poseMeters The position on the field that your robot is at.
-     */
-    public void resetPosition(Pose2d poseMeters) {
-        odometry.resetPosition(getRotation2d(), currentWheelPositions, poseMeters);
-    }
+    // ---- SETTING CHASSIS SPEEDS ----//
 
     /**
-     * Sets the speeds RELATIVE TO THE ROBOT with a {@link ChassisSpeeds} (⬆️ Positive), (⬅️
-     * Positive), (🔄 Positive)
+     * Sets the speeds RELATIVE TO THE ROBOT with a {@link ChassisSpeeds}
      *
-     * @param desiredChassisSpeeds see above
+     * @param desiredChassisSpeeds (⬆️ Positive), (⬅️ Positive), (🔄 Positive)
      */
     public void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {
         this.desiredChassisSpeeds = desiredChassisSpeeds;
@@ -246,10 +238,9 @@ public class Drivebase extends SubsystemBase {
     }
 
     /**
-     * Sets the speeds RELATIVE TO THE FIELD with a {@link ChassisSpeeds} (⬆️ Positive), (⬅️
-     * Positive), (🔄 Positive)
+     * Sets the speeds RELATIVE TO THE FIELD with a {@link ChassisSpeeds}
      *
-     * @param desiredChassisSpeeds see above
+     * @param desiredChassisSpeeds (⬆️ Positive), (⬅️ Positive), (🔄 Positive)
      */
     public void setFieldRelativeChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {
         setFieldRelativeChassisSpeeds(
@@ -258,7 +249,7 @@ public class Drivebase extends SubsystemBase {
                 desiredChassisSpeeds.omegaRadiansPerSecond);
     }
     /**
-     * Sets the speeds RELATIVE TO THE ROBOT with seperate components
+     * Sets the speeds RELATIVE TO THE FIELD with seperate components
      *
      * @param vx toward enemy alliance(⬆️ Positive)
      * @param vy toward the left (⬅️ Positive)
@@ -274,9 +265,13 @@ public class Drivebase extends SubsystemBase {
         desiredChassisSpeeds = new ChassisSpeeds();
     }
 
-    // Set custom rotation for holonimic control (extra control, v funky)
-    public void setCenterOfRotation(CenterOfRotation centerOfRotation) {
-        this.centerOfRotation = centerOfRotation;
+    // ---- BUTTERFLY MODULE FUNCTION ----//
+
+    /**
+     * @return {@link Value} whether the piston is forward or reverse
+     */
+    public Value getButterflyPistonsValue() {
+        return butterflyPistons.get() ? Value.kForward : Value.kReverse;
     }
 
     /**
@@ -292,20 +287,15 @@ public class Drivebase extends SubsystemBase {
         }
     }
 
-    /**
-     * @return {@link Value} whether the piston is forward or reverse
-     */
-    public Value getButterflyPistonsValue() {
-        return butterflyPistons.get() ? Value.kForward : Value.kReverse;
+    public boolean isMeccanum() {
+        return isMeccanum;
     }
 
     public void setMeccanum(boolean isMeccanum) {
         this.isMeccanum = isMeccanum;
     }
 
-    public boolean isMeccanum() {
-        return isMeccanum;
-    }
+    // ---- KINEMATIC STUFF -----//
 
     /**
      * Sets where the robot will rotate
@@ -316,6 +306,11 @@ public class Drivebase extends SubsystemBase {
         return centerOfRotation;
     }
 
+    /** Set custom rotation for holonimic control (extra control, v funky) */
+    public void setCenterOfRotation(CenterOfRotation centerOfRotation) {
+        this.centerOfRotation = centerOfRotation;
+    }
+
     /**
      * Returns the position of the robot on the field
      *
@@ -323,6 +318,15 @@ public class Drivebase extends SubsystemBase {
      */
     public Pose2d getPose() {
         return odometry.getPoseMeters();
+    }
+
+    /**
+     * Sets the position of the robot to a particular position and rotation relative to the field
+     *
+     * @param poseMeters The position on the field that your robot is at.
+     */
+    public void resetPose(Pose2d poseMeters) {
+        odometry.resetPosition(getRotation2d(), currentWheelPositions, poseMeters);
     }
 
     /**
@@ -362,6 +366,7 @@ public class Drivebase extends SubsystemBase {
         return setYaw(0);
     }
 
+    // ---- SHUFFLEBOARD STUFF ----//
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);

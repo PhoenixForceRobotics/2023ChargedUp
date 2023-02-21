@@ -1,5 +1,6 @@
 package frc.robot.commands.drivebase;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -35,15 +36,21 @@ public class DifferentialDrive extends CommandBase {
                 vxLimiter.calculate(
                         driverController.getLeftYSquared()
                                 * DrivebaseConstants.MAX_LINEAR_VELOCITY);
-        double yVelocity = 0;
+        double yVelocity = 0; // acts as DifferentialDrive
         double angularVelocity =
                 driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
-        // zeros the any velocity if under minimum velocity (to prevent drifting)
-        xVelocity = xVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : xVelocity;
+        // Adds deadzones to velocities(to prevent unwanted drifting)
+        xVelocity =
+                MathUtil.applyDeadband(
+                        xVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-                angularVelocity < DrivebaseConstants.MIN_ANGULAR_VELOCITY ? 0 : angularVelocity;
-
+                MathUtil.applyDeadband(
+                        angularVelocity,
+                        DrivebaseConstants.MIN_ANGULAR_VELOCITY,
+                        DrivebaseConstants.MAX_ANGULAR_VELOCITY);
         drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }
 

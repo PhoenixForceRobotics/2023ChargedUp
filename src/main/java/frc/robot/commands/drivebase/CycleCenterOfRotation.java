@@ -28,14 +28,17 @@ public class CycleCenterOfRotation extends InstantCommand {
         int index; // the position in the CenterOfRotation enum to use
 
         if (direction == Direction.UP) {
-            index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
+            // Get next highest CenterOfRotation (or wraps around)
+            index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum; 
         } else if (direction == Direction.DOWN) {
+            // Get next lowest CenterOfRotation (or wraps around)
             index = (currentCenterOfRotation.ordinal() - 1) % lengthOfEnum;
         } else {
             // Something went wrong, just go to the original
             index = currentCenterOfRotation.ordinal();
         }
 
+        // sets the new given CenterOfRotation
         drivebase.setCenterOfRotation(CenterOfRotation.values()[index]);
     }
 }

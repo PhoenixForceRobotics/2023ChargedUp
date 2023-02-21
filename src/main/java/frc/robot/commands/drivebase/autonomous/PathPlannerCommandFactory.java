@@ -38,7 +38,7 @@ public class PathPlannerCommandFactory {
                         () -> {
                             // Reset odometry for the first path you run during auto
                             if (isFirstPath) {
-                                drivebase.resetPosition(trajectory.getInitialHolonomicPose());
+                                drivebase.resetPose(trajectory.getInitialHolonomicPose());
                             }
                         }),
                 new PPMecanumControllerCommand(

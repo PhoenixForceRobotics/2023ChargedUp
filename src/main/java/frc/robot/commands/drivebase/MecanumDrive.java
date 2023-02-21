@@ -1,5 +1,6 @@
 package frc.robot.commands.drivebase;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -16,8 +17,11 @@ public class MecanumDrive extends CommandBase {
 
     private final Drivebase drivebase;
     private final PFRController driverController;
+
+    // Caps the acceleration of the robot
     private final SlewRateLimiter vxLimiter, vyLimiter;
 
+    // Indicates whether to go robot or field relative
     private FrameOfReference frameOfReference;
 
     public MecanumDrive(Drivebase drivebase, PFRController driverController) {
@@ -61,11 +65,22 @@ public class MecanumDrive extends CommandBase {
         double angularVelocity =
                 -driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
-        // zeros the any velocity if under minimum velocity (to prevent drifting)
-        xVelocity = xVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : xVelocity;
-        yVelocity = yVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : yVelocity;
+        // Adds deadzones to velocities(to prevent unwanted drifting)
+        xVelocity =
+                MathUtil.applyDeadband(
+                        xVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        yVelocity =
+                MathUtil.applyDeadband(
+                        yVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-                angularVelocity < DrivebaseConstants.MIN_ANGULAR_VELOCITY ? 0 : angularVelocity;
+                MathUtil.applyDeadband(
+                        angularVelocity,
+                        DrivebaseConstants.MIN_ANGULAR_VELOCITY,
+                        DrivebaseConstants.MAX_ANGULAR_VELOCITY);
 
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
