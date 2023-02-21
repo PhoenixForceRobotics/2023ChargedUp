@@ -61,6 +61,12 @@ public class MecanumDrive extends CommandBase {
         double angularVelocity =
                 -driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
+        // zeros the any velocity if under minimum velocity (to prevent drifting)
+        xVelocity = xVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : xVelocity;
+        yVelocity = yVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : yVelocity;
+        angularVelocity =
+                angularVelocity < DrivebaseConstants.MIN_ANGULAR_VELOCITY ? 0 : angularVelocity;
+
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
         } else // frame of reference must be field-relative

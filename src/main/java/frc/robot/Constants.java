@@ -59,7 +59,7 @@ public final class Constants {
 
         public static final double MAX_LINEAR_ACCELERATION = 2; // Max acceleration
 
-        public static final double MIN_LINEAR_VELOCITY = 0.5; // Prevents undesired creep
+        public static final double MIN_LINEAR_VELOCITY = 0.2; // Prevents undesired creep
         public static final double MAX_LINEAR_VELOCITY = 3.8; // Desired max velocity
 
         public static final double MIN_ANGULAR_VELOCITY = Math.PI / 9.0; // prevents creep

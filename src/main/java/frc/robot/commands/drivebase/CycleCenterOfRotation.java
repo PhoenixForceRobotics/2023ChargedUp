@@ -6,6 +6,7 @@ import frc.robot.subsystems.Drivebase.CenterOfRotation;
 
 public class CycleCenterOfRotation extends InstantCommand {
 
+    // Signifies whether to go up or down in the list of CenterOfRotation
     public enum Direction {
         UP,
         DOWN;
@@ -24,13 +25,14 @@ public class CycleCenterOfRotation extends InstantCommand {
 
         CenterOfRotation currentCenterOfRotation = drivebase.getCenterOfRotation();
         int lengthOfEnum = CenterOfRotation.values().length;
-        int index;
+        int index; // the position in the CenterOfRotation enum to use
 
         if (direction == Direction.UP) {
             index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
         } else if (direction == Direction.DOWN) {
-            index = (currentCenterOfRotation.ordinal() + lengthOfEnum - 1) % lengthOfEnum;
+            index = (currentCenterOfRotation.ordinal() - 1) % lengthOfEnum;
         } else {
+            // Something went wrong, just go to the original
             index = currentCenterOfRotation.ordinal();
         }
 

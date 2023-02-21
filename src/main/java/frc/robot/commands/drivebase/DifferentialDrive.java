@@ -42,7 +42,7 @@ public class DifferentialDrive extends CommandBase {
         // zeros the any velocity if under minimum velocity (to prevent drifting)
         xVelocity = xVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : xVelocity;
         angularVelocity =
-                angularVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : angularVelocity;
+                angularVelocity < DrivebaseConstants.MIN_ANGULAR_VELOCITY ? 0 : angularVelocity;
 
         drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }
