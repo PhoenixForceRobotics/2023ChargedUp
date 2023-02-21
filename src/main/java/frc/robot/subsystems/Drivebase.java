@@ -192,7 +192,7 @@ public class Drivebase extends SubsystemBase {
         currentChassisSpeeds = kinematics.toChassisSpeeds(currentWheelSpeeds);
 
         // Update then set the (estimated) pose from odometry (not very accurate, reset odometry
-        // often)
+        // often, whether with known locations or with APRIL TAGS!!!!!)
         odometry.update(getRotation2d(), currentWheelPositions);
 
         // Updates the velocities sent to each wheel's PID

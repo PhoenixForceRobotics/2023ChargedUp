@@ -12,6 +12,27 @@ public class PFRController extends XboxController {
         super(port);
     }
 
+    /** Adds ability to add deadzone (because our controllers drift... :p) */
+    @Override
+    public double getLeftX() {
+        return super.getLeftX() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getLeftX();
+    }
+    /** Adds ability to add deadzone (because our controllers drift... :p) */
+    @Override
+    public double getLeftY() {
+        return super.getLeftY() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getLeftY();
+    }
+    /** Adds ability to add deadzone (because our controllers drift... :p) */
+    @Override
+    public double getRightX() {
+        return super.getRightX() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getRightX();
+    }
+    /** Adds ability to add deadzone (because our controllers drift... :p) */
+    @Override
+    public double getRightY() {
+        return super.getRightY() < ControllerConstants.AXIS_DEADZONE ? 0 : super.getRightY();
+    }
+
     public double getLeftXSquared() {
         return getValueSquaredAndSign(getLeftX());
     }

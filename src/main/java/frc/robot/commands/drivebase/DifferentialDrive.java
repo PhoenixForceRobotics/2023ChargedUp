@@ -10,6 +10,8 @@ import frc.robot.utils.PFRController;
 public class DifferentialDrive extends CommandBase {
     private final Drivebase drivebase;
     private final PFRController driverController;
+
+    // Caps the acceleration of the robot
     private final SlewRateLimiter vxLimiter;
 
     public DifferentialDrive(Drivebase drivebase, PFRController driverController) {
@@ -36,6 +38,11 @@ public class DifferentialDrive extends CommandBase {
         double yVelocity = 0;
         double angularVelocity =
                 driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
+
+        // zeros the any velocity if under minimum velocity (to prevent drifting)
+        xVelocity = xVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : xVelocity;
+        angularVelocity =
+                angularVelocity < DrivebaseConstants.MIN_LINEAR_VELOCITY ? 0 : angularVelocity;
 
         drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }

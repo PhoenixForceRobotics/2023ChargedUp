@@ -56,19 +56,18 @@ public final class Constants {
                         * WHEEL_CIRCUMFERENCE
                         / 60
                         * 0.9; // free speed of wheel (meters per second)
+
         public static final double MAX_LINEAR_ACCELERATION = 2; // Max acceleration
+
         public static final double MIN_LINEAR_VELOCITY = 0.5; // Prevents undesired creep
-        public static final double MAX_LINEAR_VELOCITY = 3.8; // Desired max chassis speed
+        public static final double MAX_LINEAR_VELOCITY = 3.8; // Desired max velocity
 
+        public static final double MIN_ANGULAR_VELOCITY = Math.PI / 9.0; // prevents creep
         public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second
-
-        public static final Pose2d STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
-
-        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
     }
 
     public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
+        public static final int DRIVER_CONTROLLER_PORT = 0;
     }
 
     public static final class ControllerConstants {
@@ -94,7 +93,6 @@ public final class Constants {
     }
 
     public static final class AutonomousConstants {
-        public static final String BLUE_GRID_TO_BOTTOM_PIECE_PATH =
-                "/pathplanner/generatedJSON/BlueGridToBottomPiece.wpilib.json";
+        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
     }
 }
