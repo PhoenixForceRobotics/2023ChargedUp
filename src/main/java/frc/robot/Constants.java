@@ -57,12 +57,13 @@ public final class Constants {
                         / 60
                         * 0.9; // free speed of wheel (meters per second)
 
-        public static final double MAX_LINEAR_ACCELERATION = 2; // Max acceleration
+        // used for slew limiters, meters per s^2
+        public static final double MAX_LINEAR_ACCELERATION = 6;
 
-        public static final double MIN_LINEAR_VELOCITY = 0.15; // Prevents undesired creep
-        public static final double MAX_LINEAR_VELOCITY = 3.8; // Desired max velocity
+        public static final double MIN_LINEAR_VELOCITY = 0.1; // Prevents undesired creep
+        public static final double MAX_LINEAR_VELOCITY = 3.8; // meters per second
 
-        public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
+        public static final double MIN_ANGULAR_VELOCITY = Math.PI / 24; // prevents creep
         public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second
     }
 
