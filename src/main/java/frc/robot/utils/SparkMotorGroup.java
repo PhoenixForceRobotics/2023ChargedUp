@@ -12,17 +12,18 @@ public class SparkMotorGroup extends MotorControllerGroup {
     private CANSparkMax[] followers;
     private RelativeEncoder encoder;
 
-    public SparkMotorGroup(boolean isInverted, CANSparkMax leader, CANSparkMax... followers) {
+    public SparkMotorGroup(boolean isLeaderInverted, boolean areFollowersInverted, CANSparkMax leader, CANSparkMax... followers) {
         super(leader, followers);
         this.leader = leader;
         this.followers = followers;
 
+        leader.setInverted(isLeaderInverted);
+        
         // Set settings for followers
         for (CANSparkMax motor : this.followers) {
-            motor.follow(leader);
+            motor.follow(leader, areFollowersInverted);
         }
 
-        this.leader.setInverted(isInverted);
         encoder = this.leader.getEncoder();
     }
 

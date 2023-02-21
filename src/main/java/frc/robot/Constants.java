@@ -32,6 +32,7 @@ public final class Constants {
         public static final boolean WHEEL_BL_REVERSED = true;
         public static final boolean WHEEL_BR_REVERSED = false;
 
+        // TODO: Recalculate all of these values
         public static final PIDValues POSITION_PID =
                 new PIDValues(4.8538, 0, 3.4846, 0.068311, 1.6687, 0.14842, 7, 4);
         public static final PIDValues VELOCITY_PID =
@@ -47,7 +48,6 @@ public final class Constants {
         public static final double GEAR_RATIO = (12.0 / 62.0) * (16.0 / 22.0); // output / input
         // public static final double GEAR_RATIO = 12.0 / 72.0;
         public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
-        // public static final double WHEEL_DIAMETER = 0.1524;
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         public static final double MAX_OBTAINABLE_WHEEL_VELOCITY =
@@ -57,6 +57,7 @@ public final class Constants {
                         / 60
                         * 0.9; // free speed of wheel (meters per second)
         public static final double MAX_LINEAR_ACCELERATION = 2; // Max acceleration
+        public static final double MIN_LINEAR_VELOCITY = 0.5; // Prevents undesired creep
         public static final double MAX_LINEAR_VELOCITY = 3.8; // Desired max chassis speed
 
         public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second

@@ -1,6 +1,7 @@
 package frc.robot.commands.drivebase;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.subsystems.Drivebase;
@@ -31,8 +32,8 @@ public class MecanumDrive extends CommandBase {
 
     @Override
     public void initialize() {
-        // drivebase.setMeccanum(true);
-        // drivebase.setButterflyPistons(Value.kForward);
+        drivebase.setMeccanum(true);
+        drivebase.setButterflyPistons(Value.kReverse);
         vxLimiter.reset(0);
         vyLimiter.reset(0);
     }
