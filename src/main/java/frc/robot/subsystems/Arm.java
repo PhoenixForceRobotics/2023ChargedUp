@@ -133,8 +133,7 @@ public class Arm extends SubsystemBase {
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
                 ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(
-                        angularVelocity); // TODO: Check with Vi on what to replace PID for to
-        // calculate accurate voltage
+                        angularVelocity); // TODO: Check with Vi on what to replace PID for to calculate accurate voltage
         clawRotationMotors.setVoltage(voltage);
     }
 
