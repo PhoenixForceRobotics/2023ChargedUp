@@ -229,9 +229,9 @@ public class Drivebase extends SubsystemBase {
     /**
      * Sets the speeds RELATIVE TO THE ROBOT with seperate components
      *
-     * @param vx the desired FORWARD VELOCITY (⬆️ Positive)
-     * @param vy the desired LEFT VELOCITY (⬅️ Positive)
-     * @param theta the desired COUNTERCLOCKWISE VELOCITY (🔄 Positive)
+     * @param vx velocity forwards (⬆️ Positive)
+     * @param vy velocity to the left (horizontal) (⬅️ Positive)
+     * @param theta velocity counter-clockwise (🔄 Positive)
      */
     public void setChassisSpeeds(double vx, double vy, double theta) {
         desiredChassisSpeeds = new ChassisSpeeds(vx, vy, theta);
@@ -251,9 +251,9 @@ public class Drivebase extends SubsystemBase {
     /**
      * Sets the speeds RELATIVE TO THE FIELD with seperate components
      *
-     * @param vx toward enemy alliance(⬆️ Positive)
-     * @param vy toward the left (⬅️ Positive)
-     * @param theta rotation velocity CCW (🔄 Positive)
+     * @param vx velocity toward enemy alliance (⬆️ Positive)
+     * @param vy velocity to the left (horizontal) (⬅️ Positive)
+     * @param theta velocity counter-clockwise (🔄 Positive)
      */
     public void setFieldRelativeChassisSpeeds(double vx, double vy, double theta) {
         desiredChassisSpeeds =

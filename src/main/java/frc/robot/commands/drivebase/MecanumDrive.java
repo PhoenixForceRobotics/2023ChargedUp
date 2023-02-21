@@ -82,6 +82,7 @@ public class MecanumDrive extends CommandBase {
                         DrivebaseConstants.MIN_ANGULAR_VELOCITY,
                         DrivebaseConstants.MAX_ANGULAR_VELOCITY);
 
+        // sets ChassisSpeeds according to indicated frame of reference
         if (frameOfReference == FrameOfReference.ROBOT) {
             drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
         } else // frame of reference must be field-relative
