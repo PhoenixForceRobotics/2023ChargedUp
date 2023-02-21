@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -202,8 +201,7 @@ public class Drivebase extends SubsystemBase {
         // Scales the values to prevent values from being too high
         desiredWheelSpeeds.desaturate(DrivebaseConstants.MAX_OBTAINABLE_WHEEL_VELOCITY);
 
-
-        // Calculate voltages for wheels using feedforward
+        // Calculate voltages for wheels using feedforward and PID
         // Set the output of motors
         flWheel.setMetersPerSecond(desiredWheelSpeeds.frontLeftMetersPerSecond);
         frWheel.setMetersPerSecond(desiredWheelSpeeds.frontRightMetersPerSecond);
@@ -227,8 +225,9 @@ public class Drivebase extends SubsystemBase {
     }
 
     /**
-     * Sets the speeds RELATIVE TO THE ROBOT with a {@link ChassisSpeeds}
-     * (⬆️ Positive), (⬅️ Positive), (🔄 Positive)
+     * Sets the speeds RELATIVE TO THE ROBOT with a {@link ChassisSpeeds} (⬆️ Positive), (⬅️
+     * Positive), (🔄 Positive)
+     *
      * @param desiredChassisSpeeds see above
      */
     public void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {
@@ -237,6 +236,7 @@ public class Drivebase extends SubsystemBase {
 
     /**
      * Sets the speeds RELATIVE TO THE ROBOT with seperate components
+     *
      * @param vx the desired FORWARD VELOCITY (⬆️ Positive)
      * @param vy the desired LEFT VELOCITY (⬅️ Positive)
      * @param theta the desired COUNTERCLOCKWISE VELOCITY (🔄 Positive)
@@ -246,8 +246,9 @@ public class Drivebase extends SubsystemBase {
     }
 
     /**
-     * Sets the speeds RELATIVE TO THE FIELD with a {@link ChassisSpeeds}
-     * (⬆️ Positive), (⬅️ Positive), (🔄 Positive)
+     * Sets the speeds RELATIVE TO THE FIELD with a {@link ChassisSpeeds} (⬆️ Positive), (⬅️
+     * Positive), (🔄 Positive)
+     *
      * @param desiredChassisSpeeds see above
      */
     public void setFieldRelativeChassisSpeeds(ChassisSpeeds desiredChassisSpeeds) {
@@ -258,6 +259,7 @@ public class Drivebase extends SubsystemBase {
     }
     /**
      * Sets the speeds RELATIVE TO THE ROBOT with seperate components
+     *
      * @param vx toward enemy alliance(⬆️ Positive)
      * @param vy toward the left (⬅️ Positive)
      * @param theta rotation velocity CCW (🔄 Positive)
@@ -279,25 +281,21 @@ public class Drivebase extends SubsystemBase {
 
     /**
      * Set the whether the butterfly pistons should be out or not
+     *
      * @param value to go forward or reverse
      */
     public void setButterflyPistons(Value value) {
-        if(value == Value.kForward)
-        {
+        if (value == Value.kForward) {
             butterflyPistons.set(true);
-        }
-        else
-        {
+        } else {
             butterflyPistons.set(false);
         }
     }
 
     /**
-     * 
      * @return {@link Value} whether the piston is forward or reverse
      */
-    public Value getButterflyPistonsValue()
-    {
+    public Value getButterflyPistonsValue() {
         return butterflyPistons.get() ? Value.kForward : Value.kReverse;
     }
 
@@ -329,6 +327,7 @@ public class Drivebase extends SubsystemBase {
 
     /**
      * Get the angle the robot is facing (Counter-Clockwise POSITIVE)
+     *
      * @return current heading (CCW+)
      */
     public double getHeading() {
@@ -337,6 +336,7 @@ public class Drivebase extends SubsystemBase {
 
     /**
      * Get the angle the robot is facing (Counter-Clockwise POSITIVE)
+     *
      * @return current heading in the form of a {@link Rotation2d}
      */
     public Rotation2d getRotation2d() {
@@ -345,20 +345,20 @@ public class Drivebase extends SubsystemBase {
 
     /**
      * Resets the yaw to the desired value
+     *
      * @param yawDegrees
      * @return {@link ErrorCode} for setting the yaw
      */
-    public ErrorCode setYaw(double yawDegrees)
-    {
+    public ErrorCode setYaw(double yawDegrees) {
         return inertialMeasurementUnit.setYaw(yawDegrees);
     }
 
     /**
      * Resets the yaw to ZERO (0)
+     *
      * @return {@link ErrorCode} for setting the yaw
      */
-    public ErrorCode resetYaw()
-    {
+    public ErrorCode resetYaw() {
         return setYaw(0);
     }
 
