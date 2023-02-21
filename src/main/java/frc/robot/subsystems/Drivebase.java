@@ -13,10 +13,13 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.utils.Motor;
@@ -52,7 +55,8 @@ public class Drivebase extends SubsystemBase {
     private PneumaticHub pneumaticHub;
     private Solenoid butterflyPistons;
 
-    private WPI_Pigeon2 inertialMeasurementUnit;
+    // private WPI_Pigeon2 inertialMeasurementUnit;
+    private ADXRS450_Gyro gyro;
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -73,6 +77,8 @@ public class Drivebase extends SubsystemBase {
 
     private boolean isMeccanum = true; // whether the drivebase is in meccanum or differential mode
 
+    private Field2d fieldWidget; // Enables visual status of robot on the field
+
     private final ShuffleboardTab drivebaseTab; // The shuffleboard tab we are using for TELEMETRY
     private final GenericEntry currentXVelocityEntry,
             currentYVelocityEntry,
@@ -82,7 +88,7 @@ public class Drivebase extends SubsystemBase {
         // creates the components on the drivebase
         flWheel =
                 new Motor(
-                        DrivebaseConstants.WHEEL_FL_PORT,
+                        DrivebaseConstants.WHEEL_FL_CAN_ID,
                         DrivebaseConstants.WHEEL_FL_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
                         DrivebaseConstants.WHEEL_DIAMETER,
@@ -90,7 +96,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.VELOCITY_PID);
         frWheel =
                 new Motor(
-                        DrivebaseConstants.WHEEL_FR_PORT,
+                        DrivebaseConstants.WHEEL_FR_CAN_ID,
                         DrivebaseConstants.WHEEL_FR_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
                         DrivebaseConstants.WHEEL_DIAMETER,
@@ -98,7 +104,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.VELOCITY_PID);
         blWheel =
                 new Motor(
-                        DrivebaseConstants.WHEEL_BL_PORT,
+                        DrivebaseConstants.WHEEL_BL_CAN_ID,
                         DrivebaseConstants.WHEEL_BL_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
                         DrivebaseConstants.WHEEL_DIAMETER,
@@ -106,18 +112,18 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.VELOCITY_PID);
         brWheel =
                 new Motor(
-                        DrivebaseConstants.WHEEL_BR_PORT,
+                        DrivebaseConstants.WHEEL_BR_CAN_ID,
                         DrivebaseConstants.WHEEL_BR_REVERSED,
                         DrivebaseConstants.GEAR_RATIO,
                         DrivebaseConstants.WHEEL_DIAMETER,
                         DrivebaseConstants.POSITION_PID,
                         DrivebaseConstants.VELOCITY_PID);
 
-        pneumaticHub = new PneumaticHub(30);
-        butterflyPistons = pneumaticHub.makeSolenoid(0);
+        pneumaticHub = new PneumaticHub(DrivebaseConstants.PNEUMATIC_HUB_CAN_ID);
+        butterflyPistons = pneumaticHub.makeSolenoid(DrivebaseConstants.BUTTERFLY_FORWARD_PORT);
 
-        inertialMeasurementUnit = new WPI_Pigeon2(20);
-        // gyro = new ADXRS450_Gyro();
+        // inertialMeasurementUnit = new WPI_Pigeon2(20);
+        gyro = new ADXRS450_Gyro();
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -150,6 +156,11 @@ public class Drivebase extends SubsystemBase {
 
         centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
+        // Allows the robot to be seen on the field
+        fieldWidget = new Field2d();
+        fieldWidget.setRobotPose(getPose());
+
+        // Non-essential telemetry for troubleshooting
         drivebaseTab = Shuffleboard.getTab("Drivebase");
 
         currentXVelocityEntry = drivebaseTab.add("Current X Velocity", 0).getEntry();
@@ -208,7 +219,11 @@ public class Drivebase extends SubsystemBase {
         blWheel.setMetersPerSecond(desiredWheelSpeeds.rearLeftMetersPerSecond);
         brWheel.setMetersPerSecond(desiredWheelSpeeds.rearRightMetersPerSecond);
 
-        // Publishes the data to the Shuffleboard Tab
+        // Puts the new pose on the main tab
+        fieldWidget.setRobotPose(getPose());
+        SmartDashboard.putData("Robot Pose", fieldWidget);
+
+        // Publishes the data to the telemetry tab
         currentXVelocityEntry.setDouble(currentChassisSpeeds.vxMetersPerSecond);
         currentYVelocityEntry.setDouble(currentChassisSpeeds.vyMetersPerSecond);
         currentRotationalVelocityEntry.setDouble(
@@ -335,7 +350,8 @@ public class Drivebase extends SubsystemBase {
      * @return current heading (CCW+)
      */
     public double getHeading() {
-        return inertialMeasurementUnit.getYaw();
+        // return inertialMeasurementUnit.getYaw();
+        return gyro.getAngle();
     }
 
     /**
@@ -344,7 +360,8 @@ public class Drivebase extends SubsystemBase {
      * @return current heading in the form of a {@link Rotation2d}
      */
     public Rotation2d getRotation2d() {
-        return inertialMeasurementUnit.getRotation2d();
+        // return inertialMeasurementUnit.getRotation2d();
+        return gyro.getRotation2d();
     }
 
     /**
@@ -353,20 +370,21 @@ public class Drivebase extends SubsystemBase {
      * @param yawDegrees
      * @return {@link ErrorCode} for setting the yaw
      */
-    public ErrorCode setYaw(double yawDegrees) {
-        return inertialMeasurementUnit.setYaw(yawDegrees);
-    }
+    // public ErrorCode setYaw(double yawDegrees) {
+    //     // return inertialMeasurementUnit.setYaw(yawDegrees);
+    // }
 
     /**
      * Resets the yaw to ZERO (0)
      *
      * @return {@link ErrorCode} for setting the yaw
      */
-    public ErrorCode resetYaw() {
-        return setYaw(0);
-    }
+    // public ErrorCode resetYaw() {
+    //     return setYaw(0);
+    // }
 
     // ---- SHUFFLEBOARD STUFF ----//
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);

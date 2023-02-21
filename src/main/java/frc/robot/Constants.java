@@ -19,18 +19,20 @@ import frc.robot.utils.PIDValues;
  */
 public final class Constants {
     public static final class DrivebaseConstants {
+        public static final int PNEUMATIC_HUB_CAN_ID = 30;
         public static final int BUTTERFLY_FORWARD_PORT = 0;
-        public static final int BUTTERFLY_REVERSE_PORT = 1;
 
-        public static final int WHEEL_FL_PORT = 1;
-        public static final int WHEEL_FR_PORT = 2;
-        public static final int WHEEL_BL_PORT = 3;
-        public static final int WHEEL_BR_PORT = 4;
+        public static final int WHEEL_FL_CAN_ID = 1;
+        public static final int WHEEL_FR_CAN_ID = 2;
+        public static final int WHEEL_BL_CAN_ID= 3;
+        public static final int WHEEL_BR_CAN_ID= 4;
 
         public static final boolean WHEEL_FL_REVERSED = true;
         public static final boolean WHEEL_FR_REVERSED = false;
         public static final boolean WHEEL_BL_REVERSED = true;
         public static final boolean WHEEL_BR_REVERSED = false;
+
+        public static final int PIGEON_CAN_ID = 20;
 
         // TODO: Recalculate all of these values
         public static final PIDValues POSITION_PID =
@@ -61,10 +63,10 @@ public final class Constants {
         public static final double MAX_LINEAR_ACCELERATION = 6;
 
         public static final double MIN_LINEAR_VELOCITY = 0.1; // Prevents undesired creep
-        public static final double MAX_LINEAR_VELOCITY = 3.8; // meters per second
+        public static final double MAX_LINEAR_VELOCITY = 2; // meters per second
 
-        public static final double MIN_ANGULAR_VELOCITY = Math.PI / 24; // prevents creep
-        public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second
+        public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
+        public static final double MAX_ANGULAR_VELOCITY = 1.5 * Math.PI; // radians per second
     }
 
     public static class OperatorConstants {

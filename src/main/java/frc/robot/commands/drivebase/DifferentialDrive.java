@@ -34,11 +34,11 @@ public class DifferentialDrive extends CommandBase {
 
         double xVelocity =
                 vxLimiter.calculate(
-                        driverController.getLeftYSquared()
+                        -driverController.getLeftYSquared()
                                 * DrivebaseConstants.MAX_LINEAR_VELOCITY);
         double yVelocity = 0; // acts as DifferentialDrive
         double angularVelocity =
-                driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
+                -driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
         // Adds deadzones to velocities(to prevent unwanted drifting)
         xVelocity =

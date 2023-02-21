@@ -6,9 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
@@ -52,8 +51,7 @@ public class RobotContainer {
     private final ExampleAutonomousRoutine exampleAutonomousRoutine =
             new ExampleAutonomousRoutine(drivebase);
 
-    // And the NetworkTable/NetworkTable/CommandChooser variables :)
-    private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
+    // And things we want to put on the main tab (SmartDashboard) :)
     private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -84,8 +82,8 @@ public class RobotContainer {
         autonomousCommandChooser.setDefaultOption(
                 "Example autonomous Routine", exampleAutonomousRoutine);
 
-        // Places chooser on mainTab (where all "main stuff" is)
-        mainTab.add("Autonomous Chooser", autonomousCommandChooser);
+                // Places chooser on mainTab (where all "main stuff" is)
+        SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
     }
 
     public void scheduleAutonomousCommands() {
