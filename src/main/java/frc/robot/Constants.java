@@ -24,8 +24,8 @@ public final class Constants {
 
         public static final int WHEEL_FL_CAN_ID = 1;
         public static final int WHEEL_FR_CAN_ID = 2;
-        public static final int WHEEL_BL_CAN_ID= 3;
-        public static final int WHEEL_BR_CAN_ID= 4;
+        public static final int WHEEL_BL_CAN_ID = 3;
+        public static final int WHEEL_BR_CAN_ID = 4;
 
         public static final boolean WHEEL_FL_REVERSED = true;
         public static final boolean WHEEL_FR_REVERSED = false;

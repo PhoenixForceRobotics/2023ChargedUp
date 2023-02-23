@@ -82,7 +82,7 @@ public class RobotContainer {
         autonomousCommandChooser.setDefaultOption(
                 "Example autonomous Routine", exampleAutonomousRoutine);
 
-                // Places chooser on mainTab (where all "main stuff" is)
+        // Places chooser on mainTab (where all "main stuff" is)
         SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
     }
 
