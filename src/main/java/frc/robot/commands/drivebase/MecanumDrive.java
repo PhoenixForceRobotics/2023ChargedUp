@@ -67,17 +67,17 @@ public class MecanumDrive extends CommandBase {
 
         // Adds deadzones to velocities(to prevent unwanted drifting)
         xVelocity =
-                MathUtil.applyDeadband(
+                MathUtil.clamp(
                         xVelocity,
                         DrivebaseConstants.MIN_LINEAR_VELOCITY,
                         DrivebaseConstants.MAX_LINEAR_VELOCITY);
         yVelocity =
-                MathUtil.applyDeadband(
+                MathUtil.clamp(
                         yVelocity,
                         DrivebaseConstants.MIN_LINEAR_VELOCITY,
                         DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-                MathUtil.applyDeadband(
+                MathUtil.clamp(
                         angularVelocity,
                         DrivebaseConstants.MIN_ANGULAR_VELOCITY,
                         DrivebaseConstants.MAX_ANGULAR_VELOCITY);
