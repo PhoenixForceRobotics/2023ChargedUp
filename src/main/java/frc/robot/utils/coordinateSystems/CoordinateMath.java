@@ -95,7 +95,7 @@ public class CoordinateMath {
 
     public static PolarVelocities cartesianVelocitiesToPolarVelocities(
             CartesianCoordinates cartesianCoordinates, CartesianVelocities cartesianVelocities) {
-        // shorter values to make code readable
+        // shorter variables to make code readable
         double x = cartesianCoordinates.getXCoordinate();
         double y = cartesianCoordinates.getYCoordinate();
         double dx = cartesianVelocities.getXVelocity();
