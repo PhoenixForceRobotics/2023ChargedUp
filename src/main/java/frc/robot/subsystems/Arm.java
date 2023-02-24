@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.Motor;
@@ -31,6 +34,11 @@ public class Arm extends SubsystemBase {
 
     // Extension PID
     private PIDController extensionPid;
+
+    // Shuffleboard Stuff
+    private ShuffleboardTab armTab;
+    private GenericEntry shuffleboardClawRotationSetpoint;
+    private GenericEntry shuffleboardClawRotationError;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -93,12 +101,22 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_P,
                         ArmConstants.EXTENSION_PID_I,
                         ArmConstants.EXTENSION_PID_D);
+
+        // Defines shuffleboard tab and entries
+        armTab = Shuffleboard.getTab("Arm");
+        shuffleboardClawRotationError = armTab.add("Claw Rotation Error", 0).getEntry();
+        shuffleboardClawRotationSetpoint = armTab.add("Claw Rotation Setpoint", 0).getEntry();
+        armTab.add("Extension PID Controller", extensionPid);
+        armTab.add("Rotation PID Controller", rotationPid);
     }
 
     @Override
     public void periodic() {
         clawRotationSetpoint = 180 - clawRotationSetpoint;
         clawRotationError = clawRotationSetpoint - getClawRotationAbsoluteAngle();
+
+        shuffleboardClawRotationError.setDouble(clawRotationError);
+        shuffleboardClawRotationSetpoint.setDouble(clawRotationSetpoint);
     }
 
     /**
