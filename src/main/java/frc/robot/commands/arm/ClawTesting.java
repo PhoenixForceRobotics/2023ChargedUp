@@ -17,13 +17,13 @@ public class ClawTesting extends CommandBase {
     @Override
     public void initialize()
     { 
-        arm.setClawRotationMotors(0);
+        arm.setClawRotationRadiansPerSecond(0);
     }
 
     @Override
     public void execute()
     {
-        arm.setClawRotationMotors(operatorController.getLeftYSquared());
+        arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared());
         if (operatorController.getAButton())
         {
             arm.setTestingIntakeMotors(1);
@@ -43,7 +43,7 @@ public class ClawTesting extends CommandBase {
     @Override
     public void end(boolean interrupted)
     {
-        arm.setClawRotationMotors(0);
+        arm.setClawRotationRadiansPerSecond(0);
         
     }
 }
