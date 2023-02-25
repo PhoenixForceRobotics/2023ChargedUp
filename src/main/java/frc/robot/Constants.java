@@ -128,7 +128,7 @@ public final class Constants {
         public static final int CLAW_ROTATION_MOTOR_2_PORT = 15;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
-        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 70;
         public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
         // Numbers to caulcuate height and distance
@@ -163,15 +163,10 @@ public final class Constants {
         public static final ArmFeedforward ARM_ROTATION_FEED_FORWARD =
                 new ArmFeedforward(ROTATION_S_VOLTS, ROTATION_G, ROTATION_V_VOLTS_SECONDS_PER_METER, ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER);
         public static final ArmFeedforward ARM_EXTENSION_FEED_FORWARD = new ArmFeedforward(EXTENSION_S_VOLTS, EXTENSION_G, EXTENSION_V_VOLTS_SECONDS_PER_METER, EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final ArmFeedforward CLAW_ROTATION_FEEDFORWARD =
-                new ArmFeedforward(
-                        CLAW_S_VOLTS,
-                        CLAW_G,
-                        CLAW_V_VOLTS_SECONDS_PER_METER,
-                        CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
+        
 
         public static final double CLAW_STARTING_ANGLE =
-                0; // Change this when we figure out the default starting angle of the claw when
+                -90; // Change this when we figure out the default starting angle of the claw when
         // testing
     }
 }

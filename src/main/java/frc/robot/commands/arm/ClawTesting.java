@@ -23,7 +23,8 @@ public class ClawTesting extends CommandBase {
     @Override
     public void execute()
     {
-        arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared());
+        double armOutput = operatorController.getLeftYSquared() * 0.5;
+        arm.setClawRotationRadiansPerSecond(armOutput);
         if (operatorController.getAButton())
         {
             arm.setTestingIntakeMotors(1);

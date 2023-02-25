@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -44,6 +45,8 @@ public class Arm extends SubsystemBase {
     private GenericEntry shuffleboardClawRotationError;
 
     private CANSparkMax testingIntakeMotors;
+
+    private ArmFeedforward clawRotationFeedforward;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -95,6 +98,7 @@ public class Arm extends SubsystemBase {
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
         clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
         testingIntakeMotors = new CANSparkMax(1, MotorType.kBrushed);
+        clawRotationFeedforward = new ArmFeedforward(ArmConstants.CLAW_S_VOLTS, ArmConstants.CLAW_G, ArmConstants.CLAW_V_VOLTS_SECONDS_PER_METER, ArmConstants.CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
         
 
         // // Defines shuffleboard tab and entries
@@ -150,7 +154,8 @@ public class Arm extends SubsystemBase {
      */
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), getClawRotationRadiansPerSecond());
+                clawRotationFeedforward.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), angularVelocity);
+        System.out.println(voltage + ", " + getClawRotationAbsoluteAngle());
         clawRotationMotors.setVoltage(voltage);
     }
 
