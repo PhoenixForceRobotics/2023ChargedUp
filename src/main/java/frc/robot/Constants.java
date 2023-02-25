@@ -123,8 +123,8 @@ public final class Constants {
         public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
         // Constants for claw rotation motors
-        public static final int CLAW_ROTATION_MOTOR_1_PORT = 15;
-        public static final int CLAW_ROTATION_MOTOR_2_PORT = 16;
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 3;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 15;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
         public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;

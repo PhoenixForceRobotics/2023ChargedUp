@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -39,6 +42,8 @@ public class Arm extends SubsystemBase {
     private ShuffleboardTab armTab;
     private GenericEntry shuffleboardClawRotationSetpoint;
     private GenericEntry shuffleboardClawRotationError;
+
+    private CANSparkMax testingIntakeMotors;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -101,6 +106,9 @@ public class Arm extends SubsystemBase {
                         ArmConstants.EXTENSION_PID_P,
                         ArmConstants.EXTENSION_PID_I,
                         ArmConstants.EXTENSION_PID_D);
+        
+        testingIntakeMotors = new CANSparkMax(1, MotorType.kBrushed);
+        
 
         // Defines shuffleboard tab and entries
         armTab = Shuffleboard.getTab("Arm");
@@ -141,6 +149,11 @@ public class Arm extends SubsystemBase {
                 ArmConstants.ARM_FEED_FORWARD.calculate(velocity)
                         + extensionPid.calculate(getExtensionMetersPerSecond());
         extensionMotors.setVoltage(voltage);
+    }
+
+    public void setTestingIntakeMotors(double input)
+    {
+        testingIntakeMotors.set(input);
     }
 
     /**
