@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -143,23 +144,29 @@ public final class Constants {
         public static final double ROTATION_PID_I = 0;
         public static final double ROTATION_PID_D = 1;
 
-        public static final double S_VOLTS = 0;
-        public static final double V_VOLTS_SECONDS_PER_METER = 0;
-        public static final double A_VOLTS_SECONDS_SQUARED_PER_METER = 0;
+        public static final double ROTATION_S_VOLTS = 1;
+        public static final double ROTATION_G = 1;
+        public static final double ROTATION_V_VOLTS_SECONDS_PER_METER = 1;
+        public static final double ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
+
+        public static final double EXTENSION_S_VOLTS = 0;
+        public static final double EXTENSION_G = 1;
+        public static final double EXTENSION_V_VOLTS_SECONDS_PER_METER = 1;
+        public static final double EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
 
         // TODO: Use Sysid to get claw rotation feedforward values
-        public static final double CLAW_S_VOLTS = 1;
-        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 1;
-        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
+        public static final double CLAW_S_VOLTS = 0.001575;
+        public static final double CLAW_G = 0.99974;
+        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 5.5262;
+        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.3089;
 
-        public static final SimpleMotorFeedforward ARM_FEED_FORWARD =
-                new SimpleMotorFeedforward(
-                        ArmConstants.S_VOLTS,
-                        ArmConstants.V_VOLTS_SECONDS_PER_METER,
-                        ArmConstants.A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final SimpleMotorFeedforward CLAW_ROTATION_FEEDFORWARD =
-                new SimpleMotorFeedforward(
+        public static final ArmFeedforward ARM_ROTATION_FEED_FORWARD =
+                new ArmFeedforward(ROTATION_S_VOLTS, ROTATION_G, ROTATION_V_VOLTS_SECONDS_PER_METER, ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final ArmFeedforward ARM_EXTENSION_FEED_FORWARD = new ArmFeedforward(EXTENSION_S_VOLTS, EXTENSION_G, EXTENSION_V_VOLTS_SECONDS_PER_METER, EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final ArmFeedforward CLAW_ROTATION_FEEDFORWARD =
+                new ArmFeedforward(
                         CLAW_S_VOLTS,
+                        CLAW_G,
                         CLAW_V_VOLTS_SECONDS_PER_METER,
                         CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
 

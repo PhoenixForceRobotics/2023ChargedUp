@@ -93,20 +93,7 @@ public class Arm extends SubsystemBase {
                         ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED,
                         ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
-        clawRotationMotors = new SparkMotorGroup(false, clawRotationMotor1, clawRotationMotor2);
-
-        // Defines pid controllers
-        rotationPid =
-                new PIDController(
-                        ArmConstants.ROTATION_PID_P,
-                        ArmConstants.ROTATION_PID_I,
-                        ArmConstants.ROTATION_PID_D);
-        extensionPid =
-                new PIDController(
-                        ArmConstants.EXTENSION_PID_P,
-                        ArmConstants.EXTENSION_PID_I,
-                        ArmConstants.EXTENSION_PID_D);
-        
+        clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
         testingIntakeMotors = new CANSparkMax(1, MotorType.kBrushed);
         
 
@@ -134,7 +121,7 @@ public class Arm extends SubsystemBase {
      */
     public void setRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.ARM_FEED_FORWARD.calculate(angularVelocity)
+                ArmConstants.ARM_ROTATION_FEED_FORWARD.calculate(Math.toRadians(getRotationAngle()), getRotationRadiansPerSecond())
                         + rotationPid.calculate(getRotationRadiansPerSecond());
         rotationMotors.setVoltage(voltage);
     }
@@ -146,7 +133,7 @@ public class Arm extends SubsystemBase {
      */
     public void setExtensionMetersPerSecond(double velocity) {
         double voltage =
-                ArmConstants.ARM_FEED_FORWARD.calculate(velocity)
+                ArmConstants.ARM_EXTENSION_FEED_FORWARD.calculate(getExtensionLength(), getExtensionMetersPerSecond())
                         + extensionPid.calculate(getExtensionMetersPerSecond());
         extensionMotors.setVoltage(voltage);
     }
@@ -163,9 +150,12 @@ public class Arm extends SubsystemBase {
      */
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(
-                        angularVelocity); // TODO: Check with Vi on what to replace PID for to calculate accurate voltage
+                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), getClawRotationRadiansPerSecond());
         clawRotationMotors.setVoltage(voltage);
+    }
+
+    public void setClawRotationMotors(double percentage) {
+        clawRotationMotors.set(percentage);
     }
 
     /**

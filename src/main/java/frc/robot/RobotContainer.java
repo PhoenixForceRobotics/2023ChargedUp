@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.arm.ClawTesting;
-import frc.robot.commands.arm.SetIntakeVelocities;
+// import frc.robot.commands.arm.SetIntakeVelocities;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
@@ -30,22 +30,22 @@ import frc.robot.utils.PFRController;
  */
 public class RobotContainer {
     // The robot's subsystems are defined here...
-    private final Drivebase drivebase = new Drivebase();
+    //private final Drivebase drivebase = new Drivebase();
     private final Arm arm = new Arm();
 
     // The robot's controllers are defined here...
     private final PFRController operatorController = new PFRController(0);
     private final PFRController driverController = new PFRController(1);
 
-    // The robot's commands are defined here...
-    private final CycleCenterOfRotation cycleCenterOfRotationUp =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final CycleCenterOfRotation cycleCenterOfRotationDown =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-    private final DifferentialDrive differentialDrive =
-            new DifferentialDrive(drivebase, driverController);
-    private final SetIntakeVelocities setIntakeVelocities = new SetIntakeVelocities(arm, operatorController);
+    // // The robot's commands are defined here...
+    // private final CycleCenterOfRotation cycleCenterOfRotationUp =
+    //         new CycleCenterOfRotation(drivebase, Direction.UP);
+    // private final CycleCenterOfRotation cycleCenterOfRotationDown =
+    //         new CycleCenterOfRotation(drivebase, Direction.UP);
+    // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
+    // private final DifferentialDrive differentialDrive =
+    //         new DifferentialDrive(drivebase, driverController);
+    // private final SetIntakeVelocities setIntakeVelocities = new SetIntakeVelocities(arm, operatorController);
     private final ClawTesting clawTesting = new ClawTesting(arm, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
@@ -66,10 +66,10 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driverController.lBumper().onTrue(mecanumDrive);
-        driverController.lBumper().onFalse(differentialDrive);
-        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        // driverController.lBumper().onTrue(mecanumDrive);
+        // driverController.lBumper().onFalse(differentialDrive);
+        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
     }
 
     public void initializeListenersAndSendables() {
@@ -92,22 +92,22 @@ public class RobotContainer {
 
     public void initializeTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        drivebaseCommandChooser.getSelected().schedule();
+        // drivebaseCommandChooser.getSelected().schedule();
         getClawTesting().schedule();
     }
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
-        differentialDrive.schedule();
+        
     }
 
-    public MecanumDrive getMecanumDrive() {
-        return mecanumDrive;
-    }
+    // public MecanumDrive getMecanumDrive() {
+    //     return mecanumDrive;
+    // }
 
-    public DifferentialDrive getDifferentialDrive() {
-        return differentialDrive;
-    }
+    // public DifferentialDrive getDifferentialDrive() {
+    //     return differentialDrive;
+    // }
 
     public PFRController getDriverController() {
         return driverController;
@@ -117,10 +117,10 @@ public class RobotContainer {
         return operatorController;
     }
 
-    public SetIntakeVelocities getSetIntakeVelocities()
-    {
-        return setIntakeVelocities;
-    }
+    // public SetIntakeVelocities getSetIntakeVelocities()
+    // {
+    //     return setIntakeVelocities;
+    // }
 
     public ClawTesting getClawTesting()
     {
