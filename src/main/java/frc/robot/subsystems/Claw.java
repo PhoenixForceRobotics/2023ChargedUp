@@ -68,11 +68,11 @@ public class Claw extends SubsystemBase {
      *     both pieces, CUBE: only cube piece, CONE: only cone piece, NONE: no pieces)
      */
     public BeamBreakStatus getBreakStatus() {
-        if (cubeSensor.get() && coneSensor.get()) {
+        if (!cubeSensor.get() && !coneSensor.get()) {
             return BeamBreakStatus.BOTH;
-        } else if (cubeSensor.get()) {
+        } else if (!cubeSensor.get()) {
             return BeamBreakStatus.CUBE;
-        } else if (coneSensor.get()) {
+        } else if (!coneSensor.get()) {
             return BeamBreakStatus.CONE;
         } else {
             return BeamBreakStatus.NONE;

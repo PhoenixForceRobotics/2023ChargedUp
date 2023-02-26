@@ -47,13 +47,20 @@ public class PickUpPiece extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= ClawConstants.TIMER_DELAY_LENGTH;
+        if (isPickingUpCube)
+        {
+            return timer.get() >= ClawConstants.CUBE_TIMER_DELAY_LENGTH;
+        }
+        else
+        {
+            return timer.get() >= ClawConstants.CONE_TIMER_DELAY_LENGTH;
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
         claw.setMotor(0);
-        timer.reset();
         timer.stop();
+        timer.reset();
     }
 }

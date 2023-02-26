@@ -101,8 +101,9 @@ public final class Constants {
         public static final int CONE_SENSOR_CHANNEL = 0;
         public static final int CUBE_SENSOR_CHANNEL = 1;
 
-        public static final int TIMER_DELAY_LENGTH =
+        public static final double CONE_TIMER_DELAY_LENGTH =
                 1; // TODO: Change value, current value is only a placeholder
+        public static final double CUBE_TIMER_DELAY_LENGTH = 0.3;
     }
 
     public static class OperatorConstants {
