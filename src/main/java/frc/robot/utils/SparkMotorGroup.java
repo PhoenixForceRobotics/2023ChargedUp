@@ -21,7 +21,7 @@ public class SparkMotorGroup extends MotorControllerGroup {
         for (CANSparkMax motor : this.followers) {
             motor.follow(leader, isInverted);
         }
-        
+
         encoder = this.leader.getEncoder();
     }
 

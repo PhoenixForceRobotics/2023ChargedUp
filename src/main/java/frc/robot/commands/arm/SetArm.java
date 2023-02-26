@@ -52,10 +52,10 @@ public class SetArm extends CommandBase {
         double angleOutput = MathUtil.clamp(lengthPID.calculate(arm.getRotationAngle()), -0.9, 0.9);
         arm.setRotationRadiansPerSecond(angleOutput);
 
-        /* 
-        * TODO: Find a way to get the output that needs to be used as a parameter for the set
-        * TODO: function of the claw rotation motors
-        */
+        /*
+         * TODO: Find a way to get the output that needs to be used as a parameter for the set
+         * TODO: function of the claw rotation motors
+         */
     }
 
     @Override

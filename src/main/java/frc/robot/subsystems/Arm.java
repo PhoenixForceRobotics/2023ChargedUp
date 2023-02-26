@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -95,7 +94,6 @@ public class Arm extends SubsystemBase {
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
         clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
         testingIntakeMotors = new CANSparkMax(1, MotorType.kBrushed);
-        
 
         // Defines shuffleboard tab and entries
         armTab = Shuffleboard.getTab("Arm");
@@ -121,7 +119,8 @@ public class Arm extends SubsystemBase {
      */
     public void setRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.ARM_ROTATION_FEED_FORWARD.calculate(Math.toRadians(getRotationAngle()), getRotationRadiansPerSecond())
+                ArmConstants.ARM_ROTATION_FEED_FORWARD.calculate(
+                                Math.toRadians(getRotationAngle()), getRotationRadiansPerSecond())
                         + rotationPid.calculate(getRotationRadiansPerSecond());
         rotationMotors.setVoltage(voltage);
     }
@@ -133,13 +132,13 @@ public class Arm extends SubsystemBase {
      */
     public void setExtensionMetersPerSecond(double velocity) {
         double voltage =
-                ArmConstants.ARM_EXTENSION_FEED_FORWARD.calculate(getExtensionLength(), getExtensionMetersPerSecond())
+                ArmConstants.ARM_EXTENSION_FEED_FORWARD.calculate(
+                                getExtensionLength(), getExtensionMetersPerSecond())
                         + extensionPid.calculate(getExtensionMetersPerSecond());
         extensionMotors.setVoltage(voltage);
     }
 
-    public void setTestingIntakeMotors(double input)
-    {
+    public void setTestingIntakeMotors(double input) {
         testingIntakeMotors.set(input);
     }
 
@@ -150,7 +149,9 @@ public class Arm extends SubsystemBase {
      */
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), getClawRotationRadiansPerSecond());
+                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(
+                        Math.toRadians(getClawRotationAbsoluteAngle()),
+                        getClawRotationRadiansPerSecond());
         clawRotationMotors.setVoltage(voltage);
     }
 

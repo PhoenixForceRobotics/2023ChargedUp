@@ -8,42 +8,30 @@ public class ClawTesting extends CommandBase {
     private Arm arm;
     private PFRController operatorController;
 
-    public ClawTesting(Arm arm, PFRController operatorController)
-    {
+    public ClawTesting(Arm arm, PFRController operatorController) {
         this.arm = arm;
         this.operatorController = operatorController;
     }
 
     @Override
-    public void initialize()
-    { 
+    public void initialize() {
         arm.setClawRotationRadiansPerSecond(0);
     }
 
     @Override
-    public void execute()
-    {
+    public void execute() {
         arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared());
-        if (operatorController.getAButton())
-        {
+        if (operatorController.getAButton()) {
             arm.setTestingIntakeMotors(1);
-        }
-
-        else if (operatorController.getBButton())
-        {
+        } else if (operatorController.getBButton()) {
             arm.setTestingIntakeMotors(-1);
-        }
-        else
-        {
+        } else {
             arm.setTestingIntakeMotors(0);
         }
-       
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
         arm.setClawRotationRadiansPerSecond(0);
-        
     }
 }

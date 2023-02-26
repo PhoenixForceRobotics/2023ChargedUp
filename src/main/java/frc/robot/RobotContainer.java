@@ -14,12 +14,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.arm.ClawTesting;
 import frc.robot.commands.arm.SetIntakeVelocities;
-// import frc.robot.commands.arm.SetIntakeVelocities;
+import frc.robot.commands.claw.ClawIntakeSequence;
+import frc.robot.commands.claw.OutputPiece;
+import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
@@ -33,6 +36,7 @@ public class RobotContainer {
     // The robot's subsystems are defined here...
     private final Drivebase drivebase = new Drivebase();
     private final Arm arm = new Arm();
+    private final Claw claw = new Claw();
 
     // The robot's controllers are defined here...
     private final PFRController operatorController = new PFRController(0);
@@ -46,8 +50,13 @@ public class RobotContainer {
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
-    private final SetIntakeVelocities setIntakeVelocities = new SetIntakeVelocities(arm, operatorController);
+    private final SetIntakeVelocities setIntakeVelocities =
+            new SetIntakeVelocities(arm, operatorController);
     private final ClawTesting clawTesting = new ClawTesting(arm, operatorController);
+    private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
+    private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
+    private final TeleopClaw teleopClaw = new TeleopClaw(claw, operatorController);
+    private final OutputPiece outputPiece = new OutputPiece(claw, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -67,10 +76,13 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        // driverController.lBumper().onTrue(mecanumDrive);
-        // driverController.lBumper().onFalse(differentialDrive);
-        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        driverController.lBumper().onTrue(mecanumDrive);
+        driverController.lBumper().onFalse(differentialDrive);
+        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        operatorController.xButton().whileTrue(pickUpCube);
+        operatorController.aButton().whileTrue(pickUpCone);
+        operatorController.bButton().whileTrue(outputPiece);
     }
 
     public void initializeListenersAndSendables() {
@@ -99,7 +111,7 @@ public class RobotContainer {
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
-        
+        drivebaseCommandChooser.getSelected().schedule();
     }
 
     public MecanumDrive getMecanumDrive() {
@@ -110,6 +122,14 @@ public class RobotContainer {
         return differentialDrive;
     }
 
+    public ClawIntakeSequence getPickUpCone() {
+        return pickUpCone;
+    }
+
+    public ClawIntakeSequence getPickUpCube() {
+        return pickUpCube;
+    }
+
     public PFRController getDriverController() {
         return driverController;
     }
@@ -118,13 +138,15 @@ public class RobotContainer {
         return operatorController;
     }
 
-    public SetIntakeVelocities getSetIntakeVelocities()
-    {
+    public SetIntakeVelocities getSetIntakeVelocities() {
         return setIntakeVelocities;
     }
 
-    public ClawTesting getClawTesting()
-    {
+    public ClawTesting getClawTesting() {
         return clawTesting;
+    }
+
+    public TeleopClaw getTeleopClaw() {
+        return teleopClaw;
     }
 }

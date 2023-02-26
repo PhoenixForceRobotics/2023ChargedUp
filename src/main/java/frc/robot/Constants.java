@@ -73,19 +73,7 @@ public final class Constants {
         public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
     }
 
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-    }
-
-    public static final class ControllerConstants {
-        public static final double AXIS_DEADZONE = 0.05;
-        public static final int DPAD_UP = 0;
-        public static final int DPAD_RIGHT = 90;
-        public static final int DPAD_DOWN = 180;
-        public static final int DPAD_LEFT = 270;
-
-        public static final int STICK_EXPONENTIAL_CURVE = 2;
-    }
+    public static final int STICK_EXPONENTIAL_CURVE = 2;
 
     public static final class UtilConstants {
         public static final double FALCON_ENCODER_RESOLUTION = 2048;
@@ -160,8 +148,17 @@ public final class Constants {
         public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.3089;
 
         public static final ArmFeedforward ARM_ROTATION_FEED_FORWARD =
-                new ArmFeedforward(ROTATION_S_VOLTS, ROTATION_G, ROTATION_V_VOLTS_SECONDS_PER_METER, ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final ArmFeedforward ARM_EXTENSION_FEED_FORWARD = new ArmFeedforward(EXTENSION_S_VOLTS, EXTENSION_G, EXTENSION_V_VOLTS_SECONDS_PER_METER, EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER);
+                new ArmFeedforward(
+                        ROTATION_S_VOLTS,
+                        ROTATION_G,
+                        ROTATION_V_VOLTS_SECONDS_PER_METER,
+                        ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER);
+        public static final ArmFeedforward ARM_EXTENSION_FEED_FORWARD =
+                new ArmFeedforward(
+                        EXTENSION_S_VOLTS,
+                        EXTENSION_G,
+                        EXTENSION_V_VOLTS_SECONDS_PER_METER,
+                        EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER);
         public static final ArmFeedforward CLAW_ROTATION_FEEDFORWARD =
                 new ArmFeedforward(
                         CLAW_S_VOLTS,
@@ -172,5 +169,36 @@ public final class Constants {
         public static final double CLAW_STARTING_ANGLE =
                 0; // Change this when we figure out the default starting angle of the claw when
         // testing
+    }
+
+    public static final class ClawConstants {
+        // TODO: Change all of these values when they are known
+        public static final int CLAW_MOTOR_PORT = 1;
+        public static final boolean CLAW_MOTOR_REVERSED = false;
+        public static final double CLAW_GEAR_RATIO = (double) 40 / (double) 1; // output / input
+        public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
+
+        public static final double CLAW_MOTOR_SPEED = 0.3;
+
+        public static final int CONE_SENSOR_CHANNEL = 0;
+        public static final int CUBE_SENSOR_CHANNEL = 1;
+
+        public static final double CONE_TIMER_DELAY_LENGTH =
+                1; // TODO: Change value, current value is only a placeholder
+        public static final double CUBE_TIMER_DELAY_LENGTH = 0.3;
+    }
+
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+    }
+
+    public static final class ControllerConstants {
+        public static final double AXIS_DEADZONE = 0.05;
+        public static final int DPAD_UP = 0;
+        public static final int DPAD_RIGHT = 90;
+        public static final int DPAD_DOWN = 180;
+        public static final int DPAD_LEFT = 270;
+
+        public static final int STICK_EXPONENTIAL_CURVE = 2;
     }
 }
