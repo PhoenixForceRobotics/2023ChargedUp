@@ -72,19 +72,7 @@ public final class Constants {
         public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
     }
 
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-    }
-
-    public static final class ControllerConstants {
-        public static final double AXIS_DEADZONE = 0.05;
-        public static final int DPAD_UP = 0;
-        public static final int DPAD_RIGHT = 90;
-        public static final int DPAD_DOWN = 180;
-        public static final int DPAD_LEFT = 270;
-
-        public static final int STICK_EXPONENTIAL_CURVE = 2;
-    }
+    public static final int STICK_EXPONENTIAL_CURVE = 2;
 
     public static final class UtilConstants {
         public static final double FALCON_ENCODER_RESOLUTION = 2048;
@@ -99,5 +87,36 @@ public final class Constants {
     public static final class ShuffleboardConstants {
         public static final String DRIVEBASE_CHOOSER =
                 "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
+    }
+
+    public static final class ClawConstants {
+        // TODO: Change all of these values when they are known
+        public static final int CLAW_MOTOR_PORT = 1;
+        public static final boolean CLAW_MOTOR_REVERSED = false;
+        public static final double CLAW_GEAR_RATIO = (double) 40 / (double) 1; // output / input
+        public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
+
+        public static final double CLAW_MOTOR_SPEED = 0.3;
+
+        public static final int CONE_SENSOR_CHANNEL = 0;
+        public static final int CUBE_SENSOR_CHANNEL = 1;
+
+        public static final double CONE_TIMER_DELAY_LENGTH =
+                1; // TODO: Change value, current value is only a placeholder
+        public static final double CUBE_TIMER_DELAY_LENGTH = 0.3;
+    }
+
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+    }
+
+    public static final class ControllerConstants {
+        public static final double AXIS_DEADZONE = 0.05;
+        public static final int DPAD_UP = 0;
+        public static final int DPAD_RIGHT = 90;
+        public static final int DPAD_DOWN = 180;
+        public static final int DPAD_LEFT = 270;
+
+        public static final int STICK_EXPONENTIAL_CURVE = 2;
     }
 }

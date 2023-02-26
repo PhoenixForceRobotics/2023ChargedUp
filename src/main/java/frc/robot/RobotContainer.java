@@ -12,10 +12,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
+import frc.robot.commands.claw.ClawIntakeSequence;
+import frc.robot.commands.claw.OutputPiece;
+import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
@@ -27,32 +31,29 @@ import frc.robot.utils.PFRController;
  */
 public class RobotContainer {
     // The robot's subsystems are defined here...
-    private final Drivebase drivebase = new Drivebase();
+    //private final Drivebase drivebase = new Drivebase();
+    private final Claw claw = new Claw();
 
     // The robot's controllers are defined here...
     private final PFRController operatorController = new PFRController(0);
     private final PFRController driverController = new PFRController(1);
 
     // The robot's commands are defined here...
-    private final CycleCenterOfRotation cycleCenterOfRotationUp =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final CycleCenterOfRotation cycleCenterOfRotationDown =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-    private final DifferentialDrive differentialDrive =
-            new DifferentialDrive(drivebase, driverController);
+    // private final CycleCenterOfRotation cycleCenterOfRotationUp =
+    //         new CycleCenterOfRotation(drivebase, Direction.UP);
+    // private final CycleCenterOfRotation cycleCenterOfRotationDown =
+    //         new CycleCenterOfRotation(drivebase, Direction.DOWN);
+    // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
+    // private final DifferentialDrive differentialDrive =
+    //         new DifferentialDrive(drivebase, driverController);
+    private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
+    private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
+    private final TeleopClaw teleopClaw = new TeleopClaw(claw, operatorController);
+    private final OutputPiece outputPiece = new OutputPiece(claw, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
     private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
-    ;
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        // Configure the button bindings
-        configureButtonBindings();
-        initializeListenersAndSendables();
-    }
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -61,10 +62,21 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driverController.lBumper().onTrue(mecanumDrive);
-        driverController.lBumper().onFalse(differentialDrive);
-        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        // driverController.lBumper().onTrue(mecanumDrive);
+        // driverController.lBumper().onFalse(differentialDrive);
+        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+
+        operatorController.xButton().whileTrue(pickUpCube);
+        operatorController.aButton().whileTrue(pickUpCone);
+        operatorController.bButton().whileTrue(outputPiece);
+    }
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        initializeListenersAndSendables();
     }
 
     public void initializeListenersAndSendables() {
@@ -86,20 +98,28 @@ public class RobotContainer {
 
     public void initializeTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        drivebaseCommandChooser.getSelected().schedule();
+        //drivebaseCommandChooser.getSelected().schedule();
     }
 
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().cancelAll();
-        differentialDrive.schedule();
+    // public void teleopPeriodic() {
+    //     CommandScheduler.getInstance().cancelAll();
+    //     differentialDrive.schedule();
+    // }
+
+    // public MecanumDrive getMecanumDrive() {
+    //     return mecanumDrive;
+    // }
+
+    // public DifferentialDrive getDifferentialDrive() {
+    //     return differentialDrive;
+    // }
+
+    public ClawIntakeSequence getPickUpCone() {
+        return pickUpCone;
     }
 
-    public MecanumDrive getMecanumDrive() {
-        return mecanumDrive;
-    }
-
-    public DifferentialDrive getDifferentialDrive() {
-        return differentialDrive;
+    public ClawIntakeSequence getPickUpCube() {
+        return pickUpCube;
     }
 
     public PFRController getDriverController() {
@@ -108,5 +128,10 @@ public class RobotContainer {
 
     public PFRController getOperatorController() {
         return operatorController;
+    }
+
+    public TeleopClaw getTeleopClaw()
+    {
+        return teleopClaw;
     }
 }
