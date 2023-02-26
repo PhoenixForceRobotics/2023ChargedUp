@@ -25,7 +25,7 @@ public class TeleopClaw extends CommandBase {
 
     @Override
     public void execute() {
-        claw.setMotor(operatorController.getRightYSquared()); // Maps the movement of the claw motors to the right joystick of the operator controller
+        claw.setMotor(operatorController.getRightYSquared() * 0.5); // Maps the movement of the claw motors to the right joystick of the operator controller
     }
 
     @Override

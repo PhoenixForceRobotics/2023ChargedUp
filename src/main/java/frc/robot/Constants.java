@@ -91,9 +91,9 @@ public final class Constants {
 
     public static final class ClawConstants {
         // TODO: Change all of these values when they are known
-        public static final int CLAW_MOTOR_PORT = 8;
+        public static final int CLAW_MOTOR_PORT = 1;
         public static final boolean CLAW_MOTOR_REVERSED = false;
-        public static final double CLAW_GEAR_RATIO = (double) 12 / (double) 72; // output / input
+        public static final double CLAW_GEAR_RATIO = (double) 40 / (double) 1; // output / input
         public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
         public static final double CLAW_MOTOR_SPEED = 0.3;

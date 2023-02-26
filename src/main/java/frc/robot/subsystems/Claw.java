@@ -1,12 +1,15 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.utils.Motor;
 
 public class Claw extends SubsystemBase {
-    private Motor motor; // References the motor of the claw
+    private CANSparkMax motor; // References the motor of the claw
     private DigitalInput cubeSensor; // Beam break sensor to detect if there is a cube
     private DigitalInput coneSensor; // Beam break sensor to detect if there is a cone
 
@@ -44,11 +47,7 @@ public class Claw extends SubsystemBase {
      */
     public Claw() {
         motor =
-                new Motor(
-                        ClawConstants.CLAW_MOTOR_PORT,
-                        ClawConstants.CLAW_MOTOR_REVERSED,
-                        ClawConstants.CLAW_GEAR_RATIO,
-                        ClawConstants.CLAW_WHEEL_DIAMETER);
+                new CANSparkMax(ClawConstants.CLAW_MOTOR_PORT, MotorType.kBrushed);
         cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
         coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
     }
@@ -105,15 +104,6 @@ public class Claw extends SubsystemBase {
      */
     public DigitalInput getConeSensor() {
         return coneSensor;
-    }
-
-    /**
-     * Getter for the motor object
-     *
-     * @return Motor for current claw object
-     */
-    public Motor getMotor() {
-        return motor;
     }
 
     @Override

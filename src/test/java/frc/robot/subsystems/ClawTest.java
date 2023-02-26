@@ -52,10 +52,4 @@ public class ClawTest {
         Mockito.when(coneSensor.get()).thenReturn(false);
         assertEquals(true, claw.hasPiece());
     }
-
-    // Tests to see if there is a motor
-    @Test
-    void testForMotor() {
-        assertEquals(wheel, claw.getMotor());
-    }
 }
