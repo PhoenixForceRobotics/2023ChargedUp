@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.utils.PIDValues;
 import frc.robot.utils.vision.UnitConverter;
 
 /**
@@ -103,27 +104,52 @@ public final class Constants {
                 "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
     }
 
-    public static final
-    class VisionConstants { // Constants relevant to vision processing in general
+    // Constants relevant to vision processing in general
+    public static final class VisionConstants {
 
         public static final class CameraNames { // The names of cameras on the coprocessor side
             public static final String CAM_TAG = "Camera_F_Tag";
-            public static final String CAM_BLOB = "Camera_F_ColorBlob";
+            public static final String CAM_BLOB_1 = "Camera_F_ColorBlob";
         }
 
-        public static final
-        class CameraSpecConstants { // Constants relevant to physical attributes of the camera
-            public static final int CAM_RES_X = 1920; // Horizontal camera resolution
-            public static final int CAM_RES_Y = 1080; // Vertical camera resolution
+        public static final class StrafePIDValues {
+            public static final PIDValues PID_X_VALUES = new PIDValues(1, 0, 1);
+            public static final PIDValues PID_Y_VALUES = new PIDValues(1, 0, 1);
+            public static final PIDValues PID_THETA_VALUES = new PIDValues(1, 0, 1);
+
+            public static final double PID_POSITION_TOLERANCE = 2; //2 inches tolerance bay bee
+            public static final double PID_ANGLE_TOLERANCE = 2; //also 2 degrees
+        }
+
+        // Constants relevant to physical attributes of the camera
+        public static final class CameraSpecConstants {
+            public static final int[] CAM_TAG_RES = {
+                800, 600
+            }; // Tag camera resolution TODO: verify value
+            public static final int[] CAM_BLOB_CONE_RES = {
+                1920, 1080
+            }; // Blob camera resolution TODO: give actual value
+            public static final int[] CAM_BLOB_CUBE_RES = {
+                1920, 1080
+            }; // Blob camera resolution TODO: give actual value
 
             public static final Transform3d ROBOT_TO_CAM_TAG = new Transform3d();
         }
 
         public static final class ProcessingConstants { // Constants relevant to the vision pipeline
 
-            // The size of MedianFilters for processing apriltags.
-            // Essentially: how much of a delay there will be, in frames.
+            /*
+             * The size of MedianFilters for processing apriltags.
+             * Essentially: how much of a delay there will be, in robot ticks.
+             */
             public static final int MEDIAN_FILTER_SIZE_TAG = 5;
+
+            /*
+             * How many bad robot ticks can enter the buffer before the pose guess is considered useless.
+             * Remember: this is robot ticks, NOT camera frames.
+             */
+            // intentional integer division
+            public static final int MAX_BAD_FRAME_TOLERANCE_TAG = MEDIAN_FILTER_SIZE_TAG / 2;
 
             // Position and angle of the robot relative to the AprilTag for the primary map
             // Remember: THIS IS IN INCHES (1 meter away)

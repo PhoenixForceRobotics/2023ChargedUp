@@ -1,4 +1,4 @@
-package frc.robot.utils.vision;
+package frc.robot.utils.exceptions;
 
 public class MapWrongSizeException extends RuntimeException {
     public MapWrongSizeException() {

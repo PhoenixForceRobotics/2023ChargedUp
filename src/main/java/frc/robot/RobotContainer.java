@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.drivebase.CycleCenterOfRotation;
+import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
+import frc.robot.commands.drivebase.DifferentialDrive;
+import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.commands.vision.UpdateVisionData;
-// import frc.robot.commands.drivebase.CycleCenterOfRotation;
-// import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
-// import frc.robot.commands.drivebase.DifferentialDrive;
-// import frc.robot.commands.drivebase.MecanumDrive;
-// import frc.robot.subsystems.Drivebase;
-// import frc.robot.utils.PFRController;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.vision.TagProcessing;
+import frc.robot.utils.PFRController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,22 +27,23 @@ import frc.robot.subsystems.vision.TagProcessing;
  */
 public class RobotContainer {
     // The robot's subsystems are defined here...
-    // private final Drivebase drivebase = new Drivebase();
+    private final Drivebase drivebase = new Drivebase();
     private final TagProcessing tagProcessing = new TagProcessing();
 
     // // The robot's controllers are defined here...
-    // private final PFRController operatorController = new PFRController(0);
-    // private final PFRController driverController = new PFRController(1);
+    private final PFRController operatorController = new PFRController(0);
+    private final PFRController driverController = new PFRController(1);
 
     // // The robot's commands are defined here...
-    // private final CycleCenterOfRotation cycleCenterOfRotationUp =
-    //         new CycleCenterOfRotation(drivebase, Direction.UP);
-    // private final CycleCenterOfRotation cycleCenterOfRotationDown =
-    //         new CycleCenterOfRotation(drivebase, Direction.UP);
-    // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-    // private final DifferentialDrive differentialDrive =
-    //         new DifferentialDrive(drivebase, driverController);
-    private final UpdateVisionData updateVisionData = new UpdateVisionData(tagProcessing);
+    private final CycleCenterOfRotation cycleCenterOfRotationUp =
+            new CycleCenterOfRotation(drivebase, Direction.UP);
+    private final CycleCenterOfRotation cycleCenterOfRotationDown =
+            new CycleCenterOfRotation(drivebase, Direction.UP);
+    private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
+    private final DifferentialDrive differentialDrive =
+            new DifferentialDrive(drivebase, driverController);
+    private final UpdateVisionData updateVisionData =
+            new UpdateVisionData(tagProcessing, drivebase);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -90,13 +91,12 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         // drivebaseCommandChooser.getSelected().schedule();
         updateVisionData.schedule();
-        System.out.println("i");
     }
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
         // differentialDrive.schedule();
-        
+
     }
 
     // public MecanumDrive getMecanumDrive() {

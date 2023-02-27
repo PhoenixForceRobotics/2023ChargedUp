@@ -11,15 +11,16 @@ public class UnitConverter {
         return distInches / 12;
     }
 
+    public static double InchesAndFeetToInches(double distFeet, double distInches) {
+        return (FeetToInches(distFeet)) + distInches;
+    }
+
     public static double MetersToInches(double distMeters) {
         return distMeters * 39.3701;
     }
 
     public static Pose2d MetersToInches(Pose2d poseMeters) {
         return new Pose2d(
-            poseMeters.getX() * 39.3701,
-            poseMeters.getY() * 39.3701,
-            poseMeters.getRotation()
-            );
+                poseMeters.getX() * 39.3701, poseMeters.getY() * 39.3701, poseMeters.getRotation());
     }
 }

@@ -1,6 +1,8 @@
 package frc.robot.utils.vision;
 
 import frc.robot.constants.Constants.VisionConstants.ProcessingConstants;
+import frc.robot.utils.exceptions.MapWrongSizeException;
+
 import org.opencv.core.Point;
 
 /**

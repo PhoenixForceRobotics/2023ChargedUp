@@ -72,7 +72,8 @@ public class Drivebase extends SubsystemBase {
     private MecanumDriveKinematics
             kinematics; // Everything we use to track the robot's location and behavior
     private MecanumDriveOdometry odometry;
-    //TODO: either forcibly override odometry or make a utility wrapper class for it that allows for resetting via tags
+    // TODO: either forcibly override odometry or make a utility wrapper class for it that allows
+    // for resetting via tags
 
     private CenterOfRotation centerOfRotation; // Where the mecanum drive will rotate around
 
