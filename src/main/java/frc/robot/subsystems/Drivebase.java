@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,9 +11,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -53,11 +52,11 @@ public class Drivebase extends SubsystemBase {
     private Motor flWheel, frWheel, blWheel, brWheel;
 
     private PneumaticHub pneumaticHub;
-    private Solenoid butterflyPistons;
+    private DoubleSolenoid butterflyPistons;
 
     // TODO: Re-add this once we install the pigeon
-    private WPI_Pigeon2 inertialMeasurementUnit;
-    // private ADXRS450_Gyro gyro;
+    // private Pigeon2 inertialMeasurementUnit;
+    private ADXRS450_Gyro gyro;
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -120,11 +119,14 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.POSITION_PID,
                         DrivebaseConstants.VELOCITY_PID);
 
-        pneumaticHub = new PneumaticHub(DrivebaseConstants.PNEUMATIC_HUB_CAN_ID);
-        butterflyPistons = pneumaticHub.makeSolenoid(DrivebaseConstants.BUTTERFLY_FORWARD_PORT);
+        pneumaticHub = new PneumaticHub();
+        butterflyPistons =
+                pneumaticHub.makeDoubleSolenoid(
+                        DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
+                        DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
-        inertialMeasurementUnit = new WPI_Pigeon2(20);
-        // gyro = new ADXRS450_Gyro();
+        // inertialMeasurementUnit = new Pigeon2(0);
+        gyro = new ADXRS450_Gyro();
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -287,7 +289,7 @@ public class Drivebase extends SubsystemBase {
      * @return {@link Value} whether the piston is forward or reverse
      */
     public Value getButterflyPistonsValue() {
-        return butterflyPistons.get() ? Value.kForward : Value.kReverse;
+        return butterflyPistons.get();
     }
 
     /**
@@ -296,11 +298,7 @@ public class Drivebase extends SubsystemBase {
      * @param value to go forward or reverse
      */
     public void setButterflyPistons(Value value) {
-        if (value == Value.kForward) {
-            butterflyPistons.set(true);
-        } else {
-            butterflyPistons.set(false);
-        }
+        butterflyPistons.set(value);
     }
 
     public boolean isMeccanum() {
@@ -351,8 +349,8 @@ public class Drivebase extends SubsystemBase {
      * @return current heading (CCW+)
      */
     public double getHeading() {
-        return inertialMeasurementUnit.getYaw();
-        // return gyro.getAngle();
+        // return inertialMeasurementUnit.getYaw();
+        return gyro.getAngle();
     }
 
     /**
@@ -361,18 +359,18 @@ public class Drivebase extends SubsystemBase {
      * @return current heading in the form of a {@link Rotation2d}
      */
     public Rotation2d getRotation2d() {
-        return inertialMeasurementUnit.getRotation2d();
-        // return gyro.getRotation2d();
+        // return new Rotation2d(Math.toRadians(inertialMeasurementUnit.getYaw()));
+        return gyro.getRotation2d();
     }
 
     /**
      * Get the angle of elevation (pitch) of the robot
-     * 
+     *
      * @return pitch (in degrees) (Positive for upwards, Negative for downwards)
      */
-    public double getPitch()
-    {
-        return inertialMeasurementUnit.getPitch();
+    public double getPitch() {
+        return 0;
+        // return inertialMeasurementUnit.getPitch();
     }
 
     // We shouldn't be changing the yaw on the IMU, rather changing it within the pose estimation :D

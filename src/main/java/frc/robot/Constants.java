@@ -19,8 +19,9 @@ import frc.robot.utils.PIDValues;
  */
 public final class Constants {
     public static final class DrivebaseConstants {
-        public static final int PNEUMATIC_HUB_CAN_ID = 30;
+        public static final int PNEUMATIC_HUB_CAN_ID = 0;
         public static final int BUTTERFLY_FORWARD_PORT = 0;
+        public static final int BUTTERFLY_REVERSE_PORT = 0;
 
         public static final int WHEEL_FL_CAN_ID = 1;
         public static final int WHEEL_FR_CAN_ID = 2;
@@ -36,24 +37,26 @@ public final class Constants {
 
         // TODO: Recalculate all of these values
         public static final PIDValues POSITION_PID =
-                new PIDValues(4.8538, 0, 3.4846, 0.068311, 1.6687, 0.14842, 7, 4);
+                new PIDValues(109.13, 0, 4.853, 0.18295, 2.8829, 0.14847, 7, 4);
         public static final PIDValues VELOCITY_PID =
-                new PIDValues(0.00032405, 0, 0, 0.068311, 1.6687, 0.14842, 7, 4);
-        public static final PIDValues BALANCE_PID = new PIDValues(0.05, 0.001, 0.0001, 0, 0, 0, 0.75, 0);
-        public static final double BALANCE_PID_MAX_ANGLE = 2.5; // in degrees, max angle to be LEVEL according to rulebook
+                new PIDValues(0.20838, 0, 0, 0.18295, 2.8829, 0.14847, 7, 4);
+        public static final PIDValues BALANCE_PID = new PIDValues(0.1, 0, 0.001, 0, 0, 0, 0.75, 0);
+        public static final double BALANCE_PID_MAX_ANGLE =
+                2.5; // in degrees, max angle to be LEVEL, according to rulebook
         public static final double BALANCE_PID_MAX_ANGULAR_VELOCITY = 1; // in degrees / second
         public static final PIDValues HOLONOMIC_DRIVE_PID = new PIDValues(1, 0, 0);
 
         // 25.25 in long (x), 23.5 in wide (y)
-        public static final Translation2d WHEEL_FL_LOCATION = new Translation2d(0.320675, 0.29845); 
+        public static final Translation2d WHEEL_FL_LOCATION = new Translation2d(0.320675, 0.29845);
         public static final Translation2d WHEEL_FR_LOCATION = new Translation2d(0.320675, -0.29845);
         public static final Translation2d WHEEL_BL_LOCATION = new Translation2d(-0.320675, 0.29845);
-        public static final Translation2d WHEEL_BR_LOCATION = new Translation2d(-0.320675, -0.29845);
+        public static final Translation2d WHEEL_BR_LOCATION =
+                new Translation2d(-0.320675, -0.29845);
         public static final Translation2d FRONT_CENTER_LOCATION =
                 new Translation2d(0.320675, 0); // Helpful for evassive manuvers
 
         public static final double GEAR_RATIO = (12.0 / 62.0) * (16.0 / 22.0); // output / input
-        
+
         public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
@@ -65,13 +68,13 @@ public final class Constants {
                         * 0.9; // free speed of wheel (meters per second)
 
         // used for slew limiters, meters per s^2
-        public static final double MAX_LINEAR_ACCELERATION = 6;
+        public static final double MAX_LINEAR_ACCELERATION = 4;
 
         public static final double MIN_LINEAR_VELOCITY = 0.075; // Prevents undesired creep
-        public static final double MAX_LINEAR_VELOCITY = 3.5; // meters per second
+        public static final double MAX_LINEAR_VELOCITY = 2; // meters per second
 
         public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
-        public static final double MAX_ANGULAR_VELOCITY = 1.5 * Math.PI; // radians per second
+        public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
     }
 
     public static class OperatorConstants {

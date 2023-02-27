@@ -45,7 +45,7 @@ public class MecanumDrive extends CommandBase {
     @Override
     public void execute() {
 
-        if (driverController.getLeftBumperPressed()) {
+        if (driverController.getAButton()) {
             // allows us to toggle frame of reference when button pressed
             if (frameOfReference == FrameOfReference.ROBOT) {
                 frameOfReference = FrameOfReference.FIELD;
@@ -67,17 +67,17 @@ public class MecanumDrive extends CommandBase {
 
         // Adds deadzones to velocities(to prevent unwanted drifting)
         xVelocity =
-                MathUtil.clamp(
+                MathUtil.applyDeadband(
                         xVelocity,
                         DrivebaseConstants.MIN_LINEAR_VELOCITY,
                         DrivebaseConstants.MAX_LINEAR_VELOCITY);
         yVelocity =
-                MathUtil.clamp(
+                MathUtil.applyDeadband(
                         yVelocity,
                         DrivebaseConstants.MIN_LINEAR_VELOCITY,
                         DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-                MathUtil.clamp(
+                MathUtil.applyDeadband(
                         angularVelocity,
                         DrivebaseConstants.MIN_ANGULAR_VELOCITY,
                         DrivebaseConstants.MAX_ANGULAR_VELOCITY);
