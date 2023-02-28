@@ -115,8 +115,9 @@ public final class Constants {
         public static final int CLAW_ROTATION_MOTOR_2_PORT = 15;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
-        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 70;
         public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
+        public static final double CLAW_ROTATION_SPEED = 0.5;
 
         // Numbers to caulcuate height and distance
         public static final double DISTANCE_GROUND_TO_FULCRUM = 0.5; // In meters
@@ -167,7 +168,7 @@ public final class Constants {
                         CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
 
         public static final double CLAW_STARTING_ANGLE =
-                0; // Change this when we figure out the default starting angle of the claw when
+                90; // Change this when we figure out the default starting angle of the claw when
         // testing
     }
 
