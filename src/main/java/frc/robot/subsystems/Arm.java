@@ -150,7 +150,7 @@ public class Arm extends SubsystemBase {
      */
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
-                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), getClawRotationRadiansPerSecond());
+                ArmConstants.CLAW_ROTATION_FEEDFORWARD.calculate(Math.toRadians(getClawRotationAbsoluteAngle()), angularVelocity);
         clawRotationMotors.setVoltage(voltage);
     }
 
