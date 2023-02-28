@@ -144,7 +144,7 @@ public final class Constants {
 
         // TODO: Use Sysid to get claw rotation feedforward values
         public static final double CLAW_S_VOLTS = 0.11483;
-        public static final double CLAW_G = 1.1688;
+        public static final double CLAW_G = 1;
         public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 0.73149;
         public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.06866;
         
