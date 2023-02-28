@@ -1,20 +1,17 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.utils.PFRController;
 
 public class ClawTesting extends CommandBase {
     private Arm arm;
-    private Claw claw;
     private PFRController operatorController;
 
     public ClawTesting(Arm arm, PFRController operatorController, Claw claw) {
         this.arm = arm;
         this.operatorController = operatorController;
-        this.claw = claw;
     }
 
     @Override
@@ -25,7 +22,7 @@ public class ClawTesting extends CommandBase {
     @Override
     public void execute() {
         arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared() * 2 * Math.PI);
-        System.out.println("Absolute Angle: " + arm.getClawRotationAbsoluteAngle());
+        System.out.println("Absolute Angle: " + arm.getClawRotationAbsoluteAngleInDegrees());
     }
 
     @Override

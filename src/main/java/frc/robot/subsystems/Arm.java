@@ -112,7 +112,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         clawRotationSetpoint = 180 - clawRotationSetpoint;
-        clawRotationError = clawRotationSetpoint - getClawRotationAbsoluteAngle();
+        clawRotationError = clawRotationSetpoint - getClawRotationAbsoluteAngleInDegrees();
 
         shuffleboardClawRotationError.setDouble(clawRotationError);
         shuffleboardClawRotationSetpoint.setDouble(clawRotationSetpoint);
@@ -126,7 +126,7 @@ public class Arm extends SubsystemBase {
     // public void setRotationRadiansPerSecond(double angularVelocity) {
     //     double voltage =
     //             ArmConstants.ARM_ROTATION_FEED_FORWARD.calculate(
-    //                             Math.toRadians(getRotationAngle()), getRotationRadiansPerSecond())
+    //                             getRotationAngleInRadians(), angularVelocity)
     //                     + rotationPid.calculate(getRotationRadiansPerSecond());
     //     rotationMotors.setVoltage(voltage);
     // }
@@ -139,7 +139,7 @@ public class Arm extends SubsystemBase {
     // public void setExtensionMetersPerSecond(double velocity) {
     //     double voltage =
     //             ArmConstants.ARM_EXTENSION_FEED_FORWARD.calculate(
-    //                             getExtensionLength(), getExtensionMetersPerSecond())
+    //                             getExtensionLength(), velocity)
     //                     + extensionPid.calculate(getExtensionMetersPerSecond());
     //     extensionMotors.setVoltage(voltage);
     // }
@@ -152,7 +152,7 @@ public class Arm extends SubsystemBase {
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
         double voltage =
                 clawRotationFeedforward.calculate(
-                        Math.toRadians(getClawRotationAbsoluteAngle()),
+                        getClawRotationAbsoluteAngleInRadians(),
                         angularVelocity) 
                 + MathUtil.clamp(clawRotationPid.calculate(getClawRotationRadiansPerSecond(), angularVelocity), -7, 7);
         clawRotationMotors.setVoltage(-voltage);
@@ -197,8 +197,13 @@ public class Arm extends SubsystemBase {
     //  *
     //  * @return the angle of the arm in degrees
     //  */
-    // public double getRotationAngle() {
+    // public double getRotationAngleInDegrees() {
     //     return rotationMotor1.getRotations() * 360;
+    // }
+
+    // public double getRotationAngleInRadians()
+    // {
+    //     return Math.toRadians(getRotationAngleInDegrees());
     // }
 
     // /**
@@ -215,7 +220,7 @@ public class Arm extends SubsystemBase {
      *
      * @return the rotation of the claw in degrees
      */
-    public double getClawRotationRelativeAngle() {
+    public double getClawRotationRelativeAngleInDegrees() {
         return clawRotationMotor1.getRotations() * 360;
     }
 
@@ -325,7 +330,17 @@ public class Arm extends SubsystemBase {
      *
      * @return the angle of the claw gotten from the encoders plus the starting the angle
      */
-    public double getClawRotationAbsoluteAngle() {
-        return getClawRotationRelativeAngle() + ArmConstants.CLAW_STARTING_ANGLE;
+    public double getClawRotationAbsoluteAngleInDegrees() {
+        return getClawRotationRelativeAngleInDegrees() + ArmConstants.CLAW_STARTING_ANGLE;
+    }
+
+    public double getClawRotationAbsoluteAngleInRadians()
+    {
+        return getClawRotationRelativeAngleInRadians() + Math.toRadians(ArmConstants.CLAW_STARTING_ANGLE);
+    }
+
+    public double getClawRotationRelativeAngleInRadians()
+    {
+        return Math.toRadians(getClawRotationRelativeAngleInDegrees());
     }
 }
