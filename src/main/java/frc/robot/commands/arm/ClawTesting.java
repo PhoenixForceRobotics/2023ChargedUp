@@ -24,8 +24,8 @@ public class ClawTesting extends CommandBase {
 
     @Override
     public void execute() {
-        arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared() * 0.7);
-        //System.out.println(arm.getClawRotationAbsoluteAngle());
+        arm.setClawRotationRadiansPerSecond(operatorController.getLeftYSquared() * 2 * Math.PI);
+        System.out.println("Absolute Angle: " + arm.getClawRotationAbsoluteAngle());
     }
 
     @Override

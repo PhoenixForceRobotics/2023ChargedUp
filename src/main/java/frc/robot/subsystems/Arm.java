@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
@@ -45,6 +46,7 @@ public class Arm extends SubsystemBase {
     private GenericEntry shuffleboardClawRotationError;
 
     private ArmFeedforward clawRotationFeedforward;
+    private PIDController clawRotationPid;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -97,6 +99,7 @@ public class Arm extends SubsystemBase {
                         ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
         clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
+        clawRotationPid = new PIDController(ArmConstants.CLAW_ROTATION_PID_P, 0, ArmConstants.CLAW_ROTATION_PID_D);
 
         // Defines shuffleboard tab and entries
         armTab = Shuffleboard.getTab("Arm");
@@ -150,13 +153,11 @@ public class Arm extends SubsystemBase {
         double voltage =
                 clawRotationFeedforward.calculate(
                         Math.toRadians(getClawRotationAbsoluteAngle()),
-                        angularVelocity);
-        clawRotationMotors.setVoltage(voltage);
-        System.out.println(voltage);
-    }
-
-    public void setClawRotationMotors(double percentage) {
-        clawRotationMotors.set(percentage);
+                        angularVelocity) 
+                + MathUtil.clamp(clawRotationPid.calculate(getClawRotationRadiansPerSecond(), angularVelocity), -7, 7);
+        clawRotationMotors.setVoltage(-voltage);
+        System.out.println("Ouput Voltage: " + voltage);
+        System.out.println("Desired Angular Velocity: " + angularVelocity);
     }
 
     // /**
@@ -187,6 +188,7 @@ public class Arm extends SubsystemBase {
      * @return the rotational velocity of the claw rotation motors in radians per second
      */
     public double getClawRotationRadiansPerSecond() {
+        System.out.println("Radians Per Second: " + clawRotationMotor1.getRPM() / 60 * Math.PI * 2);
         return clawRotationMotor1.getRPM() / 60 * Math.PI * 2;
     }
 

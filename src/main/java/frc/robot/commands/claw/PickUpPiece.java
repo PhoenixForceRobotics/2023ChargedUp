@@ -28,11 +28,18 @@ public class PickUpPiece extends CommandBase {
     @Override
     public void initialize() {
         if (isPickingUpCube) {
-            // If we are picking up the cube, then we use a positive motor speed
-            claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
+            if (claw.hasPiece() == false)
+            {
+                // If we are picking up the cube, then we use a positive motor speed
+                claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
+            }
+            
         } else {
-            // Otherwise, we use a negative motor speed to spin the motor the opposite direction
-            claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
+            if (claw.hasPiece() == false)
+            {
+                // Otherwise, we use a negative motor speed to spin the motor the opposite direction
+                claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
+            }
         }
         timer.reset();
         timer.stop();

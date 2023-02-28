@@ -23,9 +23,9 @@ public class OutputPiece extends CommandBase {
     @Override
     public void execute() {
         if (claw.getBreakStatus() == BeamBreakStatus.CUBE) {
-            claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
-        } else if (claw.getBreakStatus() == BeamBreakStatus.CONE) {
             claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
+        } else if (claw.getBreakStatus() == BeamBreakStatus.CONE) {
+            claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
         }
     }
 

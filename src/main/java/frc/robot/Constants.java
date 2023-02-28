@@ -143,10 +143,13 @@ public final class Constants {
         public static final double EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
 
         // TODO: Use Sysid to get claw rotation feedforward values
-        public static final double CLAW_S_VOLTS = 0.001575;
-        public static final double CLAW_G = 0.99974;
-        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 5.5262;
-        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.3089;
+        public static final double CLAW_S_VOLTS = 0.11483;
+        public static final double CLAW_G = 1.1688;
+        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 0.73149;
+        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.06866;
+        
+        public static final double CLAW_ROTATION_PID_P = 0.27317;
+        public static final double CLAW_ROTATION_PID_D = 0;     
 
         public static final ArmFeedforward ARM_ROTATION_FEED_FORWARD =
                 new ArmFeedforward(
@@ -179,14 +182,14 @@ public final class Constants {
         public static final double CLAW_GEAR_RATIO = (double) 40 / (double) 1; // output / input
         public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
-        public static final double CLAW_MOTOR_SPEED = 0.3;
+        public static final double CLAW_MOTOR_SPEED = 1;
 
         public static final int CONE_SENSOR_CHANNEL = 0;
         public static final int CUBE_SENSOR_CHANNEL = 1;
 
         public static final double CONE_TIMER_DELAY_LENGTH =
-                1; // TODO: Change value, current value is only a placeholder
-        public static final double CUBE_TIMER_DELAY_LENGTH = 0.3;
+                (double) 1 / (double) 10; // TODO: Change value, current value is only a placeholder
+        public static final double CUBE_TIMER_DELAY_LENGTH = 0;
     }
 
     public static class OperatorConstants {
