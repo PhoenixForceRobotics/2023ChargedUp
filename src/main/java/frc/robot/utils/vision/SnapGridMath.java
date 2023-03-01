@@ -8,7 +8,6 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.constants.FieldConstants.SnapGrid;
 import frc.robot.utils.exceptions.AllianceNotSetException;
 import frc.robot.utils.exceptions.NoValidSnapPointsException;
-
 import org.opencv.core.Point;
 
 // TODO: who the fuck cares
@@ -20,24 +19,16 @@ public class SnapGridMath {
 
     public static double[] GRIDSNAP_CHECK_BOUNDARIES;
 
-    // Called once. Dynamically computes grid dividing midpoints
-    /*private static void computeGRIDSNAP_CHECK_BOUNDARIES() {
-        GRIDSNAP_CHECK_BOUNDARIES = new double[SnapGrid.GRID_SNAP_Y.length];
-        for (int i = 0; i < GRIDSNAP_CHECK_BOUNDARIES.length - 1; i++) {
-            GRIDSNAP_CHECK_BOUNDARIES[i] = (SnapGrid.GRID_SNAP_Y[i] + SnapGrid.GRID_SNAP_Y[i + 1]) / 2;
-        }
-        GRIDSNAP_CHECK_BOUNDARIES[GRIDSNAP_CHECK_BOUNDARIES.length - 1] = SnapGrid.GRID_SNAP_Y[GRIDSNAP_CHECK_BOUNDARIES.length - 1] + 4.625; //god is dead and we have killed him
-    }*/
-
     /*
      * Returns what index a given position should snap to, a -1 if it should snap to the substation, or a -2 if all are too far.
-     * 
+     *
      * @param alliance What alliance the robot is on. Used to compensate for field asymmetry.
      * @param position Current robot position as a Translation2d.
      * @param maxSnapDistance How far is considered too far (as the crow flies) before it's rejected as a snap point.
      */
     // TODO: enum return values (or container)
-    public static int snapToGrid(Alliance alliance, Translation2d position, double maxSnapDistance) throws AllianceNotSetException {
+    public static int snapToGrid(Alliance alliance, Translation2d position, double maxSnapDistance)
+            throws AllianceNotSetException {
         // basic algorithm: find the shortest distance of the robot to each point, then at the end
         // check if it's within the max distance allowed
         // this allows for Fast:tm: because the implementation does it per frame because I'm an
@@ -52,16 +43,18 @@ public class SnapGridMath {
         double substationXDistance = Math.abs(xPosition - SnapGrid.SUBSTATION_SNAP_X);
         double gridXDistance = Math.abs(xPosition - SnapGrid.GRID_SNAP_X);
         if (gridXDistance > substationXDistance) { // if substation is closer
-            //this could probably be a ternary operator sequence but frankly I don't give a shit this is good enough
-            
-            //The snapping rules for substations are much stricter, just because the odds of accidentally drifting into a protected zone must be made 0 at all costs
+            // this could probably be a ternary operator sequence but frankly I don't give a shit
+            // this is good enough
 
-            //Check that Y value is within bounds while accounting for field asymmetry
-            //https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html 
-            //Remember: Y+ is up, so Red has its substation starting at the end of the grid
-            //and Blue has its substation starting at 0
+            // The snapping rules for substations are much stricter, just because the odds of
+            // accidentally drifting into a protected zone must be made 0 at all costs
+
+            // Check that Y value is within bounds while accounting for field asymmetry
+            // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html
+            // Remember: Y+ is up, so Red has its substation starting at the end of the grid
+            // and Blue has its substation starting at 0
             double lowerBound, upperBound;
-            switch(alliance) {
+            switch (alliance) {
                 case Red:
                     lowerBound = SnapGrid.TOTAL_GRID_LENGTH;
                     upperBound = FieldConstants.FIELD_LENGTH;
@@ -73,14 +66,15 @@ public class SnapGridMath {
                 default:
                     throw new AllianceNotSetException();
             }
-            //Now actually do position checks
-            if (yPosition >= lowerBound && yPosition <= upperBound) { //If within Y bounds of substation
-                //Only need to check X distance if it's already within the substation boundaries; we're trying to just force it to a line, really
-                return (substationXDistance < maxSnapDistance)
-                    ? -1
-                    : -2; 
-            } else { //If not within Y bounds of substation
-                //Remember: it's already determined the substation is closer, so no need to check the grid
+            // Now actually do position checks
+            if (yPosition >= lowerBound
+                    && yPosition <= upperBound) { // If within Y bounds of substation
+                // Only need to check X distance if it's already within the substation boundaries;
+                // we're trying to just force it to a line, really
+                return (substationXDistance < maxSnapDistance) ? -1 : -2;
+            } else { // If not within Y bounds of substation
+                // Remember: it's already determined the substation is closer, so no need to check
+                // the grid
                 return -2;
             }
         } else { // if grid is closer, proceed with algorithm
@@ -89,12 +83,12 @@ public class SnapGridMath {
             bestYDistanceValue = 9999;
         }
 
-        //Account for field asymmetry
-        //https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html 
-        //Remember: Y+ is up, so Red has its grid starting at 0 
-        //and Blue has its grid starting at the end of the substation
+        // Account for field asymmetry
+        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html
+        // Remember: Y+ is up, so Red has its grid starting at 0
+        // and Blue has its grid starting at the end of the substation
         double teamYOffset;
-        switch(alliance) {
+        switch (alliance) {
             case Red:
                 teamYOffset = 0;
                 break;
@@ -105,7 +99,7 @@ public class SnapGridMath {
                 throw new AllianceNotSetException();
         }
 
-        //actual distance check
+        // actual distance check
         for (int i = 0; i < SnapGrid.GRID_SNAP_Y.length; i++) {
             double yDifference = Math.abs(yPosition - (SnapGrid.GRID_SNAP_Y[i] + teamYOffset));
             if (yDifference < bestYDistanceValue) {
@@ -126,7 +120,8 @@ public class SnapGridMath {
      * @param alliance What alliance the robot is on. Used to compensate for field asymmetry.
      * @param position Current robot position as a Translation2d.
      */
-    public static int snapToGrid(Alliance alliance, Translation2d position) throws AllianceNotSetException {
+    public static int snapToGrid(Alliance alliance, Translation2d position)
+            throws AllianceNotSetException {
         return snapToGrid(alliance, position, SnapGrid.DEFAULT_SNAP_MAX_DISTANCE);
     }
 
@@ -135,14 +130,16 @@ public class SnapGridMath {
      * @param alliance What alliance the robot is on. Used to compensate for field asymmetry.
      * @param position Current robot position as a Pose2d.
      */
-    public static int snapToGrid(Alliance alliance, Pose2d position) throws AllianceNotSetException {
+    public static int snapToGrid(Alliance alliance, Pose2d position)
+            throws AllianceNotSetException {
         return snapToGrid(alliance, position.getTranslation(), SnapGrid.DEFAULT_SNAP_MAX_DISTANCE);
     }
 
     /*
      * Returns a Pose2D containing the field-relative position and angle the robot should be facing, given which alliance it's part of and where it is currently.
      */
-    public static Pose2d getSnapPositionFromPosition(Alliance alliance, Pose2d positionPose) throws AllianceNotSetException, NoValidSnapPointsException {
+    public static Pose2d getSnapPositionFromPosition(Alliance alliance, Pose2d positionPose)
+            throws AllianceNotSetException, NoValidSnapPointsException {
         Pose2d targetPos;
 
         int snapIndex = SnapGridMath.snapToGrid(alliance, positionPose);
@@ -151,10 +148,10 @@ public class SnapGridMath {
             throw new NoValidSnapPointsException();
         }
 
-        //-2 already got filtered out from this clause
-        if (snapIndex > -1) { //if within the grid
+        // -2 already got filtered out from this clause
+        if (snapIndex > -1) { // if within the grid
             double teamYOffset;
-            switch(alliance) {
+            switch (alliance) {
                 case Red:
                     teamYOffset = 0;
                     break;
@@ -164,26 +161,37 @@ public class SnapGridMath {
                 default:
                     throw new AllianceNotSetException();
             }
-            targetPos = new Pose2d(SnapGrid.GRID_SNAP_X, SnapGrid.GRID_SNAP_Y[snapIndex] + teamYOffset, new Rotation2d(0));
-        } else { //if snapping to substation
-            //remember, the substation snap line is only a valid snap if the robot is already within its Y bounds; as such, Y for the target pose is just passthrough (no Y offset necessary)
-            targetPos = new Pose2d(SnapGrid.SUBSTATION_SNAP_X, positionPose.getY(), new Rotation2d(Math.PI));
+            targetPos =
+                    new Pose2d(
+                            SnapGrid.GRID_SNAP_X,
+                            SnapGrid.GRID_SNAP_Y[snapIndex] + teamYOffset,
+                            new Rotation2d(0));
+        } else { // if snapping to substation
+            // remember, the substation snap line is only a valid snap if the robot is already
+            // within its Y bounds; as such, Y for the target pose is just passthrough (no Y offset
+            // necessary)
+            targetPos =
+                    new Pose2d(
+                            SnapGrid.SUBSTATION_SNAP_X,
+                            positionPose.getY(),
+                            new Rotation2d(Math.PI));
         }
 
         return targetPos;
     }
 
-    public static Pose2d getSnapPositionFromIndex(Alliance alliance, Pose2d positionPose,  int index) throws AllianceNotSetException, NoValidSnapPointsException {
+    public static Pose2d getSnapPositionFromIndex(Alliance alliance, Pose2d positionPose, int index)
+            throws AllianceNotSetException, NoValidSnapPointsException {
         Pose2d targetPos;
 
         if (index == -2) {
             throw new NoValidSnapPointsException();
         }
 
-        //-2 already got filtered out from this clause
-        if (index > -1) { //if within the grid
+        // -2 already got filtered out from this clause
+        if (index > -1) { // if within the grid
             double teamYOffset;
-            switch(alliance) {
+            switch (alliance) {
                 case Red:
                     teamYOffset = 0;
                     break;
@@ -193,10 +201,20 @@ public class SnapGridMath {
                 default:
                     throw new AllianceNotSetException();
             }
-            targetPos = new Pose2d(SnapGrid.GRID_SNAP_X, SnapGrid.GRID_SNAP_Y[index] + teamYOffset, new Rotation2d(0));
-        } else { //if snapping to substation
-            //remember, the substation snap line is only a valid snap if the robot is already within its Y bounds; as such, Y for the target pose is just passthrough (no Y offset necessary)
-            targetPos = new Pose2d(SnapGrid.SUBSTATION_SNAP_X, positionPose.getY(), new Rotation2d(Math.PI));
+            targetPos =
+                    new Pose2d(
+                            SnapGrid.GRID_SNAP_X,
+                            SnapGrid.GRID_SNAP_Y[index] + teamYOffset,
+                            new Rotation2d(0));
+        } else { // if snapping to substation
+            // remember, the substation snap line is only a valid snap if the robot is already
+            // within its Y bounds; as such, Y for the target pose is just passthrough (no Y offset
+            // necessary)
+            targetPos =
+                    new Pose2d(
+                            SnapGrid.SUBSTATION_SNAP_X,
+                            positionPose.getY(),
+                            new Rotation2d(Math.PI));
         }
 
         return targetPos;

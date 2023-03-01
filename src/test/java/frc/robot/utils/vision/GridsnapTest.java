@@ -3,9 +3,8 @@ package frc.robot.utils.vision;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.constants.FieldConstants.SnapGrid;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
+import frc.robot.constants.FieldConstants.SnapGrid;
 import org.junit.jupiter.api.Test;
 
 public class GridsnapTest {
@@ -65,19 +64,34 @@ public class GridsnapTest {
         assertEquals(3, snapIndex);
     }
 
-    //This is basically just a broad test for literally everything; it's not particularly informative on its own without copious amounts of breakpoints
-    //TODO: test substation snap
-    //TODO: test snap for blue
+    // This is basically just a broad test for literally everything; it's not particularly
+    // informative on its own without copious amounts of breakpoints
+    // TODO: test substation snap
+    // TODO: test snap for blue
     @Test
     void completeGridTestBattery() {
-        //increasing alteration
-        for (int alterationX = 1; alterationX <= SnapGrid.DEFAULT_SNAP_MAX_DISTANCE - 1; alterationX++) {
-            //each grid snap index
+        // increasing alteration
+        for (int alterationX = 1;
+                alterationX <= SnapGrid.DEFAULT_SNAP_MAX_DISTANCE - 1;
+                alterationX++) {
+            // each grid snap index
             for (int index = 0; index < SnapGrid.GRID_SNAP_Y.length; index++) {
-                //increasing alteration
+                // increasing alteration
                 for (int alterationY = 1; alterationY <= 4; alterationY++) {
-                    assertEquals(index, SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(SnapGrid.GRID_SNAP_X - alterationX, SnapGrid.GRID_SNAP_Y[index] + alterationY)));
-                    assertEquals(index, SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(SnapGrid.GRID_SNAP_X - alterationX, SnapGrid.GRID_SNAP_Y[index] - alterationY)));
+                    assertEquals(
+                            index,
+                            SnapGridMath.snapToGrid(
+                                    Alliance.Red,
+                                    new Translation2d(
+                                            SnapGrid.GRID_SNAP_X - alterationX,
+                                            SnapGrid.GRID_SNAP_Y[index] + alterationY)));
+                    assertEquals(
+                            index,
+                            SnapGridMath.snapToGrid(
+                                    Alliance.Red,
+                                    new Translation2d(
+                                            SnapGrid.GRID_SNAP_X - alterationX,
+                                            SnapGrid.GRID_SNAP_Y[index] - alterationY)));
                 }
             }
         }

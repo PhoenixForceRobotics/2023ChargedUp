@@ -1,18 +1,18 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.FieldConstants;
+import frc.robot.utils.exceptions.AllianceNotSetException;
 import frc.robot.utils.vision.VisionMath;
-import java.util.ArrayList;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -35,11 +35,10 @@ public class TagProcessing extends SubsystemBase {
     public Pose2d mostAccuratePoseGuess; // the most recent ACCURATE pose guess; created from median
 
     public int bufferedWithTargetFrames; // how many frames of buffer of target data we have to work
-    // with
+    // with at present
     public boolean isBuffered; // if the frame buffer is full
 
-    private ArrayList<AprilTag> tagList;
-    private AprilTagFieldLayout protoFieldLayout;
+    private AprilTagFieldLayout fieldLayout;
 
     /*
      * Creates a new tag processing instance. Defines a camera, a test tag field, a pose estimator, median filters, and pose guesses.
@@ -52,33 +51,25 @@ public class TagProcessing extends SubsystemBase {
     }
 
     private void initField() {
-        //Stolen from photonvision docs
-        tagList = new ArrayList<AprilTag>();
-        tagList.add(new AprilTag(
-                18,
-                new Pose3d(
-                        new Pose2d(
-                                FieldConstants.FIELD_LENGTH,
-                                FieldConstants.FIELD_WIDTH / 2.0,
-                                Rotation2d.fromDegrees(180)))));
-        tagList.add(new AprilTag(
-                01,
-                new Pose3d(
-                        new Pose2d(
-                                0.0,
-                                FieldConstants.FIELD_WIDTH / 2.0,
-                                Rotation2d.fromDegrees(0.0)))));
-
-        protoFieldLayout =
-                new AprilTagFieldLayout(
-                        tagList, FieldConstants.FIELD_LENGTH, FieldConstants.FIELD_WIDTH);
+        //we do a little AAAAAAAAAAAAAAAAAAAAAAA
+        fieldLayout = FieldConstants.TagFieldPositions.TAG_GAME_FIELD;
+        switch(DriverStation.getAlliance()) {
+            case Red:
+                fieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+                break;
+            case Blue:
+                fieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+                break;
+            default:
+                throw new AllianceNotSetException();
+        }
     }
 
     private void initEstimator() {
         // Create pose estimator
         photonPoseEstimator =
                 new PhotonPoseEstimator(
-                        protoFieldLayout,
+                        fieldLayout,
                         PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
                         cameraTag,
                         VisionConstants.CameraSpecConstants.ROBOT_TO_CAM_TAG);
@@ -113,7 +104,7 @@ public class TagProcessing extends SubsystemBase {
         // TODO: this is hardcoded; add accounting for skew
         // TODO write this in general really
 
-        //TODO invest in an actual project management system beyond spamming todo
+        // TODO invest in an actual project management system beyond spamming todo
     }
 
     public void update() {
@@ -128,7 +119,7 @@ public class TagProcessing extends SubsystemBase {
         PhotonPipelineResult cool = cameraTag.getLatestResult();
         if (cool.hasTargets()) {
             PhotonTrackedTarget target = cool.getBestTarget();
-            if (target.getPoseAmbiguity() <= .2) { //ensure target is unambiguous
+            if (target.getPoseAmbiguity() <= .2) { // ensure target is unambiguous
                 Transform3d targetPos = target.getBestCameraToTarget();
                 mostRecentPoseGuess =
                         new Pose2d(
@@ -160,18 +151,18 @@ public class TagProcessing extends SubsystemBase {
 
     public void incrementBufferedFrames() {
         bufferedWithTargetFrames =
-                        VisionMath.clamp(
-                                bufferedWithTargetFrames + 1,
-                                0,
-                                VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+                VisionMath.clamp(
+                        bufferedWithTargetFrames + 1,
+                        0,
+                        VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
     }
 
     public void decrementBufferedFrames() {
         bufferedWithTargetFrames =
-                    VisionMath.clamp(
-                            bufferedWithTargetFrames - 1,
-                            0,
-                            VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+                VisionMath.clamp(
+                        bufferedWithTargetFrames - 1,
+                        0,
+                        VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
     }
     /*
      * Returns whether or not the frames buffer is full (i.e. if the most accurate pose guess is trustable).

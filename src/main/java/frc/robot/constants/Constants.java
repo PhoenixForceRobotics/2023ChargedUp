@@ -117,8 +117,8 @@ public final class Constants {
             public static final PIDValues PID_Y_VALUES = new PIDValues(1, 0, 1);
             public static final PIDValues PID_THETA_VALUES = new PIDValues(1, 0, 1);
 
-            public static final double PID_POSITION_TOLERANCE = 2; //2 inches tolerance bay bee
-            public static final double PID_ANGLE_TOLERANCE = 2; //also 2 degrees
+            public static final double PID_POSITION_TOLERANCE = 2; // 2 inches tolerance bay bee
+            public static final double PID_ANGLE_TOLERANCE = 2; // also 2 degrees
         }
 
         // Constants relevant to physical attributes of the camera
