@@ -95,11 +95,11 @@ public final class Constants {
         // diameters, ports, etc.)
 
         // Constants for extension motors
-        public static final int EXTENSION_MOTOR_1_PORT = 11;
-        public static final int EXTENSION_MOTOR_2_PORT = 12;
+        public static final int EXTENSION_MOTOR_1_PORT = 8;
+        public static final int EXTENSION_MOTOR_2_PORT = 3;
         public static final boolean EXTENSION_MOTOR_1_REVERSED = false;
         public static final boolean EXTENSION_MOTOR_2_REVERSED = false;
-        public static final double EXTENSION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
+        public static final double EXTENSION_MOTOR_GEAR_RATIO = (double) 1 / (double) 49;
         public static final double EXTENSION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
         // Constants for rotation motors
@@ -111,10 +111,10 @@ public final class Constants {
         public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
 
         // Constants for claw rotation motors
-        public static final int CLAW_ROTATION_MOTOR_1_PORT = 3;
-        public static final int CLAW_ROTATION_MOTOR_2_PORT = 15;
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 4;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 2;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
-        public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = false;
+        public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = true;
         public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 70;
         public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
         public static final double CLAW_ROTATION_SPEED = 0.5;

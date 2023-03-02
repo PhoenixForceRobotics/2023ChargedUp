@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -22,9 +19,8 @@ public class Arm extends SubsystemBase {
     // private SparkMotorGroup rotationMotors;
 
     // Extension motors
-    // private Motor extensionMotor1;
-    // private Motor extensionMotor2;
-    // private SparkMotorGroup extensionMotors;
+    private Motor extensionMotor1;
+    private Motor extensionMotor2;
 
     // Motors for rotating claw independently to keep it level when arm has rotated
     private Motor clawRotationMotor1;
@@ -38,7 +34,7 @@ public class Arm extends SubsystemBase {
     // private PIDController rotationPid;
 
     // // Extension PID
-    // private PIDController extensionPid;
+    private PIDController extensionPid;
 
     // Shuffleboard Stuff
     private ShuffleboardTab armTab;
@@ -70,20 +66,21 @@ public class Arm extends SubsystemBase {
         //                 ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
         // rotationMotors = new SparkMotorGroup(false, rotationMotor1, rotationMotor2);
 
-        // // Define extension motors
-        // extensionMotor1 =
-        //         new Motor(
-        //                 ArmConstants.EXTENSION_MOTOR_1_PORT,
-        //                 ArmConstants.EXTENSION_MOTOR_1_REVERSED,
-        //                 ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
-        //                 ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
-        // extensionMotor2 =
-        //         new Motor(
-        //                 ArmConstants.EXTENSION_MOTOR_2_PORT,
-        //                 ArmConstants.EXTENSION_MOTOR_2_REVERSED,
-        //                 ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
-        //                 ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
+        // Define extension motors
+        extensionMotor1 =
+                new Motor(
+                        ArmConstants.EXTENSION_MOTOR_1_PORT,
+                        ArmConstants.EXTENSION_MOTOR_1_REVERSED,
+                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
+                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
+        extensionMotor2 =
+                new Motor(
+                        ArmConstants.EXTENSION_MOTOR_2_PORT,
+                        ArmConstants.EXTENSION_MOTOR_2_REVERSED,
+                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
+                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
         // extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
+        extensionPid = new PIDController(ArmConstants.EXTENSION_PID_P, ArmConstants.EXTENSION_PID_I, ArmConstants.EXTENSION_PID_D);
 
         // Define claw rotational motors
         clawRotationMotor1 =
@@ -143,6 +140,16 @@ public class Arm extends SubsystemBase {
     //                     + extensionPid.calculate(getExtensionMetersPerSecond());
     //     extensionMotors.setVoltage(voltage);
     // }
+
+    public void setExtensionMotor1(double input)
+    {
+        extensionMotor1.set(input);
+    }
+
+    public void setExtensionMotor2(double input)
+    {
+        extensionMotor2.set(input);
+    }
 
     /**
      * Sets the angular velocity of the claw rotations motors in radians per second
@@ -211,9 +218,9 @@ public class Arm extends SubsystemBase {
     //  *
     //  * @return the length in meters of the arm from the center of rotation
     //  */
-    // public double getExtensionLength() {
-    //     return extensionMotor1.getMeters();
-    // }
+    public double getExtensionLength() {
+        return extensionMotor1.getMeters();
+    }
 
     /**
      * Gets the angle of the rotation of the claw in degrees
@@ -265,9 +272,9 @@ public class Arm extends SubsystemBase {
     //  *
     //  * @return the pid controller object for extension
     //  */
-    // public PIDController getExtensionPid() {
-    //     return extensionPid;
-    // }
+    public PIDController getExtensionPid() {
+        return extensionPid;
+    }
 
     // /**
     //  * Gets the amount of meters traveled by the rotation motors

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.arm.ClawTesting;
+import frc.robot.commands.arm.JoystickLength;
 import frc.robot.commands.claw.ClawIntakeSequence;
 import frc.robot.commands.claw.OutputPiece;
 import frc.robot.commands.claw.TeleopClaw;
@@ -56,6 +57,7 @@ public class RobotContainer {
     private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
     private final TeleopClaw teleopClaw = new TeleopClaw(claw, operatorController);
     private final OutputPiece outputPiece = new OutputPiece(claw, operatorController);
+    private final JoystickLength joystickLength = new JoystickLength(arm, operatorController);
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
     private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
@@ -106,6 +108,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         //drivebaseCommandChooser.getSelected().schedule();
         getClawTesting().schedule();
+        getJoystickLength().schedule();
     }
 
     public void teleopPeriodic() {
@@ -147,5 +150,10 @@ public class RobotContainer {
 
     public TeleopClaw getTeleopClaw() {
         return teleopClaw;
+    }
+
+    public JoystickLength getJoystickLength()
+    {
+        return joystickLength;
     }
 }
