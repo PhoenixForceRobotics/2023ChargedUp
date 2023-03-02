@@ -13,17 +13,22 @@ public class SparkMotorGroup extends MotorControllerGroup {
     private CANSparkMax[] followers;
     private RelativeEncoder encoder;
 
-    public SparkMotorGroup(boolean isInverted, CANSparkMax leader, CANSparkMax... followers) {
+    public SparkMotorGroup(
+            boolean isLeaderInverted,
+            boolean areFollowersInverted,
+            CANSparkMax leader,
+            CANSparkMax... followers) {
         super(leader, followers);
         this.leader = leader;
         this.followers = followers;
 
+        leader.setInverted(isLeaderInverted);
+
         // Set settings for followers
         for (CANSparkMax motor : this.followers) {
-            motor.follow(leader);
+            motor.follow(leader, areFollowersInverted);
         }
 
-        this.leader.setInverted(isInverted);
         encoder = this.leader.getEncoder();
     }
 
@@ -43,9 +48,9 @@ public class SparkMotorGroup extends MotorControllerGroup {
 
     public void setPID(PIDValues pidValues, double minOutput, double maxOutput) {
         SparkMaxPIDController pidController = leader.getPIDController();
-        pidController.setP(pidValues.getP());
-        pidController.setI(pidValues.getI());
-        pidController.setD(pidValues.getD());
+        pidController.setP(pidValues.P);
+        pidController.setI(pidValues.I);
+        pidController.setD(pidValues.D);
         pidController.setOutputRange(minOutput, maxOutput);
     }
 

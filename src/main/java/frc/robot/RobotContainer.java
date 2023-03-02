@@ -6,14 +6,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
+import frc.robot.commands.drivebase.autonomous.ExampleAutonomousRoutine;
+import frc.robot.commands.drivebase.autonomous.PathPlannerCommandFactory;
 import frc.robot.commands.vision.UpdateVisionData;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.vision.TagProcessing;
@@ -30,24 +34,51 @@ public class RobotContainer {
     private final Drivebase drivebase = new Drivebase();
     private final TagProcessing tagProcessing = new TagProcessing();
 
-    // // The robot's controllers are defined here...
-    private final PFRController operatorController = new PFRController(0);
-    private final PFRController driverController = new PFRController(1);
+    // The robot's controllers are defined here...
+    private final PFRController driverController = new PFRController(0);
+    //private final PFRController operatorController = new PFRController(1);
 
     // // The robot's commands are defined here...
-    private final CycleCenterOfRotation cycleCenterOfRotationUp =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final CycleCenterOfRotation cycleCenterOfRotationDown =
-            new CycleCenterOfRotation(drivebase, Direction.UP);
-    private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-    private final DifferentialDrive differentialDrive =
-            new DifferentialDrive(drivebase, driverController);
-    private final UpdateVisionData updateVisionData =
-            new UpdateVisionData(tagProcessing, drivebase);
+    private final CycleCenterOfRotation cycleCenterOfRotationUp = new CycleCenterOfRotation(
+        drivebase,
+        Direction.UP
+    );
+    private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(
+        drivebase,
+        Direction.DOWN
+    );
+    private final MecanumDrive mecanumDrive = new MecanumDrive(
+        drivebase,
+        driverController
+    );
+    private final DifferentialDrive differentialDrive = new DifferentialDrive(
+        drivebase,
+        driverController
+    );
+    private final UpdateVisionData updateVisionData = new UpdateVisionData(
+        tagProcessing,
+        drivebase
+    );
 
-    // And the NetworkTable/NetworkTable/CommandChooser variables :)
-    private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
-    // private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
+    // Seperating the auto commands is helpful :)
+    private final Command middleGridToBottomPiece = PathPlannerCommandFactory.fromJSON(
+        drivebase,
+        "MiddleGridToBottomPiece",
+        false,
+        false
+    );
+    private final Command middleGridToChargeStation = PathPlannerCommandFactory.fromJSON(
+        drivebase,
+        "MiddleGridToChargeStation",
+        false,
+        false
+    );
+    private final ExampleAutonomousRoutine exampleAutonomousRoutine = new ExampleAutonomousRoutine(
+        drivebase
+    );
+
+    // And things we want to put on the main tab (SmartDashboard) :)
+    private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -64,41 +95,45 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        // driverController.lBumper().onTrue(mecanumDrive);
-        // driverController.lBumper().onFalse(differentialDrive);
-        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        driverController.lBumper().onTrue(mecanumDrive);
+        driverController.rBumper().onTrue(differentialDrive);
+        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
     }
 
     public void initializeListenersAndSendables() {
-        // Main Tab
-
         // Add options for chooser
+        autonomousCommandChooser.addOption(
+            "Middle Grid To Bottom Piece",
+            middleGridToBottomPiece
+        );
+        autonomousCommandChooser.addOption(
+            "Middle Grid to Charge Station",
+            middleGridToChargeStation
+        );
+        autonomousCommandChooser.setDefaultOption(
+            "Example autonomous Routine",
+            exampleAutonomousRoutine
+        );
 
-        // Places chooser on mainTab (where all configs are)
-        // mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
-    }
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return null;
+        // Places chooser on mainTab (where all "main stuff" is)
+        SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
     }
 
-    public void initializeTeleopCommands() {
+    public void scheduleAutonomousCommands() {
+        Command selectedAutonomousRoutine = autonomousCommandChooser.getSelected();
+        if (selectedAutonomousRoutine != null) {
+            selectedAutonomousRoutine.schedule();
+        }
+    }
+
+    public void scheduleTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        // drivebaseCommandChooser.getSelected().schedule();
+        mecanumDrive.schedule();
         updateVisionData.schedule();
     }
 
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().cancelAll();
-        // differentialDrive.schedule();
-
-    }
-
+    public void teleopPeriodic() {}
     // public MecanumDrive getMecanumDrive() {
     //     return mecanumDrive;
     // }
