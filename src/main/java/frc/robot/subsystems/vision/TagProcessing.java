@@ -22,7 +22,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 // words cannot express how much i despise gradle automatically adding a space to the start of
 // comments
 public class TagProcessing extends SubsystemBase {
-
     public PhotonCamera cameraTag;
     public PhotonCamera cameraCube;
     public PhotonCamera cameraCone;
@@ -44,7 +43,8 @@ public class TagProcessing extends SubsystemBase {
      * Creates a new tag processing instance. Defines a camera, a test tag field, a pose estimator, median filters, and pose guesses.
      */
     public TagProcessing() {
-        this.cameraTag = new PhotonCamera(Constants.VisionConstants.CameraNames.CAM_TAG);
+        this.cameraTag =
+            new PhotonCamera(Constants.VisionConstants.CameraNames.CAM_TAG);
         initField();
         initEstimator();
         initFilters();
@@ -53,12 +53,14 @@ public class TagProcessing extends SubsystemBase {
     private void initField() {
         //we do a little AAAAAAAAAAAAAAAAAAAAAAA
         fieldLayout = FieldConstants.TagFieldPositions.TAG_GAME_FIELD;
-        switch(DriverStation.getAlliance()) {
+        switch (DriverStation.getAlliance()) {
             case Red:
                 fieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
                 break;
             case Blue:
-                fieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+                fieldLayout.setOrigin(
+                    OriginPosition.kBlueAllianceWallRightSide
+                );
                 break;
             default:
                 throw new AllianceNotSetException();
@@ -68,24 +70,28 @@ public class TagProcessing extends SubsystemBase {
     private void initEstimator() {
         // Create pose estimator
         photonPoseEstimator =
-                new PhotonPoseEstimator(
-                        fieldLayout,
-                        PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-                        cameraTag,
-                        VisionConstants.CameraSpecConstants.ROBOT_TO_CAM_TAG);
+            new PhotonPoseEstimator(
+                fieldLayout,
+                PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
+                cameraTag,
+                VisionConstants.CameraSpecConstants.ROBOT_TO_CAM_TAG
+            );
     }
 
     private void initFilters() {
         // Init median filters
         positionFilter_X =
-                new MedianFilter(
-                        Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+            new MedianFilter(
+                Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG
+            );
         positionFilter_Y =
-                new MedianFilter(
-                        Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+            new MedianFilter(
+                Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG
+            );
         positionFilter_THETA =
-                new MedianFilter(
-                        Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+            new MedianFilter(
+                Constants.VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG
+            );
 
         // h
         mostRecentPoseGuess = new Pose2d();
@@ -122,22 +128,24 @@ public class TagProcessing extends SubsystemBase {
             if (target.getPoseAmbiguity() <= .2) { // ensure target is unambiguous
                 Transform3d targetPos = target.getBestCameraToTarget();
                 mostRecentPoseGuess =
-                        new Pose2d(
-                                targetPos.getX(),
-                                targetPos.getY(),
-                                Rotation2d.fromRadians(
-                                        targetPos
-                                                .getRotation()
-                                                .getZ() // Z is yaw (which is apparently the
-                                        // relevant angle for robot heading)
-                                        ));
+                    new Pose2d(
+                        targetPos.getX(),
+                        targetPos.getY(),
+                        Rotation2d.fromRadians(
+                            targetPos.getRotation().getZ() // Z is yaw (which is apparently the
+                            // relevant angle for robot heading)
+                        )
+                    );
                 mostAccuratePoseGuess =
-                        new Pose2d(
-                                positionFilter_X.calculate(targetPos.getX()),
-                                positionFilter_Y.calculate(targetPos.getY()),
-                                Rotation2d.fromRadians(
-                                        positionFilter_THETA.calculate(
-                                                targetPos.getRotation().getZ())));
+                    new Pose2d(
+                        positionFilter_X.calculate(targetPos.getX()),
+                        positionFilter_Y.calculate(targetPos.getY()),
+                        Rotation2d.fromRadians(
+                            positionFilter_THETA.calculate(
+                                targetPos.getRotation().getZ()
+                            )
+                        )
+                    );
 
                 incrementBufferedFrames();
             } else {
@@ -151,25 +159,30 @@ public class TagProcessing extends SubsystemBase {
 
     public void incrementBufferedFrames() {
         bufferedWithTargetFrames =
-                VisionMath.clamp(
-                        bufferedWithTargetFrames + 1,
-                        0,
-                        VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+            VisionMath.clamp(
+                bufferedWithTargetFrames + 1,
+                0,
+                VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG
+            );
     }
 
     public void decrementBufferedFrames() {
         bufferedWithTargetFrames =
-                VisionMath.clamp(
-                        bufferedWithTargetFrames - 1,
-                        0,
-                        VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG);
+            VisionMath.clamp(
+                bufferedWithTargetFrames - 1,
+                0,
+                VisionConstants.ProcessingConstants.MEDIAN_FILTER_SIZE_TAG
+            );
     }
+
     /*
      * Returns whether or not the frames buffer is full (i.e. if the most accurate pose guess is trustable).
      */
     public boolean checkIfBuffered() {
-        return bufferedWithTargetFrames
-                >= VisionConstants.ProcessingConstants.MAX_BAD_FRAME_TOLERANCE_TAG;
+        return (
+            bufferedWithTargetFrames >=
+            VisionConstants.ProcessingConstants.MAX_BAD_FRAME_TOLERANCE_TAG
+        );
     }
 
     /*

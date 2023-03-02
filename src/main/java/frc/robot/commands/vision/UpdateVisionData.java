@@ -9,7 +9,10 @@ public class UpdateVisionData extends CommandBase {
     TagProcessing tagProcessor;
     Drivebase drivebase;
 
-    public UpdateVisionData(TagProcessing newTagProcessor, Drivebase newDrivebase) {
+    public UpdateVisionData(
+        TagProcessing newTagProcessor,
+        Drivebase newDrivebase
+    ) {
         this.tagProcessor = newTagProcessor;
         this.drivebase = newDrivebase;
         addRequirements(newTagProcessor);
@@ -29,8 +32,11 @@ public class UpdateVisionData extends CommandBase {
         //method detailed at https://github.com/PhotonVision/photonvision/blob/master/photonlib-java-examples/simposeest/src/main/java/frc/robot/DrivetrainPoseEstimator.java
         if (tagProcessor.checkIfBuffered()) {
             System.out.println(tagProcessor.getBestPoseGuess());
-            this.drivebase.resetPosition(
-                    UnitConverter.MetersToInches(tagProcessor.getBestPoseGuess()));
+            this.drivebase.resetPose(
+                    UnitConverter.MetersToInches(
+                        tagProcessor.getBestPoseGuess()
+                    )
+                );
         }
     }
 

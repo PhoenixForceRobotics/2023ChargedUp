@@ -3,7 +3,6 @@ package frc.robot.commands.drivebase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -44,29 +43,31 @@ public class MecanumStrafe extends CommandBase {
     public MecanumStrafe(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
-
         addRequirements(drivebase);
-
-        pidX =
-                new PIDController(
-                        StrafePIDValues.PID_X_VALUES.getP(),
-                        StrafePIDValues.PID_X_VALUES.getI(),
-                        StrafePIDValues.PID_X_VALUES.getD());
-
-        pidY =
-                new PIDController(
-                        StrafePIDValues.PID_Y_VALUES.getP(),
-                        StrafePIDValues.PID_Y_VALUES.getI(),
-                        StrafePIDValues.PID_Y_VALUES.getD());
-
-        pidTheta =
-                new PIDController(
-                        StrafePIDValues.PID_THETA_VALUES.getP(),
-                        StrafePIDValues.PID_THETA_VALUES.getI(),
-                        StrafePIDValues.PID_THETA_VALUES.getD());
 
         targetPos = new Pose2d(0, 0, new Rotation2d(0));
         gridCoordinates = new int[2];
+
+        pidX =
+            new PIDController(
+                StrafePIDValues.PID_X_VALUES.P,
+                StrafePIDValues.PID_X_VALUES.I,
+                StrafePIDValues.PID_X_VALUES.D
+            );
+
+        pidY =
+            new PIDController(
+                StrafePIDValues.PID_Y_VALUES.P,
+                StrafePIDValues.PID_Y_VALUES.I,
+                StrafePIDValues.PID_Y_VALUES.D
+            );
+
+        pidTheta =
+            new PIDController(
+                StrafePIDValues.PID_THETA_VALUES.P,
+                StrafePIDValues.PID_THETA_VALUES.I,
+                StrafePIDValues.PID_THETA_VALUES.D
+            );
     }
 
     @Override
@@ -74,7 +75,6 @@ public class MecanumStrafe extends CommandBase {
         alliance = DriverStation.getAlliance();
 
         drivebase.setMeccanum(true);
-        drivebase.setButterflyModules(Value.kForward);
 
         pose = drivebase.getPose();
         gridCoordinates[1] = SnapGridMath.snapToGrid(alliance, pose);
@@ -82,22 +82,6 @@ public class MecanumStrafe extends CommandBase {
         autoCancel = gridCoordinates[1] == -2;
         // if the show must go on, then set up PID
         if (!autoCancel) {
-            pidX =
-                    new PIDController(
-                            StrafePIDValues.PID_X_VALUES.getP(),
-                            StrafePIDValues.PID_X_VALUES.getI(),
-                            StrafePIDValues.PID_X_VALUES.getD());
-            pidY =
-                    new PIDController(
-                            StrafePIDValues.PID_Y_VALUES.getP(),
-                            StrafePIDValues.PID_Y_VALUES.getI(),
-                            StrafePIDValues.PID_Y_VALUES.getD());
-            pidTheta =
-                    new PIDController(
-                            StrafePIDValues.PID_THETA_VALUES.getP(),
-                            StrafePIDValues.PID_THETA_VALUES.getI(),
-                            StrafePIDValues.PID_THETA_VALUES.getD());
-
             pidX.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
             pidY.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
             pidTheta.setTolerance(StrafePIDValues.PID_ANGLE_TOLERANCE);
@@ -105,7 +89,12 @@ public class MecanumStrafe extends CommandBase {
             pidTheta.enableContinuousInput(-180, 180);
 
             // remember: this is chained to the line on like ln128ish
-            targetPos = SnapGridMath.getSnapPositionFromIndex(alliance, pose, gridCoordinates[1]);
+            targetPos =
+                SnapGridMath.getSnapPositionFromIndex(
+                    alliance,
+                    pose,
+                    gridCoordinates[1]
+                );
         }
     }
 
@@ -116,8 +105,16 @@ public class MecanumStrafe extends CommandBase {
         // now for the funny (pain)
         // Y is for selecting slot (short distance is Y)
         int yIntent =
-                (driverController.getPOV() == ControllerConstants.DPAD_LEFT ? 1 : 0)
-                        - (driverController.getPOV() == ControllerConstants.DPAD_RIGHT ? 1 : 0);
+            (
+                driverController.getPOV() == ControllerConstants.DPAD_LEFT
+                    ? 1
+                    : 0
+            ) -
+            (
+                driverController.getPOV() == ControllerConstants.DPAD_RIGHT
+                    ? 1
+                    : 0
+            );
         // TODO: add X intent for arm manipulation
 
         // set coords based on intent
@@ -125,10 +122,17 @@ public class MecanumStrafe extends CommandBase {
             if (risingEdgeY) {
                 risingEdgeY = false;
                 gridCoordinates[1] =
-                        VisionMath.clamp(
-                                gridCoordinates[1] + yIntent, 0, SnapGrid.GRID_SNAP_Y.length);
+                    VisionMath.clamp(
+                        gridCoordinates[1] + yIntent,
+                        0,
+                        SnapGrid.GRID_SNAP_Y.length
+                    );
                 targetPos =
-                        SnapGridMath.getSnapPositionFromIndex(alliance, pose, gridCoordinates[1]);
+                    SnapGridMath.getSnapPositionFromIndex(
+                        alliance,
+                        pose,
+                        gridCoordinates[1]
+                    );
             }
         } else {
             // reset rising edge tracker if not pressing a y axis button (which is x axis on the
@@ -137,9 +141,13 @@ public class MecanumStrafe extends CommandBase {
         }
 
         drivebase.setFieldRelativeChassisSpeeds(
-                pidX.calculate(pose.getX(), targetPos.getX()),
-                pidY.calculate(pose.getY(), targetPos.getY()),
-                pidTheta.calculate(pose.getRotation().getDegrees(), targetPos.getX()));
+            pidX.calculate(pose.getX(), targetPos.getX()),
+            pidY.calculate(pose.getY(), targetPos.getY()),
+            pidTheta.calculate(
+                pose.getRotation().getDegrees(),
+                targetPos.getX()
+            )
+        );
     }
 
     @Override

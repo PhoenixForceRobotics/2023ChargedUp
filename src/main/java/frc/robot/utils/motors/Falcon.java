@@ -71,12 +71,21 @@ public class Falcon extends WPI_TalonFX {
 
     // Returns number of rotations
     public double getPosition() {
-        return super.getSelectedSensorPosition() / UtilConstants.FALCON_ENCODER_RESOLUTION;
+        return (
+            super.getSelectedSensorPosition() /
+            UtilConstants.FALCON_ENCODER_RESOLUTION
+        );
     }
 
     // Returns number of rotations per minute
     public double getVelocity() {
-        return (super.getSelectedSensorVelocity() / UtilConstants.FALCON_ENCODER_RESOLUTION) * 600;
+        return (
+            (
+                super.getSelectedSensorVelocity() /
+                UtilConstants.FALCON_ENCODER_RESOLUTION
+            ) *
+            600
+        );
     }
 
     public double getRawVelocity() {

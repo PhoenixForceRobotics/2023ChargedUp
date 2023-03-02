@@ -8,12 +8,16 @@ import frc.robot.constants.FieldConstants.SnapGrid;
 import org.junit.jupiter.api.Test;
 
 public class GridsnapTest {
+
     /*
      * Tests 1 inch away on the left side of the snap point closest to the left.
      */
     @Test
     void testOneInchX_BarelyLeftY_OfLeftmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 15));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 15)
+        );
         assertEquals(0, snapIndex);
     }
 
@@ -22,7 +26,10 @@ public class GridsnapTest {
      */
     @Test
     void testOneInchX_BarelyRightY_OfLeftmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 17));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 17)
+        );
         assertEquals(0, snapIndex);
     }
 
@@ -31,7 +38,10 @@ public class GridsnapTest {
      */
     @Test
     void testOneInchX_ExtremelyLeftY_OfLeftmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 1));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 1)
+        );
         assertEquals(0, snapIndex);
     }
 
@@ -40,7 +50,10 @@ public class GridsnapTest {
      */
     @Test
     void testOneInchX_ExtremelyRightY_OfLeftmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 25));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 25)
+        );
         assertEquals(0, snapIndex);
     }
 
@@ -50,7 +63,10 @@ public class GridsnapTest {
      */
     @Test
     void testOneInchX_BarelyLeftY_OfRightmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 70.25));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 70.25)
+        );
         assertEquals(3, snapIndex);
     }
 
@@ -60,7 +76,10 @@ public class GridsnapTest {
      */
     @Test
     void testOneInchX_BarelyRightY_OfRightmostSnapPoint() {
-        int snapIndex = SnapGridMath.snapToGrid(Alliance.Red, new Translation2d(526, 72.25));
+        int snapIndex = SnapGridMath.snapToGrid(
+            Alliance.Red,
+            new Translation2d(526, 72.25)
+        );
         assertEquals(3, snapIndex);
     }
 
@@ -71,27 +90,35 @@ public class GridsnapTest {
     @Test
     void completeGridTestBattery() {
         // increasing alteration
-        for (int alterationX = 1;
-                alterationX <= SnapGrid.DEFAULT_SNAP_MAX_DISTANCE - 1;
-                alterationX++) {
+        for (
+            int alterationX = 1;
+            alterationX <= SnapGrid.DEFAULT_SNAP_MAX_DISTANCE - 1;
+            alterationX++
+        ) {
             // each grid snap index
             for (int index = 0; index < SnapGrid.GRID_SNAP_Y.length; index++) {
                 // increasing alteration
                 for (int alterationY = 1; alterationY <= 4; alterationY++) {
                     assertEquals(
-                            index,
-                            SnapGridMath.snapToGrid(
-                                    Alliance.Red,
-                                    new Translation2d(
-                                            SnapGrid.GRID_SNAP_X - alterationX,
-                                            SnapGrid.GRID_SNAP_Y[index] + alterationY)));
+                        index,
+                        SnapGridMath.snapToGrid(
+                            Alliance.Red,
+                            new Translation2d(
+                                SnapGrid.GRID_SNAP_X - alterationX,
+                                SnapGrid.GRID_SNAP_Y[index] + alterationY
+                            )
+                        )
+                    );
                     assertEquals(
-                            index,
-                            SnapGridMath.snapToGrid(
-                                    Alliance.Red,
-                                    new Translation2d(
-                                            SnapGrid.GRID_SNAP_X - alterationX,
-                                            SnapGrid.GRID_SNAP_Y[index] - alterationY)));
+                        index,
+                        SnapGridMath.snapToGrid(
+                            Alliance.Red,
+                            new Translation2d(
+                                SnapGrid.GRID_SNAP_X - alterationX,
+                                SnapGrid.GRID_SNAP_Y[index] - alterationY
+                            )
+                        )
+                    );
                 }
             }
         }

@@ -19,12 +19,14 @@ public class VisionMath {
      * Converts PCS to ACS. See WPIlib documentation on vision for details.
      */
     public static double[] PCStoACS(int x, int y) {
-        double halfResX = Constants.VisionConstants.CameraSpecConstants.CAM_TAG_RES[0] / 2;
-        double halfResY = Constants.VisionConstants.CameraSpecConstants.CAM_TAG_RES[1] / 2;
+        double halfResX =
+            Constants.VisionConstants.CameraSpecConstants.CAM_TAG_RES[0] / 2;
+        double halfResY =
+            Constants.VisionConstants.CameraSpecConstants.CAM_TAG_RES[1] / 2;
 
         double ACSX = (x - halfResX) / halfResX;
         double ACSY = (y - halfResY) / halfResY;
-        double[] ACSCOORDS = {ACSX, ACSY};
+        double[] ACSCOORDS = { ACSX, ACSY };
 
         return ACSCOORDS; // thing from FRC
     }

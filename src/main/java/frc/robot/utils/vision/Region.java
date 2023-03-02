@@ -40,7 +40,11 @@ public class Region {
     public boolean PointInRegion(Point point) {
         // the Java version of pointPolygonTest returns a double no matter what
         // pain
-        double dist = Imgproc.pointPolygonTest(new MatOfPoint2f(bounds), point, false);
+        double dist = Imgproc.pointPolygonTest(
+            new MatOfPoint2f(bounds),
+            point,
+            false
+        );
         return Math.signum(dist) == 1.0;
     }
 }

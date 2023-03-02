@@ -9,7 +9,7 @@ public class CycleCenterOfRotation extends InstantCommand {
     // Signifies whether to go up or down in the list of CenterOfRotation
     public enum Direction {
         UP,
-        DOWN;
+        DOWN,
     }
 
     private Drivebase drivebase;
@@ -22,7 +22,6 @@ public class CycleCenterOfRotation extends InstantCommand {
 
     @Override
     public void initialize() {
-
         CenterOfRotation currentCenterOfRotation = drivebase.getCenterOfRotation();
         int lengthOfEnum = CenterOfRotation.values().length;
         int index; // the position in the CenterOfRotation enum to use
@@ -32,7 +31,9 @@ public class CycleCenterOfRotation extends InstantCommand {
             index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
         } else if (direction == Direction.DOWN) {
             // Get next lowest CenterOfRotation (or wraps around)
-            index = (currentCenterOfRotation.ordinal() - 1 + lengthOfEnum) % lengthOfEnum;
+            index =
+                (currentCenterOfRotation.ordinal() - 1 + lengthOfEnum) %
+                lengthOfEnum;
         } else {
             // Something went wrong, just go to the original
             index = currentCenterOfRotation.ordinal();

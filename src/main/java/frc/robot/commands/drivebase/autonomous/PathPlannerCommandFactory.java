@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivebase;
 
 public class PathPlannerCommandFactory {
+
     /**
      * Returns a new autonomous command given the following parameters
      *
@@ -22,35 +23,46 @@ public class PathPlannerCommandFactory {
      *     accordingly. MUST PUT ALL PATHS ON THE BLUE SIDE!!!!!
      */
     public static SequentialCommandGroup fromJSON(
-            Drivebase drivebase, String pathName, boolean isFirstPath, boolean useAllianceColor) {
+        Drivebase drivebase,
+        String pathName,
+        boolean isFirstPath,
+        boolean useAllianceColor
+    ) {
         return fromTrajectory(
-                drivebase,
-                PathPlanner.loadPath(pathName, new PathConstraints(2, 2)),
-                isFirstPath,
-                useAllianceColor);
+            drivebase,
+            PathPlanner.loadPath(pathName, new PathConstraints(2, 2)),
+            isFirstPath,
+            useAllianceColor
+        );
     }
 
     public static SequentialCommandGroup fromTrajectory(
-            Drivebase drivebase,
-            PathPlannerTrajectory trajectory,
-            boolean isFirstPath,
-            boolean useAllianceColor) {
+        Drivebase drivebase,
+        PathPlannerTrajectory trajectory,
+        boolean isFirstPath,
+        boolean useAllianceColor
+    ) {
         return new SequentialCommandGroup(
-                new InstantCommand(
-                        () -> {
-                            // Reset odometry for the first path you run during auto
-                            if (isFirstPath) {
-                                drivebase.resetPose(trajectory.getInitialHolonomicPose());
-                            }
-                        }),
-                new PPMecanumControllerCommand(
-                        trajectory,
-                        drivebase::getPose,
-                        new PIDController(1, 0, 0.05),
-                        new PIDController(1, 0, 0.05), // TODO: Set PID values and use constants
-                        new PIDController(Math.PI / 4, 0, 0.025 * Math.PI),
-                        drivebase::setChassisSpeeds,
-                        useAllianceColor,
-                        drivebase));
+            new InstantCommand(
+                () -> {
+                    // Reset odometry for the first path you run during auto
+                    if (isFirstPath) {
+                        drivebase.resetPose(
+                            trajectory.getInitialHolonomicPose()
+                        );
+                    }
+                }
+            ),
+            new PPMecanumControllerCommand(
+                trajectory,
+                drivebase::getPose,
+                new PIDController(1, 0, 0.05),
+                new PIDController(1, 0, 0.05), // TODO: Set PID values and use constants
+                new PIDController(Math.PI / 4, 0, 0.025 * Math.PI),
+                drivebase::setChassisSpeeds,
+                useAllianceColor,
+                drivebase
+            )
+        );
     }
 }

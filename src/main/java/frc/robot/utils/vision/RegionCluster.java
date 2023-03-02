@@ -37,15 +37,18 @@ public class RegionCluster {
     public RegionCluster() throws MapWrongSizeException {
         // If not given arguments, a cluster will be produced from the primary map
         cluster = new Region[10];
-        for (int regionIndex = 0;
-                regionIndex < ProcessingConstants.PRIMARY_MAP.length;
-                regionIndex++) {
-            double[][] regionPoints = ProcessingConstants.PRIMARY_MAP[regionIndex];
+        for (
+            int regionIndex = 0;
+            regionIndex < ProcessingConstants.PRIMARY_MAP.length;
+            regionIndex++
+        ) {
+            double[][] regionPoints =
+                ProcessingConstants.PRIMARY_MAP[regionIndex];
             Point[] points = {
                 new Point(regionPoints[0]),
                 new Point(regionPoints[1]),
                 new Point(regionPoints[2]),
-                new Point(regionPoints[3])
+                new Point(regionPoints[3]),
             };
             cluster[regionIndex] = new Region(points.clone());
         }

@@ -12,7 +12,7 @@ public class FalconConfigFields {
     }
 
     public FalconConfigFields(PIDValues falconPID, double maxOutput) {
-        this.falconPIDs = new PIDValues[] {falconPID};
+        this.falconPIDs = new PIDValues[] { falconPID };
         this.maxOutput = maxOutput;
     }
 

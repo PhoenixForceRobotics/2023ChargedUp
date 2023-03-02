@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.utils.PIDValues;
 
 public class SparkMotorGroup extends MotorControllerGroup {
-
     private CANSparkMax leader;
     private CANSparkMax[] followers;
     private RelativeEncoder encoder;
 
     public SparkMotorGroup(
-            boolean isLeaderInverted,
-            boolean areFollowersInverted,
-            CANSparkMax leader,
-            CANSparkMax... followers) {
+        boolean isLeaderInverted,
+        boolean areFollowersInverted,
+        CANSparkMax leader,
+        CANSparkMax... followers
+    ) {
         super(leader, followers);
         this.leader = leader;
         this.followers = followers;
@@ -46,7 +46,11 @@ public class SparkMotorGroup extends MotorControllerGroup {
         leader.stopMotor();
     }
 
-    public void setPID(PIDValues pidValues, double minOutput, double maxOutput) {
+    public void setPID(
+        PIDValues pidValues,
+        double minOutput,
+        double maxOutput
+    ) {
         SparkMaxPIDController pidController = leader.getPIDController();
         pidController.setP(pidValues.P);
         pidController.setI(pidValues.I);
