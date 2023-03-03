@@ -6,17 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ShuffleboardConstants;
-import frc.robot.commands.arm.ClawTesting;
-import frc.robot.commands.arm.JoystickLength;
-import frc.robot.commands.claw.ClawIntakeSequence;
-import frc.robot.commands.claw.OutputPiece;
-import frc.robot.commands.claw.TeleopClaw;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.arm.SetAngle;
+import frc.robot.commands.arm.SetLength;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.utils.PFRController;
@@ -38,25 +31,21 @@ public class RobotContainer {
     private final PFRController driverController = new PFRController(1);
 
     // The robot's commands are defined here...
-    // private final CycleCenterOfRotation cycleCenterOfRotationUp =
-    //         new CycleCenterOfRotation(drivebase, Direction.UP);
-    // private final CycleCenterOfRotation cycleCenterOfRotationDown =
-    //         new CycleCenterOfRotation(drivebase, Direction.UP);
-    // private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
-    // private final DifferentialDrive differentialDrive =
-    //         new DifferentialDrive(drivebase, driverController);
-    // private final SetIntakeVelocities setIntakeVelocities =
-    //         new SetIntakeVelocities(arm, operatorController);
-    private final ClawTesting clawTesting = new ClawTesting(arm, operatorController, claw);
-    private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
-    private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
-    private final TeleopClaw teleopClaw = new TeleopClaw(claw, operatorController);
-    private final OutputPiece outputPiece = new OutputPiece(claw, operatorController);
-    private final JoystickLength joystickLength = new JoystickLength(arm, operatorController);
+    // private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
+    // private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
+    private final SetLength startingPosition = new SetLength(arm, ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION);
+    private final SetLength testing1 = new SetLength(arm,  (ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION) * 0.2);
+    private final SetLength testing2 = new SetLength(arm, (ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION) * 0.2);
+    
+    private final SetAngle startingAngle = new SetAngle(arm, ArmConstants.ARM_ROTATION_STARTING_ANGLE);
+    private final SetAngle testingAngle1 = new SetAngle(arm, 0);
+    private final SetAngle testingAngle2 = new SetAngle(arm, Math.toRadians(90));
+
+
+    // It's useful to set the autonomous commands seperately
+
 
     // And the NetworkTable/NetworkTable/CommandChooser variables :)
-    private final ShuffleboardTab mainTab = Shuffleboard.getTab("Main");
-    private final SendableChooser<Command> drivebaseCommandChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -65,6 +54,7 @@ public class RobotContainer {
         initializeListenersAndSendables();
     }
 
+
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
      * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -72,13 +62,13 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        // driverController.lBumper().onTrue(mecanumDrive);
-        // driverController.lBumper().onFalse(differentialDrive);
-        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
-        operatorController.xButton().whileTrue(pickUpCube);
-        operatorController.aButton().whileTrue(pickUpCone);
-        operatorController.bButton().whileTrue(outputPiece);
+        driverController.aButton().onTrue(startingPosition);
+        driverController.xButton().onTrue(testing1);
+        driverController.yButton().onTrue(testing2);
+
+        operatorController.aButton().onTrue(startingAngle);
+        operatorController.xButton().onTrue(testingAngle1);
+        operatorController.bButton().whileTrue(testingAngle2);
     }
 
     public void initializeListenersAndSendables() {
@@ -87,7 +77,6 @@ public class RobotContainer {
         // Add options for chooser
 
         // Places chooser on mainTab (where all configs are)
-        mainTab.add(ShuffleboardConstants.DRIVEBASE_CHOOSER, drivebaseCommandChooser);
     }
 
     /**
@@ -100,31 +89,6 @@ public class RobotContainer {
     }
 
     public void initializeTeleopCommands() {
-        CommandScheduler.getInstance().cancelAll();
-        // drivebaseCommandChooser.getSelected().schedule();
-        getClawTesting().schedule();
-        getJoystickLength().schedule();
-    }
-
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().cancelAll();
-        // drivebaseCommandChooser.getSelected().schedule();
-    }
-
-    // public MecanumDrive getMecanumDrive() {
-    //     return mecanumDrive;
-    // }
-
-    // public DifferentialDrive getDifferentialDrive() {
-    //     return differentialDrive;
-    // }
-
-    public ClawIntakeSequence getPickUpCone() {
-        return pickUpCone;
-    }
-
-    public ClawIntakeSequence getPickUpCube() {
-        return pickUpCube;
     }
 
     public PFRController getDriverController() {
@@ -133,21 +97,5 @@ public class RobotContainer {
 
     public PFRController getOperatorController() {
         return operatorController;
-    }
-
-    // public SetIntakeVelocities getSetIntakeVelocities() {
-    //     return setIntakeVelocities;
-    // }
-
-    public ClawTesting getClawTesting() {
-        return clawTesting;
-    }
-
-    public TeleopClaw getTeleopClaw() {
-        return teleopClaw;
-    }
-
-    public JoystickLength getJoystickLength() {
-        return joystickLength;
     }
 }

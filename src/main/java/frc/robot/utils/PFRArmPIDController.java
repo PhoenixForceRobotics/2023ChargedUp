@@ -19,7 +19,13 @@ public class PFRArmPIDController extends PIDController {
                         pidValues.STATIC_F, pidValues.VELOCITY_F, pidValues.ACCELERATION_F);
     }
 
-
+    /**
+     * Combines both the feedforward and the feedback (PID) loops 
+     * @param positionMeasurement - in RADIANS
+     * @param velocityMeasurement - in RADIANS PER SECOND
+     * @param velocitySetpoint - in RADIANS PER SECOND
+     * @return desired voltage
+     */
     public double filteredCalculate(double positionMeasurement, double velocityMeasurement, double velocitySetpoint) {
         double pidOutput = calculate(velocityMeasurement, velocitySetpoint);
         double feedForwardVolts = FEED_FORWARD.calculate(positionMeasurement, velocitySetpoint);

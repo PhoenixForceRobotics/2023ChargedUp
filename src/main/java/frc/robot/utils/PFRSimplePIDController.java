@@ -19,7 +19,14 @@ public class PFRSimplePIDController extends PIDController {
                         pidValues.STATIC_F, pidValues.VELOCITY_F, pidValues.ACCELERATION_F);
     }
 
-
+    /**
+     * Combines both the feedforward and the feedback (PID) loops 
+     * @param positionMeasurement
+     * @param velocityMeasurement
+     * @param velocitySetpoint
+     * @return desired voltage
+     */
+    
     public double filteredCalculate(double measurement, double setpoint) {
         double rawOutput = calculate(measurement, setpoint);
         return MathUtil.clamp(rawOutput, -MAX_CONTROL_EFFORT, MAX_CONTROL_EFFORT)

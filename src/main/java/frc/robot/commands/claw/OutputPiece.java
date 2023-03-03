@@ -8,11 +8,9 @@ import frc.robot.utils.PFRController;
 
 public class OutputPiece extends CommandBase {
     private Claw claw;
-    private PFRController operatorController;
 
-    public OutputPiece(Claw claw, PFRController operatorController) {
+    public OutputPiece(Claw claw) {
         this.claw = claw;
-        this.operatorController = operatorController;
     }
 
     @Override

@@ -1,39 +1,39 @@
-package frc.robot.commands.drivebase;
+// package frc.robot.commands.drivebase;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.Drivebase.CenterOfRotation;
+// import edu.wpi.first.wpilibj2.command.InstantCommand;
+// import frc.robot.subsystems.Drivebase;
+// import frc.robot.subsystems.Drivebase.CenterOfRotation;
 
-public class CycleCenterOfRotation extends InstantCommand {
+// public class CycleCenterOfRotation extends InstantCommand {
 
-    public enum Direction {
-        UP,
-        DOWN;
-    }
+//     public enum Direction {
+//         UP,
+//         DOWN;
+//     }
 
-    private Drivebase drivebase;
-    private Direction direction;
+//     private Drivebase drivebase;
+//     private Direction direction;
 
-    public CycleCenterOfRotation(Drivebase drivebase, Direction direction) {
-        this.drivebase = drivebase;
-        this.direction = direction;
-    }
+//     public CycleCenterOfRotation(Drivebase drivebase, Direction direction) {
+//         this.drivebase = drivebase;
+//         this.direction = direction;
+//     }
 
-    @Override
-    public void initialize() {
+//     @Override
+//     public void initialize() {
 
-        CenterOfRotation currentCenterOfRotation = drivebase.getCenterOfRotation();
-        int lengthOfEnum = CenterOfRotation.values().length;
-        int index;
+//         CenterOfRotation currentCenterOfRotation = drivebase.getCenterOfRotation();
+//         int lengthOfEnum = CenterOfRotation.values().length;
+//         int index;
 
-        if (direction == Direction.UP) {
-            index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
-        } else if (direction == Direction.DOWN) {
-            index = (currentCenterOfRotation.ordinal() + lengthOfEnum - 1) % lengthOfEnum;
-        } else {
-            index = currentCenterOfRotation.ordinal();
-        }
+//         if (direction == Direction.UP) {
+//             index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
+//         } else if (direction == Direction.DOWN) {
+//             index = (currentCenterOfRotation.ordinal() + lengthOfEnum - 1) % lengthOfEnum;
+//         } else {
+//             index = currentCenterOfRotation.ordinal();
+//         }
 
-        drivebase.setCenterOfRotation(CenterOfRotation.values()[index]);
-    }
-}
+//         drivebase.setCenterOfRotation(CenterOfRotation.values()[index]);
+//     }
+// }

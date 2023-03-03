@@ -25,15 +25,6 @@ public final class Constants {
         public static final int WHEEL_BL_PORT = 3;
         public static final int WHEEL_BR_PORT = 4;
 
-        public static final int FR_BUTTERFLY_FORWARD_PORT = 0;
-        public static final int FR_BUTTERFLY_REVERSE_PORT = 1;
-        public static final int FL_BUTTERFLY_FORWARD_PORT = 2;
-        public static final int FL_BUTTERFLY_REVERSE_PORT = 3;
-        public static final int BR_BUTTERFLY_FORWARD_PORT = 4;
-        public static final int BR_BUTTERFLY_REVERSE_PORT = 5;
-        public static final int BL_BUTTERFLY_FORWARD_PORT = 6;
-        public static final int BL_BUTTERFLY_REVERSE_PORT = 7;
-
         public static final double GEAR_RATIO = (double) 12 / (double) 72; // output / input
         public static final double WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
 
@@ -79,16 +70,6 @@ public final class Constants {
     public static final class UtilConstants {
         public static final double FALCON_ENCODER_RESOLUTION = 2048;
         public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
-
-        public static final int POSITION_PID_SLOT = 0;
-        public static final int VELOCITY_PID_SLOT = 1;
-        public static final int VOLTAGE_PID_SLOT = 2;
-        public static final int BLAN_PID_SLOT = 3;
-    }
-
-    public static final class ShuffleboardConstants {
-        public static final String DRIVEBASE_CHOOSER =
-                "Drivebase Chooser"; // Constant to prevent *namespace mismatches*
     }
 
     public static final class ArmConstants {
@@ -104,18 +85,22 @@ public final class Constants {
          public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0;
 
         // Constants for extension motors
-        public static final int FIRST_STAGE_PORT = 11;
-        public static final int SECOND_STAGE_PORT = 12;
+        public static final int FIRST_STAGE_PORT = 7;
+        public static final int SECOND_STAGE_PORT = 8;
         public static final boolean FIRST_STAGE_REVERSED = false;
         public static final boolean SECOND_STAGE_REVERSED = false;
-        public static final double FIRST_STAGE_GEAR_RATIO = (double) 1 / (double) 49;
-        public static final double SECOND_STAGE_GEAR_RATIO = (double) 1 / (double) 12;
+        public static final double FIRST_STAGE_GEAR_RATIO = (double) 1 / (double) 12;
+        public static final double SECOND_STAGE_GEAR_RATIO = (double) 1 / (double) 49;
         public static final double FIRST_STAGE_WHEEL_DIAMETER = 0.1524; // TODO: Ask jordan for sprocket diameter
         public static final double SECOND_STAGE_WHEEL_DIAMETER = 0.1524;
+        public static final double FIRST_STAGE_DISTANCE_PER_ROTATION = 0.13335;
+        public static final double SECOND_STAGE_DISTANCE_PER_ROTATION = 0.20955;
+        // 5.25 inches (second stage)
+        // 8.25 inches (first stage)
 
         // Constants for claw rotation motors
-        public static final int CLAW_ROTATION_MOTOR_1_PORT = 4;
-        public static final int CLAW_ROTATION_MOTOR_2_PORT = 2;
+        public static final int CLAW_ROTATION_MOTOR_1_PORT = 9;
+        public static final int CLAW_ROTATION_MOTOR_2_PORT = 10;
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = true;
         public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 70;
@@ -139,7 +124,7 @@ public final class Constants {
         public static final Pair<Double, Double> EXTENSION_SETPOINT_ERROR = new Pair<Double, Double>(0.5, 0.5); // meter error, m/s error
         // TODO: Use Sysid to get claw rotation feedforward values
 
-        public static final double ARM_ROTATION_STARTING_ANGLE = 1;
+        public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(90);
         public static final double CLAW_STARTING_ANGLE =
                 90; //TODO: Change this when we figure out the default starting angle of the claw when
         // testing
@@ -160,10 +145,7 @@ public final class Constants {
 
     public static final class ClawConstants {
         // TODO: Change all of these values when they are known
-        public static final int CLAW_MOTOR_PORT = 1;
-        public static final boolean CLAW_MOTOR_REVERSED = false;
-        public static final double CLAW_GEAR_RATIO = (double) 40 / (double) 1; // output / input
-        public static final double CLAW_WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
+        public static final int CLAW_MOTOR_PORT = 11;
 
         public static final double CLAW_MOTOR_SPEED = 1;
 

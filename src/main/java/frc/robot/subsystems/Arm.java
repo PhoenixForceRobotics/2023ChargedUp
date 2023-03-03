@@ -23,7 +23,6 @@ public class Arm extends SubsystemBase {
     private Motor clawRotationFollower;
     private PFRArmPIDController clawRotationController;
 
-    private boolean isClawIndependentlyControlled = true;
     private double desiredArmRadiansPerSecond = 0;
     private double desiredFirstStageMetersPerSecond = 0;
     private double desiredSecondStageMetersPerSecond = 0;
@@ -129,6 +128,11 @@ public class Arm extends SubsystemBase {
         {
             desiredClawRadiansPerSecond = Math.max(desiredArmRadiansPerSecond, 0);
         }
+
+        armRotationLeader.setVoltage(armRotationController.filteredCalculate(getArmRadians(), getArmRadiansPerSecond(), desiredArmRadiansPerSecond));
+        firstStageExtensionMotor.setVoltage(firstStageExtensionController.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredArmRadiansPerSecond));
+        secondStageExtensionMotor.setVoltage(secondStageExtensionContoller.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond));
+        clawRotationLeader.setVoltage(clawRotationController.filteredCalculate(getClawAbsoluteAngleRadians(), getClawRelativeRadiansPerSecond(), desiredClawRadiansPerSecond));
     }
 
     /**
@@ -196,11 +200,11 @@ public class Arm extends SubsystemBase {
    }
 
     public double getFirstStageMeters() {
-        return firstStageExtensionMotor.getMeters();
+        return firstStageExtensionMotor.getRotations() * ArmConstants.FIRST_STAGE_DISTANCE_PER_ROTATION;
     }
 
     public double getSecondStageMeters() {
-        return secondStageExtensionMotor.getMeters();
+        return secondStageExtensionMotor.getRotations() * ArmConstants.SECOND_STAGE_DISTANCE_PER_ROTATION;
     }
 
     /**

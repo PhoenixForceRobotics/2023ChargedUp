@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
-import frc.robot.utils.Motor;
 
 public class Claw extends SubsystemBase {
     private CANSparkMax motor; // References the motor of the claw
@@ -23,29 +22,13 @@ public class Claw extends SubsystemBase {
     /**
      * This class references the claw subsystem. It is able to pick up game pieces with an intake
      * and it has methods for setting the speed of the motors and checking the status of the beam
-     * break sensors that check what game piece is currently in the claw if applicable.
-     *
-     * @param motor - references the motor of the claw
-     * @param cubeSensor - a sensor that detects if there is a cube in the claw (two states, true or
-     *     false)
-     * @param coneSensor - a sensor that detects if there is a cone in the claw (two states, true or
-     *     false)
-     */
-    public Claw(Motor motor, DigitalInput cubeSensor, DigitalInput coneSensor) {
-        this.motor = motor;
-        this.cubeSensor = cubeSensor;
-        this.coneSensor = coneSensor;
-    }
-
-    /**
-     * This class references the claw subsystem. It is able to pick up game pieces with an intake
-     * and it has methods for setting the speed of the motors and checking the status of the beam
      * break sensors that check what game piece is currently in the claw if applicable. This
      * particular overload sets the motor and sensors to new objects using values from
      * Constants.java.
      */
     public Claw() {
         motor = new CANSparkMax(ClawConstants.CLAW_MOTOR_PORT, MotorType.kBrushed);
+        
         cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
         coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
     }
