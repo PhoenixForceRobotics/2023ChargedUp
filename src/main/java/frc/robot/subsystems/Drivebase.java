@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,7 +12,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -55,8 +55,7 @@ public class Drivebase extends SubsystemBase {
     private DoubleSolenoid butterflyPistons;
 
     // TODO: Re-add this once we install the pigeon
-    // private Pigeon2 inertialMeasurementUnit;
-    private ADXRS450_Gyro gyro;
+    private Pigeon2 gyro;
 
     private MecanumDriveWheelPositions
             currentWheelPositions; // the distance each wheel has travelled
@@ -126,7 +125,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
         // inertialMeasurementUnit = new Pigeon2(0);
-        gyro = new ADXRS450_Gyro();
+        gyro = new Pigeon2(20);
 
         // Sets the current wheel positions
         currentWheelPositions =
@@ -349,8 +348,7 @@ public class Drivebase extends SubsystemBase {
      * @return current heading (CCW+)
      */
     public double getHeading() {
-        // return inertialMeasurementUnit.getYaw();
-        return gyro.getAngle();
+        return gyro.getYaw();
     }
 
     /**
@@ -359,8 +357,7 @@ public class Drivebase extends SubsystemBase {
      * @return current heading in the form of a {@link Rotation2d}
      */
     public Rotation2d getRotation2d() {
-        // return new Rotation2d(Math.toRadians(inertialMeasurementUnit.getYaw()));
-        return gyro.getRotation2d();
+        return new Rotation2d(Math.toRadians(gyro.getYaw()));
     }
 
     /**
