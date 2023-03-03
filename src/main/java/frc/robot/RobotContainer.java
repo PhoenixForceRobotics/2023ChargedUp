@@ -17,6 +17,12 @@ import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.commands.drivebase.autonomous.ExampleAutonomousRoutine;
 import frc.robot.commands.drivebase.autonomous.PathPlannerCommandFactory;
 import frc.robot.subsystems.Drivebase;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.arm.SetAngle;
+import frc.robot.commands.arm.SetLength;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.utils.PFRController;
 
 /**
@@ -27,7 +33,9 @@ import frc.robot.utils.PFRController;
  */
 public class RobotContainer {
     // The robot's subsystems are defined here...
-    private final Drivebase drivebase = new Drivebase();
+    // private final Drivebase drivebase = new Drivebase();
+    private final Arm arm = new Arm();
+    private final Claw claw = new Claw();
 
     // The robot's controllers are defined here...
     private final PFRController driverController = new PFRController(0);
@@ -53,6 +61,25 @@ public class RobotContainer {
 
     // And things we want to put on the main tab (SmartDashboard) :)
     private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
+    private final PFRController operatorController = new PFRController(0);
+    private final PFRController driverController = new PFRController(1);
+
+    // The robot's commands are defined here...
+    // private final ClawIntakeSequence pickUpCube = new ClawIntakeSequence(claw, true);
+    // private final ClawIntakeSequence pickUpCone = new ClawIntakeSequence(claw, false);
+    private final SetLength startingPosition = new SetLength(arm, ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION);
+    private final SetLength testing1 = new SetLength(arm,  (ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION) * 0.2);
+    private final SetLength testing2 = new SetLength(arm, (ArmConstants.FIRST_STAGE_MIN_EXTENSION + ArmConstants.SECOND_STAGE_MIN_EXTENSION) * 0.2);
+    
+    private final SetAngle startingAngle = new SetAngle(arm, ArmConstants.ARM_ROTATION_STARTING_ANGLE);
+    private final SetAngle testingAngle1 = new SetAngle(arm, 0);
+    private final SetAngle testingAngle2 = new SetAngle(arm, Math.toRadians(90));
+
+
+    // It's useful to set the autonomous commands seperately
+
+
+    // And the NetworkTable/NetworkTable/CommandChooser variables :)
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -60,6 +87,7 @@ public class RobotContainer {
         configureButtonBindings();
         initializeListenersAndSendables();
     }
+
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -72,6 +100,13 @@ public class RobotContainer {
         driverController.rBumper().onTrue(differentialDrive);
         driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
         driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        driverController.aButton().onTrue(startingPosition);
+        driverController.xButton().onTrue(testing1);
+        driverController.yButton().onTrue(testing2);
+
+        operatorController.aButton().onTrue(startingAngle);
+        operatorController.xButton().onTrue(testingAngle1);
+        operatorController.bButton().whileTrue(testingAngle2);
     }
 
     public void initializeListenersAndSendables() {
