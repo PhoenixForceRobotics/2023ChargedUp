@@ -17,13 +17,8 @@ import frc.robot.commands.arm.JoystickLength;
 import frc.robot.commands.claw.ClawIntakeSequence;
 import frc.robot.commands.claw.OutputPiece;
 import frc.robot.commands.claw.TeleopClaw;
-import frc.robot.commands.drivebase.CycleCenterOfRotation;
-import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
-import frc.robot.commands.drivebase.DifferentialDrive;
-import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
 /**
@@ -106,14 +101,14 @@ public class RobotContainer {
 
     public void initializeTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        //drivebaseCommandChooser.getSelected().schedule();
+        // drivebaseCommandChooser.getSelected().schedule();
         getClawTesting().schedule();
         getJoystickLength().schedule();
     }
 
     public void teleopPeriodic() {
         CommandScheduler.getInstance().cancelAll();
-        //drivebaseCommandChooser.getSelected().schedule();
+        // drivebaseCommandChooser.getSelected().schedule();
     }
 
     // public MecanumDrive getMecanumDrive() {
@@ -152,8 +147,7 @@ public class RobotContainer {
         return teleopClaw;
     }
 
-    public JoystickLength getJoystickLength()
-    {
+    public JoystickLength getJoystickLength() {
         return joystickLength;
     }
 }

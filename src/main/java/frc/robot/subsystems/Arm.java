@@ -1,48 +1,34 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.Motor;
-import frc.robot.utils.SparkMotorGroup;
+import frc.robot.utils.PFRArmPIDController;
+import frc.robot.utils.PFRExtensionPIDController;
 
 public class Arm extends SubsystemBase {
     // Rotation motors
-    // private Motor rotationMotor1;
-    // private Motor rotationMotor2;
-    // private SparkMotorGroup rotationMotors;
+    private Motor armRotationLeader;
+    private Motor armRotationFollower;
+    private PFRArmPIDController armRotationController;
 
     // Extension motors
-    private Motor extensionMotor1;
-    private Motor extensionMotor2;
+    private Motor firstStageExtensionMotor; // Fullsized Neo (bottom side)
+    private Motor secondStageExtensionMotor; // Neo 550 (top side)
+    private PFRExtensionPIDController firstStageExtensionController; // PID + feedforward for full neo
+    private PFRExtensionPIDController secondStageExtensionContoller; // PID + feedforward for neo 550 
 
     // Motors for rotating claw independently to keep it level when arm has rotated
-    private Motor clawRotationMotor1;
-    private Motor clawRotationMotor2;
-    private SparkMotorGroup clawRotationMotors;
+    private Motor clawRotationLeader;
+    private Motor clawRotationFollower;
+    private PFRArmPIDController clawRotationController;
 
-    private double clawRotationError;
-    private double clawRotationSetpoint;
+    private boolean isClawIndependentlyControlled = true;
+    private double desiredArmRadiansPerSecond = 0;
+    private double desiredFirstStageMetersPerSecond = 0;
+    private double desiredSecondStageMetersPerSecond = 0;
+    private double desiredClawRadiansPerSecond = 0;
 
-    // // Rotation PID
-    // private PIDController rotationPid;
-
-    // // Extension PID
-    private PIDController extensionPid;
-
-    // Shuffleboard Stuff
-    private ShuffleboardTab armTab;
-    private GenericEntry shuffleboardClawRotationSetpoint;
-    private GenericEntry shuffleboardClawRotationError;
-
-    private ArmFeedforward clawRotationFeedforward;
-    private PIDController clawRotationPid;
 
     /**
      * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
@@ -50,304 +36,232 @@ public class Arm extends SubsystemBase {
      */
     public Arm() {
 
-        clawRotationFeedforward = new ArmFeedforward(ArmConstants.CLAW_S_VOLTS, ArmConstants.CLAW_G, ArmConstants.CLAW_V_VOLTS_SECONDS_PER_METER, ArmConstants.CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
         // Define rotational motors
-        // rotationMotor1 =
-        //         new Motor(
-        //                 ArmConstants.ROTATION_MOTOR_1_PORT,
-        //                 ArmConstants.ROTATION_MOTOR_1_REVERSED,
-        //                 ArmConstants.ROTATION_MOTOR_GEAR_RATIO,
-        //                 ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
-        // rotationMotor2 =
-        //         new Motor(
-        //                 ArmConstants.ROTATION_MOTOR_2_PORT,
-        //                 ArmConstants.ROTATION_MOTOR_2_REVERSED,
-        //                 ArmConstants.ROTATION_MOTOR_GEAR_RATIO,
-        //                 ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
-        // rotationMotors = new SparkMotorGroup(false, rotationMotor1, rotationMotor2);
+        armRotationLeader =
+                new Motor(
+                        ArmConstants.ARM_ROTATION_MOTOR_1_PORT,
+                        ArmConstants.ARM_ROTATION_MOTOR_1_REVERSED,
+                        ArmConstants.ARM_ROTATION_MOTOR_GEAR_RATIO,
+                        ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
+        armRotationFollower =
+                new Motor(
+                        ArmConstants.ARM_ROTATION_MOTOR_2_PORT,
+                        ArmConstants.ARM_ROTATION_MOTOR_2_REVERSED,
+                        ArmConstants.ARM_ROTATION_MOTOR_GEAR_RATIO,
+                        ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER);
+
+        // set follower motor to follow leader
+        armRotationFollower.follow(armRotationLeader);
+
+        // create controller for arm rotation
+        armRotationController = new PFRArmPIDController(ArmConstants.ARM_ROTATION_PID_VALUES);
 
         // Define extension motors
-        extensionMotor1 =
+        firstStageExtensionMotor =
                 new Motor(
-                        ArmConstants.EXTENSION_MOTOR_1_PORT,
-                        ArmConstants.EXTENSION_MOTOR_1_REVERSED,
-                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
-                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
-        extensionMotor2 =
+                        ArmConstants.FIRST_STAGE_PORT,
+                        ArmConstants.FIRST_STAGE_REVERSED,
+                        ArmConstants.FIRST_STAGE_GEAR_RATIO,
+                        ArmConstants.FIRST_STAGE_WHEEL_DIAMETER);
+        secondStageExtensionMotor =
                 new Motor(
-                        ArmConstants.EXTENSION_MOTOR_2_PORT,
-                        ArmConstants.EXTENSION_MOTOR_2_REVERSED,
-                        ArmConstants.EXTENSION_MOTOR_GEAR_RATIO,
-                        ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER);
-        // extensionMotors = new SparkMotorGroup(false, extensionMotor1, extensionMotor2);
-        extensionPid = new PIDController(ArmConstants.EXTENSION_PID_P, ArmConstants.EXTENSION_PID_I, ArmConstants.EXTENSION_PID_D);
-
+                        ArmConstants.SECOND_STAGE_PORT,
+                        ArmConstants.SECOND_STAGE_REVERSED,
+                        ArmConstants.SECOND_STAGE_GEAR_RATIO,
+                        ArmConstants.SECOND_STAGE_WHEEL_DIAMETER);
+        firstStageExtensionController = new PFRExtensionPIDController(ArmConstants.FIRST_STAGE_PID_VALUES);
+        secondStageExtensionContoller = new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_PID_VALUES);
+        
         // Define claw rotational motors
-        clawRotationMotor1 =
+        clawRotationLeader =
                 new Motor(
                         ArmConstants.CLAW_ROTATION_MOTOR_1_PORT,
                         ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED,
                         ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
-        clawRotationMotor2 =
+        clawRotationFollower =
                 new Motor(
                         ArmConstants.CLAW_ROTATION_MOTOR_2_PORT,
                         ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED,
                         ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
-        clawRotationMotors = new SparkMotorGroup(true, clawRotationMotor1, clawRotationMotor2);
-        clawRotationPid = new PIDController(ArmConstants.CLAW_ROTATION_PID_P, 0, ArmConstants.CLAW_ROTATION_PID_D);
+        
+        // make follwer follw the leader, BUT INVERTED (due to how it works)
+        clawRotationFollower.follow(clawRotationLeader, true);
 
-        // Defines shuffleboard tab and entries
-        armTab = Shuffleboard.getTab("Arm");
-        shuffleboardClawRotationError = armTab.add("Claw Rotation Error", 0).getEntry();
-        shuffleboardClawRotationSetpoint = armTab.add("Claw Rotation Setpoint", 0).getEntry();
-        // armTab.add("Extension PID Controller", extensionPid);
-        // armTab.add("Rotation PID Controller", rotationPid);
+        // Claw rotation controller
+        clawRotationController = new PFRArmPIDController(ArmConstants.CLAW_ROTATION_PID_VALUES);
     }
 
     @Override
     public void periodic() {
-        clawRotationSetpoint = 180 - clawRotationSetpoint;
-        clawRotationError = clawRotationSetpoint - getClawRotationAbsoluteAngleInDegrees();
+        if(ArmConstants.MIN_ARM_ANGLE >= getArmRadians())
+        {
+            desiredArmRadiansPerSecond = Math.min(0, desiredArmRadiansPerSecond);
+        }
+        else if(ArmConstants.MAX_ARM_ANGLE <= getArmRadians())
+        {
+            desiredArmRadiansPerSecond = Math.max(desiredArmRadiansPerSecond, 0);
+        }
 
-        shuffleboardClawRotationError.setDouble(clawRotationError);
-        shuffleboardClawRotationSetpoint.setDouble(clawRotationSetpoint);
-    }
-
-    // /**
-    //  * Sets the angular velocity of the rotation motors in radians per second
-    //  *
-    //  * @param angularVelocity - velocity of the rotation motors in radians per second
-    //  */
-    // public void setRotationRadiansPerSecond(double angularVelocity) {
-    //     double voltage =
-    //             ArmConstants.ARM_ROTATION_FEED_FORWARD.calculate(
-    //                             getRotationAngleInRadians(), angularVelocity)
-    //                     + rotationPid.calculate(getRotationRadiansPerSecond());
-    //     rotationMotors.setVoltage(voltage);
-    // }
-
-    // /**
-    //  * Sets the velocity for the extension motors
-    //  *
-    //  * @param velocity - velocity in meters per second you want to set it to
-    //  */
-    // public void setExtensionMetersPerSecond(double velocity) {
-    //     double voltage =
-    //             ArmConstants.ARM_EXTENSION_FEED_FORWARD.calculate(
-    //                             getExtensionLength(), velocity)
-    //                     + extensionPid.calculate(getExtensionMetersPerSecond());
-    //     extensionMotors.setVoltage(voltage);
-    // }
-
-    public void setExtensionMotor1(double input)
-    {
-        extensionMotor1.set(input);
-    }
-
-    public void setExtensionMotor2(double input)
-    {
-        extensionMotor2.set(input);
+        if(ArmConstants.FIRST_STAGE_MIN_EXTENSION >= getArmRadians())
+        {
+            desiredFirstStageMetersPerSecond = Math.min(0, desiredFirstStageMetersPerSecond);
+        }
+        else if(ArmConstants.FIRST_STAGE_MAX_EXTENSION <= getArmRadians())
+        {
+            desiredFirstStageMetersPerSecond = Math.max(desiredFirstStageMetersPerSecond, 0);
+        }
+        if(ArmConstants.SECOND_STAGE_MIN_EXTENSION >= getArmRadians())
+        {
+            desiredSecondStageMetersPerSecond = Math.min(0, desiredSecondStageMetersPerSecond);
+        }
+        else if(ArmConstants.SECOND_STAGE_MAX_EXTENSION <= getSecondStageMeters())
+        {
+            desiredSecondStageMetersPerSecond = Math.min(desiredSecondStageMetersPerSecond, 0);
+        }
+         
+        if(ArmConstants.MIN_CLAW_ANGLE >= getArmRadians())
+        {
+            desiredClawRadiansPerSecond = Math.min(0, desiredArmRadiansPerSecond);
+        }
+        else if(ArmConstants.MAX_CLAW_ANGLE <= getArmRadians())
+        {
+            desiredClawRadiansPerSecond = Math.max(desiredArmRadiansPerSecond, 0);
+        }
     }
 
     /**
-     * Sets the angular velocity of the claw rotations motors in radians per second
+     * Sets the angular velocity of the rotation motors in radians per second
      *
-     * @param angularVelocity - velocity of the claw rotation motors in radians per second
+     * @param angularVelocity - velocity of the rotation motors in radians per second
+     */
+    public void setArmRotationRadiansPerSecond(double angularVelocity) {
+        desiredArmRadiansPerSecond = angularVelocity;
+    }
+
+    /**
+     * Sets the velocity for the extension motors
+     *
+     * @param velocity - velocity in meters per second you want to set it to
+     */
+    public void setFirstStageMetersPerSecond(double velocity) {
+        desiredFirstStageMetersPerSecond = velocity;
+    }
+
+    public void setSecondStageMetersPerSecond(double velocity)
+    {
+        desiredSecondStageMetersPerSecond = velocity;
+    }
+
+    public void setExtensionMetersPerSecond(double firstStageVelocity, double secondStageVelocity)
+    {
+        setFirstStageMetersPerSecond(firstStageVelocity);
+        setSecondStageMetersPerSecond(secondStageVelocity);
+    }
+
+    /**
+     * Sets the angular velocity of the claw in radians per second RELATIVE TO ARM
+     *
+     * @param angularVelocity - angular velocity of the claw rotation motors in radians per second
      */
     public void setClawRotationRadiansPerSecond(double angularVelocity) {
-        double voltage =
-                clawRotationFeedforward.calculate(
-                        getClawRotationAbsoluteAngleInRadians(),
-                        angularVelocity) 
-                + MathUtil.clamp(clawRotationPid.calculate(getClawRotationRadiansPerSecond(), angularVelocity), -7, 7);
-        clawRotationMotors.setVoltage(-voltage);
-        System.out.println("Ouput Voltage: " + voltage);
-        System.out.println("Desired Angular Velocity: " + angularVelocity);
-    }
-
-    // /**
-    //  * Gets the velocity for the extension motors
-    //  *
-    //  * @return the velocity of the motors in meters per second
-    //  */
-    // public double getExtensionMetersPerSecond() {
-    //     return getExtensionEncoder().getPosition()
-    //             * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO
-    //             * ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER
-    //             * Math.PI
-    //             / 60;
-    // }
-
-    // /**
-    //  * Gets the rotational velocity of the arm in radians per second
-    //  *
-    //  * @return the rotational velocity of the arm in radians per second
-    //  */
-    // public double getRotationRadiansPerSecond() {
-    //     return rotationMotor1.getRPM() / 60 * Math.PI * 2;
-    // }
-
+        desiredClawRadiansPerSecond = angularVelocity;
+    }    
     /**
-     * Gets the rotational velocity of the claw in radians per second
-     *
-     * @return the rotational velocity of the claw rotation motors in radians per second
+     * Sets the angular velocity of the claw in radians per second RELATIVE TO GROUND 
+     * @param angularVelocity - angular velocity of the claw relative to gorund in radians per second 
      */
-    public double getClawRotationRadiansPerSecond() {
-        System.out.println("Radians Per Second: " + clawRotationMotor1.getRPM() / 60 * Math.PI * 2);
-        return clawRotationMotor1.getRPM() / 60 * Math.PI * 2;
-    }
-
-    // /**
-    //  * Gets the angle of rotation of the arm in degrees
-    //  *
-    //  * @return the angle of the arm in degrees
-    //  */
-    // public double getRotationAngleInDegrees() {
-    //     return rotationMotor1.getRotations() * 360;
-    // }
-
-    // public double getRotationAngleInRadians()
-    // {
-    //     return Math.toRadians(getRotationAngleInDegrees());
-    // }
-
-    // /**
-    //  * Gets the length of the extension arm from the center of rotation
-    //  *
-    //  * @return the length in meters of the arm from the center of rotation
-    //  */
-    public double getExtensionLength() {
-        return extensionMotor1.getMeters();
-    }
-
-    /**
-     * Gets the angle of the rotation of the claw in degrees
-     *
-     * @return the rotation of the claw in degrees
-     */
-    public double getClawRotationRelativeAngleInDegrees() {
-        return clawRotationMotor1.getRotations() * 360;
-    }
-
-    // /**
-    //  * Gets the encoder for the rotation motors
-    //  *
-    //  * @return an encoder for the rotation motors
-    //  */
-    // public RelativeEncoder getRotationEncoder() {
-    //     return rotationMotors.getEncoder();
-    // }
-
-    // /**
-    //  * Gets the encoder for the extension motors
-    //  *
-    //  * @return an encoder for the extension motors
-    //  */
-    // public RelativeEncoder getExtensionEncoder() {
-    //     return extensionMotors.getEncoder();
-    // }
-
-    /**
-     * Gets the encoder for the claw rotation motors
-     *
-     * @return an encoder for the claw rotation motors
-     */
-    public RelativeEncoder getClawRotationEncoder() {
-        return clawRotationMotors.getEncoder();
-    }
-
-    // /**
-    //  * Gets the pid controller for rotation
-    //  *
-    //  * @return the pid controller object for rotation
-    //  */
-    // public PIDController getRotationPid() {
-    //     return rotationPid;
-    // }
-
-    // /**
-    //  * Gets the pid controller for extension
-    //  *
-    //  * @return the pid controller object for extension
-    //  */
-    public PIDController getExtensionPid() {
-        return extensionPid;
-    }
-
-    // /**
-    //  * Gets the amount of meters traveled by the rotation motors
-    //  *
-    //  * @return the amount of meters traveled by the rotation motors
-    //  */
-    // public double getRotationMeters() {
-    //     return getRotationEncoder().getPosition()
-    //             * ArmConstants.ROTATION_MOTOR_GEAR_RATIO
-    //             * ArmConstants.ROTATION_MOTOR_WHEEL_DIAMETER
-    //             * Math.PI;
-    // }
-
-    // /**
-    //  * Gets the amount of meters traveled by the extension motors
-    //  *
-    //  * @return the amount of meters traveled by the extension motors
-    //  */
-    // public double getExtensionMeters() {
-    //     return getExtensionEncoder().getPosition()
-    //             * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO
-    //             * ArmConstants.EXTENSION_MOTOR_WHEEL_DIAMETER
-    //             * Math.PI;
-    // }
-
-    /**
-     * Gets the amount of meters traveled by the claw rotation motors
-     *
-     * @return the amount of meters traveled by the claw rotation motors
-     */
-    public double getClawRotationMeters() {
-        return getClawRotationEncoder().getPosition()
-                * ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO
-                * ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER
-                * Math.PI;
-    }
-
-    /**
-     * Gets the error for the claw rotation
-     *
-     * @return the difference between the current claw angle and the desired angle (which is always
-     *     level)
-     */
-    public double getClawRotationError() {
-        return clawRotationError;
-    }
-
-    /**
-     * Gets the setpoint for the rotation of the claw
-     *
-     * @return the amount of degrees the claw has to rotate in order to reach level postion
-     */
-    public double getClawRotationSetpoint() {
-        return clawRotationSetpoint;
-    }
-
-    /**
-     * Gets the angle of the claw taking into account the angle at which the claw originally started
-     * at
-     *
-     * @return the angle of the claw gotten from the encoders plus the starting the angle
-     */
-    public double getClawRotationAbsoluteAngleInDegrees() {
-        return getClawRotationRelativeAngleInDegrees() + ArmConstants.CLAW_STARTING_ANGLE;
-    }
-
-    public double getClawRotationAbsoluteAngleInRadians()
+    public void setClawAbsoluteRadiansPerSecond(double angularVelocity)
     {
-        return getClawRotationRelativeAngleInRadians() + Math.toRadians(ArmConstants.CLAW_STARTING_ANGLE);
+        desiredClawRadiansPerSecond = angularVelocity - getArmRadiansPerSecond();
+    }
+    
+    /**
+    * Gets the arm angle relative to level to ground
+    * @return radians (CCW+, 🔄 positive, when )
+    */
+   public double getArmRadians()
+   {
+       return armRotationLeader.getRotations() * 2 * Math.PI;
+   }
+
+   /**
+    * Gets the arm angular velocity
+    * @return radians per second (CCW+, 🔄 positive, when FACING PORT SIDE)
+    */
+   public double getArmRadiansPerSecond()
+   {
+    return armRotationLeader.getRPM() / 60 * 2 * Math.PI;
+   }
+
+    public double getFirstStageMeters() {
+        return firstStageExtensionMotor.getMeters();
     }
 
-    public double getClawRotationRelativeAngleInRadians()
+    public double getSecondStageMeters() {
+        return secondStageExtensionMotor.getMeters();
+    }
+
+    /**
+     * Gets the length of the extension arm from the center of rotation to tip
+     *
+     * @return the length in meters of the arm from the center of rotation to tip
+     */
+    public double getFullExtensionMeters() {
+        return getFirstStageMeters() + getSecondStageMeters() + ArmConstants.EXTENSION_STARTING_LENGTH;
+    }
+   
+    public double getFirstStageMetersPerSecond()
     {
-        return Math.toRadians(getClawRotationRelativeAngleInDegrees());
+        return firstStageExtensionMotor.getMetersPerSecond();
+    }
+
+    public double getSecondStageMetersPerSecond()
+    {
+        return secondStageExtensionMotor.getMetersPerSecond();
+    }
+
+    public double getFullExtensionMetersPerSecond()
+    {
+        return getFirstStageMetersPerSecond() + getSecondStageMeters();
+    }
+
+        
+    /**
+    * Gets the claw offset angle relative to parralel with arm
+    * @return radians (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
+    */
+    public double getClawRelativeAngleRadians()
+    {
+        return clawRotationLeader.getRPM() / 60 * Math.PI * 2;
+    }
+
+    
+    /**
+    * Gets the claw angle relative to level to ground
+    * @return radians (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
+    */
+    public double getClawAbsoluteAngleRadians()
+    {
+        return 2 * Math.PI -  getClawAbsoluteAngleRadians() - getArmRadians();
+    }
+
+    /**
+     * Gets the rotational velocity of the claw in radians per second RELATIVE TO ARM
+     *
+     * @return radians per second (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
+     */
+    public double getClawRelativeRadiansPerSecond() {
+        return clawRotationLeader.getRPM() / 60 * 2 * Math.PI;
+    }
+
+     /**
+     * Gets the rotational velocity of the claw in radians per second RELATIVE TO GROUND
+     *
+     * @return radians per second (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
+     */
+    public double getClawAbsoluteRadiansPerSecond() {
+        return getArmRadiansPerSecond() + getClawRelativeRadiansPerSecond();
     }
 }

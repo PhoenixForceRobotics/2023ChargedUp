@@ -21,19 +21,19 @@ public class JoystickLength extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setExtensionMotor1(0); // Stops the motors from moving
-        arm.setExtensionMotor2(0);
+        arm.setFirstStageMetersPerSecond(0); // Stops the motors from moving
+        arm.setSecondStageMetersPerSecond(0);
     }
 
     @Override
     public void execute() {
-        arm.setExtensionMotor1(operatorController.getLeftYSquared() * 0.1);
-        arm.setExtensionMotor2(operatorController.getLeftYSquared() * 0.1);
+        arm.setFirstStageMetersPerSecond(operatorController.getLeftYSquared() * 0.1);
+        arm.setSecondStageMetersPerSecond(operatorController.getLeftYSquared() * 0.1);
     }
 
     @Override
     public void end(boolean interrupted) {
-        arm.setExtensionMotor1(0); // Stops the motors from moving
-        arm.setExtensionMotor2(0);
+        arm.setFirstStageMetersPerSecond(0); // Stops the motors from moving
+        arm.setSecondStageMetersPerSecond(0);
     }
 }

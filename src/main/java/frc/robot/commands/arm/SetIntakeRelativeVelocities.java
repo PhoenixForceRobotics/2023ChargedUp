@@ -5,11 +5,11 @@
 // import frc.robot.utils.CoordinateMath;
 // import frc.robot.utils.PFRController;
 
-// public class SetIntakeVelocities extends CommandBase {
+// public class SetIntakeRelativeVelocities extends CommandBase {
 //     private Arm arm;
 //     private PFRController operatorController;
 
-//     public SetIntakeVelocities(Arm arm, PFRController operatorController) {
+//     public SetIntakeRelativeVelocities(Arm arm, PFRController operatorController) {
 //         this.arm = arm;
 //         this.operatorController = operatorController;
 //     }

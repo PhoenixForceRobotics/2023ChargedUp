@@ -4,10 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.utils.PIDValues;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -94,21 +95,23 @@ public final class Constants {
         // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel
         // diameters, ports, etc.)
 
-        // Constants for extension motors
-        public static final int EXTENSION_MOTOR_1_PORT = 8;
-        public static final int EXTENSION_MOTOR_2_PORT = 3;
-        public static final boolean EXTENSION_MOTOR_1_REVERSED = false;
-        public static final boolean EXTENSION_MOTOR_2_REVERSED = false;
-        public static final double EXTENSION_MOTOR_GEAR_RATIO = (double) 1 / (double) 49;
-        public static final double EXTENSION_MOTOR_WHEEL_DIAMETER = 0.1524;
+         // Constants for rotation motors (that rotate the base of the arm)
+         public static final int ARM_ROTATION_MOTOR_1_PORT = 5;
+         public static final int ARM_ROTATION_MOTOR_2_PORT = 6;
+         public static final boolean ARM_ROTATION_MOTOR_1_REVERSED = false;
+         public static final boolean ARM_ROTATION_MOTOR_2_REVERSED = false;
+         public static final double ARM_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 68.48;
+         public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0;
 
-        // Constants for rotation motors
-        public static final int ROTATION_MOTOR_1_PORT = 13;
-        public static final int ROTATION_MOTOR_2_PORT = 14;
-        public static final boolean ROTATION_MOTOR_1_REVERSED = false;
-        public static final boolean ROTATION_MOTOR_2_REVERSED = false;
-        public static final double ROTATION_MOTOR_GEAR_RATIO = (double) 12 / (double) 72;
-        public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
+        // Constants for extension motors
+        public static final int FIRST_STAGE_PORT = 11;
+        public static final int SECOND_STAGE_PORT = 12;
+        public static final boolean FIRST_STAGE_REVERSED = false;
+        public static final boolean SECOND_STAGE_REVERSED = false;
+        public static final double FIRST_STAGE_GEAR_RATIO = (double) 1 / (double) 49;
+        public static final double SECOND_STAGE_GEAR_RATIO = (double) 1 / (double) 12;
+        public static final double FIRST_STAGE_WHEEL_DIAMETER = 0.1524; // TODO: Ask jordan for sprocket diameter
+        public static final double SECOND_STAGE_WHEEL_DIAMETER = 0.1524;
 
         // Constants for claw rotation motors
         public static final int CLAW_ROTATION_MOTOR_1_PORT = 4;
@@ -124,55 +127,35 @@ public final class Constants {
         public static final double DISTANCE_BUMPER_TO_FULCRUM = 0.5; // In meters
 
         // PID Constants
-        public static final double EXTENSION_PID_P = 1;
-        public static final double EXTENSION_PID_I = 0;
-        public static final double EXTENSION_PID_D = 1;
+        public static final PIDValues ARM_ROTATION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues FIRST_STAGE_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues SECOND_STAGE_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues CLAW_ROTATION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues ARM_ROTATIONAL_POSITION_PID_VALUES = new PIDValues(0, 0, 0);
+        public static final PIDValues FIRST_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
+        public static final PIDValues SECOND_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
 
-        public static final double ROTATION_PID_P = 1;
-        public static final double ROTATION_PID_I = 0;
-        public static final double ROTATION_PID_D = 1;
-
-        public static final double ROTATION_S_VOLTS = 1;
-        public static final double ROTATION_G = 1;
-        public static final double ROTATION_V_VOLTS_SECONDS_PER_METER = 1;
-        public static final double ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
-
-        public static final double EXTENSION_S_VOLTS = 0;
-        public static final double EXTENSION_G = 1;
-        public static final double EXTENSION_V_VOLTS_SECONDS_PER_METER = 1;
-        public static final double EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER = 1;
-
+        public static final Pair<Double, Double> ROTATIONAL_SETPOINT_ERROR = new Pair<Double, Double>(0.5, 0.5); // radian error, rad/s error
+        public static final Pair<Double, Double> EXTENSION_SETPOINT_ERROR = new Pair<Double, Double>(0.5, 0.5); // meter error, m/s error
         // TODO: Use Sysid to get claw rotation feedforward values
-        public static final double CLAW_S_VOLTS = 0.11483;
-        public static final double CLAW_G = 1;
-        public static final double CLAW_V_VOLTS_SECONDS_PER_METER = 0.73149;
-        public static final double CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER = 0.06866;
-        
-        public static final double CLAW_ROTATION_PID_P = 0.27317;
-        public static final double CLAW_ROTATION_PID_D = 0;     
 
-        public static final ArmFeedforward ARM_ROTATION_FEED_FORWARD =
-                new ArmFeedforward(
-                        ROTATION_S_VOLTS,
-                        ROTATION_G,
-                        ROTATION_V_VOLTS_SECONDS_PER_METER,
-                        ROTATION_A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final ArmFeedforward ARM_EXTENSION_FEED_FORWARD =
-                new ArmFeedforward(
-                        EXTENSION_S_VOLTS,
-                        EXTENSION_G,
-                        EXTENSION_V_VOLTS_SECONDS_PER_METER,
-                        EXTENSION_A_VOLTS_SECONDS_SQUARED_PER_METER);
-        public static final ArmFeedforward CLAW_ROTATION_FEEDFORWARD =
-                new ArmFeedforward(
-                        CLAW_S_VOLTS,
-                        CLAW_G,
-                        CLAW_V_VOLTS_SECONDS_PER_METER,
-                        CLAW_A_VOLTS_SECONDS_SQUARED_PER_METER);
-
+        public static final double ARM_ROTATION_STARTING_ANGLE = 1;
         public static final double CLAW_STARTING_ANGLE =
-                90; // Change this when we figure out the default starting angle of the claw when
+                90; //TODO: Change this when we figure out the default starting angle of the claw when
         // testing
+
+        public static final double EXTENSION_STARTING_LENGTH = 0.3302; // 13 inches to meters
+        public static final double FIRST_STAGE_MIN_EXTENSION = 0;
+        public static final double FIRST_STAGE_MAX_EXTENSION = 0.4318; // 17.25 inches to meters
+        public static final double SECOND_STAGE_MIN_EXTENSION = 0;
+        public static final double SECOND_STAGE_MAX_EXTENSION = 0.3175; // 12.25 inches to meters
+
+        public static final double MIN_ARM_ANGLE = Math.toRadians(0); // x degrees
+        public static final double MAX_ARM_ANGLE = Math.toRadians(100); // y degrees
+        public static final double MIN_CLAW_ANGLE = Math.toRadians(-120); // x degrees, relative to arm
+        public static final double MAX_CLAW_ANGLE = Math.toRadians(120);; // y degrees, relative to arm
+        
+
     }
 
     public static final class ClawConstants {
