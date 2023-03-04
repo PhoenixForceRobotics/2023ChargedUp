@@ -11,18 +11,26 @@ public class Arm extends SubsystemBase {
     // Rotation motors + controller
     private Motor armRotationLeader;
     private Motor armRotationFollower;
-    private PFRArmPIDController armRotationController;
+    private PFRArmPIDController armRotationControllerNoExtension;
+    private PFRArmPIDController armRotationControllerHalfExtension;
+    private PFRArmPIDController armRotationControllerFullExtension;
+    
 
     // Extension motors + controller
     private Motor firstStageExtensionMotor; // Fullsized Neo (bottom side)
     private Motor secondStageExtensionMotor; // Neo 550 (top side)
-    private PFRExtensionPIDController firstStageExtensionController; // PID + feedforward for full neo
-    private PFRExtensionPIDController secondStageExtensionContoller; // PID + feedforward for neo 550 
+    private PFRExtensionPIDController firstStageExtensionController0Degrees; // PID + feedforward for full neo, 0 deg
+    private PFRExtensionPIDController firstStageExtensionController45Degrees; // PID + feedforward for full neo, 45 deg
+    private PFRExtensionPIDController firstStageExtensionController90Degrees; // PID + feedforward for full neo, 90 deg
+
+    private PFRExtensionPIDController secondStageExtensionContoller0Degrees; // PID + feedforward for neo 550, 0 deg
+    private PFRExtensionPIDController secondStageExtensionContoller45Degrees; // PID + feedforward for neo 550, 45 deg
+    private PFRExtensionPIDController secondStageExtensionContoller90Degrees; // PID + feedforward for neo 550, 90 deg
 
     // Motors + controller for rotating claw independently to keep it level when arm has rotated
     private Motor clawRotationLeader;
     private Motor clawRotationFollower;
-    private PFRArmPIDController clawRotationController;
+    private PFRArmPIDController clawRotationController; 
 
     private double desiredArmRadiansPerSecond = 0;
     private double desiredFirstStageMetersPerSecond = 0;
@@ -52,8 +60,10 @@ public class Arm extends SubsystemBase {
         // set follower motor to follow leader
         armRotationFollower.follow(armRotationLeader);
 
-        // create controller for arm rotation
-        armRotationController = new PFRArmPIDController(ArmConstants.ARM_ROTATION_PID_VALUES);
+        // create controllers for arm rotation
+        armRotationControllerNoExtension = new PFRArmPIDController(ArmConstants.ARM_ROTATION_NO_EXTENSION_PID_VALUES);
+        armRotationControllerHalfExtension = new PFRArmPIDController(ArmConstants.ARM_ROTATION_HALF_EXTENSION_PID_VALUES);
+        armRotationControllerFullExtension = new PFRArmPIDController(ArmConstants.ARM_ROTATION_FULL_EXTENSION_PID_VALUES);
 
         // Define extension motors
         firstStageExtensionMotor =
@@ -68,8 +78,14 @@ public class Arm extends SubsystemBase {
                         ArmConstants.SECOND_STAGE_REVERSED,
                         ArmConstants.SECOND_STAGE_GEAR_RATIO,
                         ArmConstants.SECOND_STAGE_WHEEL_DIAMETER);
-        firstStageExtensionController = new PFRExtensionPIDController(ArmConstants.FIRST_STAGE_PID_VALUES);
-        secondStageExtensionContoller = new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_PID_VALUES);
+
+        firstStageExtensionController0Degrees = new PFRExtensionPIDController(ArmConstants.FIRST_STAGE_0_DEGREES_PID_VALUES);
+        firstStageExtensionController45Degrees = new PFRExtensionPIDController(ArmConstants.FIRST_STAGE_45_DEGREES_PID_VALUES);
+        firstStageExtensionController90Degrees = new PFRExtensionPIDController(ArmConstants.FIRST_STAGE_90_DEGREES_PID_VALUES);
+        
+        secondStageExtensionContoller0Degrees = new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_0_DEGREES_PID_VALUES);
+        secondStageExtensionContoller45Degrees = new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_45_DEGREES_PID_VALUES);
+        secondStageExtensionContoller90Degrees = new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_90_DEGREES_PID_VALUES);
         
         // Define claw rotational motors
         clawRotationLeader =
@@ -129,6 +145,63 @@ public class Arm extends SubsystemBase {
             desiredClawRadiansPerSecond = Math.max(desiredClawRadiansPerSecond, 0);
         }
         // TODO: Re-enable these once we have feedforwards
+
+        // Choose which arm rotation feedforward would be best
+        double armRotationVoltageNoExtension = armRotationControllerNoExtension.filteredCalculate(getArmRotationRadians(), getArmRotationRadiansPerSecond(), desiredArmRadiansPerSecond);
+        double armRotationVoltageHalfExtension = armRotationControllerHalfExtension.filteredCalculate(getArmRotationRadians(), getArmRotationRadiansPerSecond(), desiredArmRadiansPerSecond);
+        double armRotationVoltageFullExtension = armRotationControllerFullExtension.filteredCalculate(getArmRotationRadians(), getArmRotationRadiansPerSecond(), desiredArmRadiansPerSecond);
+
+        double armLength = getFullExtensionMeters();
+        if(armLength <= ArmConstants.LOOKUP_TABLE_BOUNDARY_1)
+        {
+            armRotationLeader.setVoltage(armRotationVoltageNoExtension);
+        }
+        else if(ArmConstants.LOOKUP_TABLE_BOUNDARY_1 <= armLength && armLength <= ArmConstants.LOOKUP_TABLE_BOUNDARY_2)
+        {
+            armRotationLeader.setVoltage(armRotationVoltageHalfExtension);
+        }
+        else if(ArmConstants.LOOKUP_TABLE_BOUNDARY_2 <= armLength)
+        {
+            armRotationLeader.setVoltage(armRotationVoltageFullExtension);
+        }
+        else
+        {
+            System.out.println("Ruh Roh!!!!!");
+        }
+        // Choose which arm extension feedforward would be best
+        double firstStageVoltage0Degree = firstStageExtensionController0Degrees.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredFirstStageMetersPerSecond);
+        double firstStageVoltage45Degree = firstStageExtensionController45Degrees.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredFirstStageMetersPerSecond);
+        double firstStageVoltage90Degree = firstStageExtensionController90Degrees.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredFirstStageMetersPerSecond);
+
+        double secondStageVoltage0Degree = secondStageExtensionContoller0Degrees.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond);
+        double secondStageVoltage45Degree = secondStageExtensionContoller45Degrees.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond);
+        double secondStageVoltage90Degree = secondStageExtensionContoller90Degrees.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond);
+;
+
+        double radiansOverPI = getArmRotationRadians() / Math.PI; // Makes it easier to do stuff if we don't worry about PI
+        if((-1 / 8 <= radiansOverPI && radiansOverPI <= 1 / 8) || (7 / 8 <= radiansOverPI && radiansOverPI <= 9 / 8))
+        {
+            firstStageExtensionMotor.setVoltage(firstStageVoltage0Degree);
+            secondStageExtensionMotor.setVoltage(secondStageVoltage0Degree);
+
+        }
+        else if((-3 / 8 <= radiansOverPI && radiansOverPI <= -1 / 8) || (1 / 8 <= radiansOverPI && radiansOverPI <= 3 / 8) || (5 / 8 <= radiansOverPI && radiansOverPI <= 7 / 8) )
+        {
+            
+            firstStageExtensionMotor.setVoltage(firstStageVoltage45Degree);
+            secondStageExtensionMotor.setVoltage(secondStageVoltage45Degree);
+        }
+        else if((Math.PI * 3 / 8 <= radiansOverPI && radiansOverPI <= 5 / 8))
+        {
+            firstStageExtensionMotor.setVoltage(firstStageVoltage90Degree);
+            secondStageExtensionMotor.setVoltage(secondStageVoltage90Degree);
+        }
+        else
+        {
+            System.out.println("RUH ROH!");
+
+        }
+
         // armRotationLeader.setVoltage(armRotationController.filteredCalculate(getArmRadians(), getArmRadiansPerSecond(), desiredArmRadiansPerSecond));
         // firstStageExtensionMotor.setVoltage(firstStageExtensionController.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredArmRadiansPerSecond));
         // secondStageExtensionMotor.setVoltage(secondStageExtensionContoller.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond));
@@ -218,7 +291,7 @@ public class Arm extends SubsystemBase {
      * @return the length in meters of the arm from the center of rotation to tip
      */
     public double getFullExtensionMeters() {
-        return getFirstStageMeters() + getSecondStageMeters() + ArmConstants.EXTENSION_STARTING_LENGTH;
+        return getFirstStageMeters() + getSecondStageMeters() + ArmConstants.NO_EXTENSION_LENGTH;
     }
    
     public double getFirstStageMetersPerSecond()

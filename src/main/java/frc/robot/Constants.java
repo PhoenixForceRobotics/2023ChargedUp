@@ -95,8 +95,8 @@ public final class Constants {
         public static final boolean SECOND_STAGE_REVERSED = false;
         public static final double FIRST_STAGE_GEAR_RATIO = (double) 1 / (double) 12;
         public static final double SECOND_STAGE_GEAR_RATIO = (double) 1 / (double) 49;
-        public static final double FIRST_STAGE_WHEEL_DIAMETER = 0.1524; // TODO: Ask jordan for sprocket diameter
-        public static final double SECOND_STAGE_WHEEL_DIAMETER = 0.1524;
+        public static final double FIRST_STAGE_WHEEL_DIAMETER = 0;
+        public static final double SECOND_STAGE_WHEEL_DIAMETER = 0;
         public static final double FIRST_STAGE_DISTANCE_PER_ROTATION = 0.13335;
         public static final double SECOND_STAGE_DISTANCE_PER_ROTATION = 0.20955;
         // 5.25 inches (second stage)
@@ -112,14 +112,21 @@ public final class Constants {
         public static final double CLAW_ROTATION_SPEED = 0.5;
 
         // Numbers to caulcuate height and distance
-        public static final double DISTANCE_GROUND_TO_FULCRUM = 0.5; // In meters
-        public static final double DISTANCE_BUMPER_TO_FULCRUM = 0.5; // In meters
-
         // PID Constants
-        public static final PIDValues ARM_ROTATION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues FIRST_STAGE_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues SECOND_STAGE_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues ARM_ROTATION_NO_EXTENSION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues ARM_ROTATION_HALF_EXTENSION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues ARM_ROTATION_FULL_EXTENSION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        
+        public static final PIDValues FIRST_STAGE_0_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues FIRST_STAGE_45_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues FIRST_STAGE_90_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        
+        public static final PIDValues SECOND_STAGE_0_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues SECOND_STAGE_45_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues SECOND_STAGE_90_DEGREES_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        
         public static final PIDValues CLAW_ROTATION_PID_VALUES = new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        
         public static final PIDValues ARM_ROTATIONAL_POSITION_PID_VALUES = new PIDValues(0, 0, 0);
         public static final PIDValues FIRST_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
         public static final PIDValues SECOND_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
@@ -133,16 +140,21 @@ public final class Constants {
                 Math.toRadians(90); //TODO: Change this when we figure out starting config 
                 // THIS ANGLE IS RELATIVE TO THE ARM!!!!!!!
 
-        public static final double EXTENSION_STARTING_LENGTH = 0.3302; // 13 inches to meters
-        public static final double FIRST_STAGE_MIN_EXTENSION = 0;
-        public static final double FIRST_STAGE_MAX_EXTENSION = 0.4318; // 17.25 inches to meters
-        public static final double SECOND_STAGE_MIN_EXTENSION = 0;
-        public static final double SECOND_STAGE_MAX_EXTENSION = 0.3175; // 12.25 inches to meters
+        public static final double FIRST_STAGE_MIN_EXTENSION = 0.0154; // 1 inch of safety
+        public static final double FIRST_STAGE_MAX_EXTENSION = 0.4; // 17.25 inches to meters 
+        public static final double SECOND_STAGE_MIN_EXTENSION = 0.0154; // 1 foot of safety
+        public static final double SECOND_STAGE_MAX_EXTENSION = 0.3; // 12.25 inches to meters
+        public static final double NO_EXTENSION_LENGTH = 0.3302; // 13 inches to meters
+        public static final double FULL_EXTENSION_LENGTH = NO_EXTENSION_LENGTH + FIRST_STAGE_MAX_EXTENSION + SECOND_STAGE_MAX_EXTENSION;
+        public static final double HALF_EXTENSION_LENGTH = FULL_EXTENSION_LENGTH / 2;
+        public static final double LOOKUP_TABLE_BOUNDARY_1 = NO_EXTENSION_LENGTH + (HALF_EXTENSION_LENGTH - NO_EXTENSION_LENGTH) / 2;
+        public static final double LOOKUP_TABLE_BOUNDARY_2 = HALF_EXTENSION_LENGTH + (FULL_EXTENSION_LENGTH - HALF_EXTENSION_LENGTH) / 2;
 
-        public static final double MIN_ARM_ANGLE = Math.toRadians(0); // x degrees
-        public static final double MAX_ARM_ANGLE = Math.toRadians(100); // y degrees
-        public static final double MIN_CLAW_ANGLE = Math.toRadians(-120); // x degrees, relative to arm
-        public static final double MAX_CLAW_ANGLE = Math.toRadians(120);; // y degrees, relative to arm
+
+        public static final double MIN_ARM_ANGLE = Math.toRadians(-20); // relative to ground
+        public static final double MAX_ARM_ANGLE = Math.toRadians(170); // relative to ground
+        public static final double MIN_CLAW_ANGLE = Math.toRadians(-120); // relative to arm
+        public static final double MAX_CLAW_ANGLE = Math.toRadians(120);; // ]relative to arm
         
 
     }

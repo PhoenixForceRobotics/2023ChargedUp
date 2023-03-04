@@ -22,13 +22,13 @@ public class SetLength extends CommandBase {
     public SetLength(Arm arm, double desiredLength) {
         this.arm = arm;
 
-        firstStageController = new PFRSimplePIDController(ArmConstants.FIRST_STAGE_PID_VALUES);
+        firstStageController = new PFRSimplePIDController(ArmConstants.FIRST_STAGE_LENGTH_PID_VALUES);
         firstStageController.setTolerance(ArmConstants.ROTATIONAL_SETPOINT_ERROR.getFirst(), ArmConstants.ROTATIONAL_SETPOINT_ERROR.getSecond());
 
-        secondStageController = new PFRSimplePIDController(ArmConstants.SECOND_STAGE_PID_VALUES);
+        secondStageController = new PFRSimplePIDController(ArmConstants.SECOND_STAGE_LENGTH_PID_VALUES);
         firstStageController.setTolerance(ArmConstants.ROTATIONAL_SETPOINT_ERROR.getFirst(), ArmConstants.ROTATIONAL_SETPOINT_ERROR.getSecond());
 
-        double proportionOfTotalLength = (desiredLength - ArmConstants.EXTENSION_STARTING_LENGTH) /  (ArmConstants.FIRST_STAGE_MAX_EXTENSION + ArmConstants.SECOND_STAGE_MAX_EXTENSION);
+        double proportionOfTotalLength = desiredLength - ArmConstants.NO_EXTENSION_LENGTH /  (ArmConstants.FULL_EXTENSION_LENGTH - ArmConstants.NO_EXTENSION_LENGTH);
         double desiredFirstStageLength = proportionOfTotalLength * ArmConstants.FIRST_STAGE_MAX_EXTENSION;
         double desiredSecondStageLength = proportionOfTotalLength * ArmConstants.SECOND_STAGE_MAX_EXTENSION;
 
@@ -41,6 +41,8 @@ public class SetLength extends CommandBase {
     @Override
     public void initialize() {
         arm.setExtensionMetersPerSecond(0, 0);
+        firstStageController.reset();
+        secondStageController.reset();
     }
 
     @Override

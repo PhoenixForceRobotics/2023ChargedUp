@@ -22,7 +22,7 @@ public class SetAngle extends CommandBase {
         this.arm = arm;
         this.desiredAngle = desiredAngle;
         pidController =
-                new PFRSimplePIDController(ArmConstants.ARM_ROTATION_PID_VALUES); 
+                new PFRSimplePIDController(ArmConstants.ARM_ROTATIONAL_POSITION_PID_VALUES); 
         pidController.setTolerance(ArmConstants.ROTATIONAL_SETPOINT_ERROR.getFirst(), ArmConstants.ROTATIONAL_SETPOINT_ERROR.getSecond());
     }
 
@@ -31,6 +31,7 @@ public class SetAngle extends CommandBase {
         pidController.setSetpoint(
                 desiredAngle); // Sets the setpoint (how the pid controller will determine if it is
         // done with this command) to the desired angle
+        pidController.reset();
     }
 
     @Override

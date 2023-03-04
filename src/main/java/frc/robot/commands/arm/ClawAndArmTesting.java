@@ -24,7 +24,6 @@ public class ClawAndArmTesting extends CommandBase {
         arm.setWristMotor(operatorController.getRightX());
         claw.setMotor(operatorController.getAButton() ?  0.5 : 0);
 
-        System.out.println ("Left" + -operatorController.getLeftY());
-        System.out.println("Right" + -operatorController.getRightY());
+        System.out.println ("Left: " + -operatorController.getLeftY() + ", Right: " + -operatorController.getRightY());
     }
 }
