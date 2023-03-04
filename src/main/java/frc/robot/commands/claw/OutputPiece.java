@@ -1,33 +1,33 @@
-package frc.robot.commands.claw;
+// package frc.robot.commands.claw;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ClawConstants;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.BeamBreakStatus;
+// import edu.wpi.first.wpilibj2.command.CommandBase;
+// import frc.robot.Constants.ClawConstants;
+// import frc.robot.subsystems.Claw;
+// import frc.robot.subsystems.Claw.BeamBreakStatus;
 
-public class OutputPiece extends CommandBase {
-    private Claw claw;
+// public class OutputPiece extends CommandBase {
+//     private Claw claw;
 
-    public OutputPiece(Claw claw) {
-        this.claw = claw;
-    }
+//     public OutputPiece(Claw claw) {
+//         this.claw = claw;
+//     }
 
-    @Override
-    public void initialize() {
-        claw.setMotor(0);
-    }
+//     @Override
+//     public void initialize() {
+//         claw.setMotor(0);
+//     }
 
-    @Override
-    public void execute() {
-        if (claw.getBreakStatus() == BeamBreakStatus.CUBE) {
-            claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
-        } else if (claw.getBreakStatus() == BeamBreakStatus.CONE) {
-            claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
-        }
-    }
+//     @Override
+//     public void execute() {
+//         if (claw.getBreakStatus() == BeamBreakStatus.CUBE) {
+//             claw.setMotor(-ClawConstants.CLAW_MOTOR_SPEED);
+//         } else if (claw.getBreakStatus() == BeamBreakStatus.CONE) {
+//             claw.setMotor(ClawConstants.CLAW_MOTOR_SPEED);
+//         }
+//     }
 
-    @Override
-    public void end(boolean interrupted) {
-        claw.setMotor(0);
-    }
-}
+//     @Override
+//     public void end(boolean interrupted) {
+//         claw.setMotor(0);
+//     }
+// }

@@ -25,7 +25,7 @@ public class PathPlannerCommandFactory {
             Drivebase drivebase, String pathName, boolean isFirstPath, boolean useAllianceColor) {
         return fromTrajectory(
                 drivebase,
-                PathPlanner.loadPath(pathName, new PathConstraints(2, 2)),
+                PathPlanner.loadPath(pathName, new PathConstraints(2, 1)),
                 isFirstPath,
                 useAllianceColor);
     }

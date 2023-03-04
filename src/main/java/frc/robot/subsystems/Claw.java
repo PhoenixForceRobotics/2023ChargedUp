@@ -28,7 +28,7 @@ public class Claw extends SubsystemBase {
      */
     public Claw() {
         motor = new CANSparkMax(ClawConstants.CLAW_MOTOR_PORT, MotorType.kBrushed);
-        
+
         cubeSensor = new DigitalInput(ClawConstants.CUBE_SENSOR_CHANNEL);
         coneSensor = new DigitalInput(ClawConstants.CONE_SENSOR_CHANNEL);
     }

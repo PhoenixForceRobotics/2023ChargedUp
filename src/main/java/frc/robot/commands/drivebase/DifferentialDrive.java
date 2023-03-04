@@ -25,7 +25,7 @@ public class DifferentialDrive extends CommandBase {
     @Override
     public void initialize() {
         drivebase.setMeccanum(false);
-        drivebase.setButterflyPistons(Value.kReverse);
+        // drivebase.setButterflyPistons(Value.kReverse);
         vxLimiter.reset(0);
     }
 

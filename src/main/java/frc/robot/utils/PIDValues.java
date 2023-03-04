@@ -1,6 +1,5 @@
 package frc.robot.utils;
 
-
 public class PIDValues {
     public final double P,
             I,
@@ -12,7 +11,6 @@ public class PIDValues {
             MAX_CONTROL_EFFORT,
             MAX_VELOCITY_ERROR;
 
-
     public PIDValues(
             double P,
             double I,
@@ -22,9 +20,7 @@ public class PIDValues {
             double ACCELERATION_F,
             double G,
             double MAX_CONTROL_EFFORT,
-            double MAX_VELOCITY_ERROR
-    )
-    {
+            double MAX_VELOCITY_ERROR) {
         this.P = P;
         this.I = I;
         this.D = D;
@@ -35,6 +31,7 @@ public class PIDValues {
         this.MAX_CONTROL_EFFORT = MAX_CONTROL_EFFORT;
         this.MAX_VELOCITY_ERROR = MAX_VELOCITY_ERROR;
     }
+
     public PIDValues(
             double P,
             double I,
@@ -55,7 +52,6 @@ public class PIDValues {
         this.MAX_VELOCITY_ERROR = MAX_VELOCITY_ERROR;
     }
 
-
     public PIDValues(
             double P,
             double I,
@@ -65,7 +61,6 @@ public class PIDValues {
             double ACCELERATION_F) {
         this(P, I, D, STATIC_F, VELOCITY_F, ACCELERATION_F, 0, 0);
     }
-
 
     public PIDValues(double P, double I, double D) {
         this(P, I, D, 0.0, 0.0, 0.0);
