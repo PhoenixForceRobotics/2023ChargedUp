@@ -119,6 +119,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.VELOCITY_PID);
 
         pneumaticHub = new PneumaticHub();
+        pneumaticHub.enableCompressorAnalog(50, 120);
         butterflyPistons =
                 pneumaticHub.makeDoubleSolenoid(
                         DrivebaseConstants.BUTTERFLY_FORWARD_PORT,

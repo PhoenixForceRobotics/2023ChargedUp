@@ -63,10 +63,10 @@ public class Claw extends SubsystemBase {
     /**
      * Checks if the claw has any piece
      *
-     * @return A boolean that is true if there is a piece, false if not
+     * @return A boolean that is true if there is at least 1 piece, false if not
      */
     public boolean hasPiece() {
-        return cubeSensor.get() != coneSensor.get();
+        return cubeSensor.get() || coneSensor.get();
     }
 
     /**

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.Motor;
@@ -7,18 +8,18 @@ import frc.robot.utils.PFRArmPIDController;
 import frc.robot.utils.PFRExtensionPIDController;
 
 public class Arm extends SubsystemBase {
-    // Rotation motors
+    // Rotation motors + controller
     private Motor armRotationLeader;
     private Motor armRotationFollower;
     private PFRArmPIDController armRotationController;
 
-    // Extension motors
+    // Extension motors + controller
     private Motor firstStageExtensionMotor; // Fullsized Neo (bottom side)
     private Motor secondStageExtensionMotor; // Neo 550 (top side)
     private PFRExtensionPIDController firstStageExtensionController; // PID + feedforward for full neo
     private PFRExtensionPIDController secondStageExtensionContoller; // PID + feedforward for neo 550 
 
-    // Motors for rotating claw independently to keep it level when arm has rotated
+    // Motors + controller for rotating claw independently to keep it level when arm has rotated
     private Motor clawRotationLeader;
     private Motor clawRotationFollower;
     private PFRArmPIDController clawRotationController;
@@ -28,9 +29,8 @@ public class Arm extends SubsystemBase {
     private double desiredSecondStageMetersPerSecond = 0;
     private double desiredClawRadiansPerSecond = 0;
 
-
     /**
-     * The arm that picks up game pieces from the floor through the use of the intake. It can rotate
+     * The arm moves the intake It can rotate
      * -180 to 180 degrees and can extend a certain distance.
      */
     public Arm() {
@@ -94,24 +94,24 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(ArmConstants.MIN_ARM_ANGLE >= getArmRadians())
+        if(ArmConstants.MIN_ARM_ANGLE >= getArmRotationRadians())
         {
             desiredArmRadiansPerSecond = Math.min(0, desiredArmRadiansPerSecond);
         }
-        else if(ArmConstants.MAX_ARM_ANGLE <= getArmRadians())
+        else if(ArmConstants.MAX_ARM_ANGLE <= getArmRotationRadians())
         {
             desiredArmRadiansPerSecond = Math.max(desiredArmRadiansPerSecond, 0);
         }
 
-        if(ArmConstants.FIRST_STAGE_MIN_EXTENSION >= getArmRadians())
+        if(ArmConstants.FIRST_STAGE_MIN_EXTENSION >= getFirstStageMeters())
         {
             desiredFirstStageMetersPerSecond = Math.min(0, desiredFirstStageMetersPerSecond);
         }
-        else if(ArmConstants.FIRST_STAGE_MAX_EXTENSION <= getArmRadians())
+        else if(ArmConstants.FIRST_STAGE_MAX_EXTENSION <= getFirstStageMeters())
         {
             desiredFirstStageMetersPerSecond = Math.max(desiredFirstStageMetersPerSecond, 0);
         }
-        if(ArmConstants.SECOND_STAGE_MIN_EXTENSION >= getArmRadians())
+        if(ArmConstants.SECOND_STAGE_MIN_EXTENSION >= getSecondStageMeters())
         {
             desiredSecondStageMetersPerSecond = Math.min(0, desiredSecondStageMetersPerSecond);
         }
@@ -120,19 +120,24 @@ public class Arm extends SubsystemBase {
             desiredSecondStageMetersPerSecond = Math.min(desiredSecondStageMetersPerSecond, 0);
         }
          
-        if(ArmConstants.MIN_CLAW_ANGLE >= getArmRadians())
+        if(ArmConstants.MIN_CLAW_ANGLE >= getClawRelativeAngleRadians())
         {
-            desiredClawRadiansPerSecond = Math.min(0, desiredArmRadiansPerSecond);
+            desiredClawRadiansPerSecond = Math.min(0, desiredClawRadiansPerSecond);
         }
-        else if(ArmConstants.MAX_CLAW_ANGLE <= getArmRadians())
+        else if(ArmConstants.MAX_CLAW_ANGLE <= getClawRelativeAngleRadians())
         {
-            desiredClawRadiansPerSecond = Math.max(desiredArmRadiansPerSecond, 0);
+            desiredClawRadiansPerSecond = Math.max(desiredClawRadiansPerSecond, 0);
         }
-
-        armRotationLeader.setVoltage(armRotationController.filteredCalculate(getArmRadians(), getArmRadiansPerSecond(), desiredArmRadiansPerSecond));
-        firstStageExtensionMotor.setVoltage(firstStageExtensionController.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredArmRadiansPerSecond));
-        secondStageExtensionMotor.setVoltage(secondStageExtensionContoller.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond));
-        clawRotationLeader.setVoltage(clawRotationController.filteredCalculate(getClawAbsoluteAngleRadians(), getClawRelativeRadiansPerSecond(), desiredClawRadiansPerSecond));
+        // TODO: Re-enable these once we have feedforwards
+        // armRotationLeader.setVoltage(armRotationController.filteredCalculate(getArmRadians(), getArmRadiansPerSecond(), desiredArmRadiansPerSecond));
+        // firstStageExtensionMotor.setVoltage(firstStageExtensionController.filteredCalculate(getFirstStageMeters(), getFirstStageMetersPerSecond(), desiredArmRadiansPerSecond));
+        // secondStageExtensionMotor.setVoltage(secondStageExtensionContoller.filteredCalculate(getSecondStageMeters(), getSecondStageMetersPerSecond(), desiredSecondStageMetersPerSecond));
+        // clawRotationLeader.setVoltage(clawRotationController.filteredCalculate(getClawAbsoluteAngleRadians(), getClawRelativeRadiansPerSecond(), desiredClawRadiansPerSecond));
+        SmartDashboard.putNumber("Arm Rotation (deg)", Math.toDegrees(getArmRotationRadians()));
+        SmartDashboard.putNumber("First Stage (m)", Math.toDegrees(getFirstStageMeters()));
+        SmartDashboard.putNumber("Second Stage (m)", Math.toDegrees(getSecondStageMeters()));
+        SmartDashboard.putNumber("Claw-Arm Rotation (deg)", Math.toDegrees(getClawRelativeAngleRadians()));
+        SmartDashboard.putNumber("Claw Absolute (deg)", Math.toDegrees(getClawAbsoluteAngleRadians()));
     }
 
     /**
@@ -169,7 +174,7 @@ public class Arm extends SubsystemBase {
      *
      * @param angularVelocity - angular velocity of the claw rotation motors in radians per second
      */
-    public void setClawRotationRadiansPerSecond(double angularVelocity) {
+    public void setClawRelativeRadiansPerSecond(double angularVelocity) {
         desiredClawRadiansPerSecond = angularVelocity;
     }    
     /**
@@ -178,23 +183,23 @@ public class Arm extends SubsystemBase {
      */
     public void setClawAbsoluteRadiansPerSecond(double angularVelocity)
     {
-        desiredClawRadiansPerSecond = angularVelocity - getArmRadiansPerSecond();
+        desiredClawRadiansPerSecond = angularVelocity - getArmRotationRadiansPerSecond();
     }
     
     /**
     * Gets the arm angle relative to level to ground
     * @return radians (CCW+, 🔄 positive, when )
     */
-   public double getArmRadians()
+   public double getArmRotationRadians()
    {
-       return armRotationLeader.getRotations() * 2 * Math.PI;
+       return armRotationLeader.getRotations() * 2 * Math.PI + ArmConstants.ARM_ROTATION_STARTING_ANGLE;
    }
 
    /**
     * Gets the arm angular velocity
     * @return radians per second (CCW+, 🔄 positive, when FACING PORT SIDE)
     */
-   public double getArmRadiansPerSecond()
+   public double getArmRotationRadiansPerSecond()
    {
     return armRotationLeader.getRPM() / 60 * 2 * Math.PI;
    }
@@ -238,7 +243,7 @@ public class Arm extends SubsystemBase {
     */
     public double getClawRelativeAngleRadians()
     {
-        return clawRotationLeader.getRPM() / 60 * Math.PI * 2;
+        return clawRotationLeader.getRotations() * Math.PI * 2;
     }
 
     
@@ -248,7 +253,7 @@ public class Arm extends SubsystemBase {
     */
     public double getClawAbsoluteAngleRadians()
     {
-        return 2 * Math.PI -  getClawAbsoluteAngleRadians() - getArmRadians();
+        return getClawAbsoluteAngleRadians() + getArmRotationRadians();
     }
 
     /**
@@ -266,6 +271,28 @@ public class Arm extends SubsystemBase {
      * @return radians per second (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
      */
     public double getClawAbsoluteRadiansPerSecond() {
-        return getArmRadiansPerSecond() + getClawRelativeRadiansPerSecond();
+        return getClawRelativeRadiansPerSecond() + getClawRelativeRadiansPerSecond();
+    }
+
+    // ***STUFF FOR TESTING*** //
+    // TODO: REMOVE THESE EVENTUALLY
+    public void setRotationMotor(double percentage)
+    {
+        armRotationLeader.set(percentage);
+    }
+
+    public void setFirstStageMotor(double percentage)
+    {
+        firstStageExtensionMotor.set(percentage);
+    }
+
+    public void setSecondStageMotor(double percentage)
+    {
+        secondStageExtensionMotor.set(percentage);
+    }
+
+    public void setWristMotor(double percentage)
+    {
+        clawRotationLeader.set(percentage);
     }
 }

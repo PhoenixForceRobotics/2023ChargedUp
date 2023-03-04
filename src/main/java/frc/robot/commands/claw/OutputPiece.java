@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Claw.BeamBreakStatus;
-import frc.robot.utils.PFRController;
 
 public class OutputPiece extends CommandBase {
     private Claw claw;

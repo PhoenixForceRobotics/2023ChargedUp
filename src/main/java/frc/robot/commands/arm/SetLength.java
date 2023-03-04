@@ -34,6 +34,8 @@ public class SetLength extends CommandBase {
 
         firstStageController.setSetpoint(desiredFirstStageLength);
         secondStageController.setSetpoint(desiredSecondStageLength);
+
+        firstStageController.setTolerance(ArmConstants.EXTENSION_SETPOINT_ERROR.getFirst(), ArmConstants.EXTENSION_SETPOINT_ERROR.getSecond());
     }
 
     @Override

@@ -22,16 +22,14 @@ public final class Constants {
     public static final class DrivebaseConstants {
         public static final int PNEUMATIC_HUB_CAN_ID = 0;
         public static final int BUTTERFLY_FORWARD_PORT = 0;
-        public static final int BUTTERFLY_REVERSE_PORT = 0;
+        public static final int BUTTERFLY_REVERSE_PORT = 1;
 
         public static final int WHEEL_FL_CAN_ID = 1;
         public static final int WHEEL_FR_CAN_ID = 2;
         public static final int WHEEL_BL_CAN_ID = 3;
         public static final int WHEEL_BR_CAN_ID = 4;
-        public static final double GEAR_RATIO = (double) 12 / (double) 72; // output / input
-        public static final double WHEEL_DIAMETER = 0.1524; // In meters (6 in wheels)
-
-        public static final double MAX_MOTOR_PERCENTAGE_OUTPUT = 0.9;
+        public static final double GEAR_RATIO = (double) 12 / (double) 62 * (double) 16 / (double) 22; // output / input
+        public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
 
         public static final boolean WHEEL_FL_REVERSED = true;
         public static final boolean WHEEL_FR_REVERSED = false;
@@ -60,9 +58,6 @@ public final class Constants {
         public static final Translation2d FRONT_CENTER_LOCATION =
                 new Translation2d(0.320675, 0); // Helpful for evassive manuvers
 
-        public static final double GEAR_RATIO = (12.0 / 62.0) * (16.0 / 22.0); // output / input
-
-        public static final double WHEEL_DIAMETER = 0.1016; // In meters (4 inch wheels)
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         public static final double MAX_OBTAINABLE_WHEEL_VELOCITY =
@@ -81,14 +76,6 @@ public final class Constants {
         public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
         public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
     }
-
-    public static final int STICK_EXPONENTIAL_CURVE = 2;
-
-    public static final class UtilConstants {
-        public static final double FALCON_ENCODER_RESOLUTION = 2048;
-        public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
-    }
-
     public static final class ArmConstants {
         // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel
         // diameters, ports, etc.)
@@ -137,14 +124,14 @@ public final class Constants {
         public static final PIDValues FIRST_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
         public static final PIDValues SECOND_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
 
-        public static final Pair<Double, Double> ROTATIONAL_SETPOINT_ERROR = new Pair<Double, Double>(0.5, 0.5); // radian error, rad/s error
-        public static final Pair<Double, Double> EXTENSION_SETPOINT_ERROR = new Pair<Double, Double>(0.5, 0.5); // meter error, m/s error
+        public static final Pair<Double, Double> ROTATIONAL_SETPOINT_ERROR = new Pair<Double, Double>(Math.PI / 12, Math.PI / 12); // radian error, rad/s error
+        public static final Pair<Double, Double> EXTENSION_SETPOINT_ERROR = new Pair<Double, Double>(0.025, 0.025); // meter error, m/s error
         // TODO: Use Sysid to get claw rotation feedforward values
 
-        public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(90);
+        public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(0);
         public static final double CLAW_STARTING_ANGLE =
-                90; //TODO: Change this when we figure out the default starting angle of the claw when
-        // testing
+                Math.toRadians(90); //TODO: Change this when we figure out starting config 
+                // THIS ANGLE IS RELATIVE TO THE ARM!!!!!!!
 
         public static final double EXTENSION_STARTING_LENGTH = 0.3302; // 13 inches to meters
         public static final double FIRST_STAGE_MIN_EXTENSION = 0;
@@ -164,7 +151,7 @@ public final class Constants {
         // TODO: Change all of these values when they are known
         public static final int CLAW_MOTOR_PORT = 11;
 
-        public static final double CLAW_MOTOR_SPEED = 1;
+        public static final double CLAW_MOTOR_SPEED = 0.8;
 
         public static final int CONE_SENSOR_CHANNEL = 0;
         public static final int CUBE_SENSOR_CHANNEL = 1;
@@ -172,10 +159,6 @@ public final class Constants {
         public static final double CONE_TIMER_DELAY_LENGTH =
                 (double) 1 / (double) 10; // TODO: Change value, current value is only a placeholder
         public static final double CUBE_TIMER_DELAY_LENGTH = 0;
-    }
-
-    public static class OperatorConstants {
-        public static final int DRIVER_CONTROLLER_PORT = 0;
     }
 
     public static final class ControllerConstants {
@@ -188,19 +171,20 @@ public final class Constants {
         public static final int STICK_EXPONENTIAL_CURVE = 2;
     }
 
+    public static final class AutonomousConstants {
+        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
+    }
+
+
     public static final class UtilConstants {
         public static final double FALCON_ENCODER_RESOLUTION = 2048;
         public static final int CLOSED_LOOP_SPEED_MS = 1; // in milliseconds
 
-        public static final int POSITION_PID_SLOT = 0;
-        public static final int VELOCITY_PID_SLOT = 1;
-        public static final int VOLTAGE_PID_SLOT = 2;
-        public static final int BLANK_PID_SLOT = 3;
+        public static final int STICK_EXPONENTIAL_CURVE = 2;
 
         public static final double NEO_FREE_SPEED = 5820; // RPM
+
+        public static final int OI_NUM_BUTTONS = 21;
     }
 
-    public static final class AutonomousConstants {
-        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
-    }
 }

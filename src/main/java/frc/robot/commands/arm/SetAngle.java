@@ -23,8 +23,7 @@ public class SetAngle extends CommandBase {
         this.desiredAngle = desiredAngle;
         pidController =
                 new PFRSimplePIDController(ArmConstants.ARM_ROTATION_PID_VALUES); 
-        // This will keep the motors from overshooting/undershooting
-
+        pidController.setTolerance(ArmConstants.ROTATIONAL_SETPOINT_ERROR.getFirst(), ArmConstants.ROTATIONAL_SETPOINT_ERROR.getSecond());
     }
 
     @Override
@@ -38,7 +37,7 @@ public class SetAngle extends CommandBase {
     public void execute() {
         // Calculates the output that needs to be sent in radians per second to the motors by
         // using the pid controller to determine how fast it needs to speed up or slow down
-        double output = pidController.calculate(arm.getArmRadians());
+        double output = pidController.calculate(arm.getArmRotationRadians());
         arm.setArmRotationRadiansPerSecond(output);
     }
 
