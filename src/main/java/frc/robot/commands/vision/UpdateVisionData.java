@@ -34,7 +34,7 @@ public class UpdateVisionData extends CommandBase {
             System.out.println(tagProcessor.getBestPoseGuess());
             this.drivebase.resetPose(
                     UnitConverter.MetersToInches(
-                        tagProcessor.getBestPoseGuess()
+                        tagProcessor.sudoGetBestPoseGuess()
                     )
                 );
         }

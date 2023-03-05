@@ -13,6 +13,9 @@ import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.utils.exceptions.AllianceNotSetException;
 import frc.robot.utils.vision.VisionMath;
+
+import java.util.Optional;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -119,9 +122,7 @@ public class TagProcessing extends SubsystemBase {
     }
 
     public void updateGlobalPose() {
-        // TODO write this out properly; should pull photonvision tag data and feed it into median
-        // filters
-        // TODO add timestamping; also add wrapper getter function that ensures
+        // TODO add wrapper getter function that ensures
         PhotonPipelineResult cool = cameraTag.getLatestResult();
         if (cool.hasTargets()) {
             PhotonTrackedTarget target = cool.getBestTarget();
@@ -186,9 +187,17 @@ public class TagProcessing extends SubsystemBase {
     }
 
     /*
-     * Returns the best pose guess. User is expected to ensure that the pose value is properly buffered using checkIfBuffered()
+     * Returns an Optional<Pose2d> containing the best pose guess, if it's properly buffered.
      */
-    public Pose2d getBestPoseGuess() {
+    public Optional<Pose2d> getBestPoseGuess() {
+        return checkIfBuffered() ? Optional.of(mostAccuratePoseGuess) : Optional.empty();
+    }
+
+    /*
+     * Returns the best pose guess without checking buffering.
+     * Mostly to rewrite as little as is possible.
+     */
+    public Pose2d sudoGetBestPoseGuess() {
         return mostAccuratePoseGuess;
     }
 
