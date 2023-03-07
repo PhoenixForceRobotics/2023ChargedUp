@@ -69,13 +69,13 @@ public final class Constants {
                         * 0.9; // free speed of wheel (meters per second)
 
         // used for slew limiters, meters per s^2
-        public static final double MAX_LINEAR_ACCELERATION = 4;
+        public static final double MAX_LINEAR_ACCELERATION = 8;
 
         public static final double MIN_LINEAR_VELOCITY = 0.075; // Prevents undesired creep
-        public static final double MAX_LINEAR_VELOCITY = 2; // meters per second
+        public static final double MAX_LINEAR_VELOCITY = 4; // meters per second
 
         public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
-        public static final double MAX_ANGULAR_VELOCITY = 0.5 * Math.PI; // radians per second
+        public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second
     }
 
     public static final class ArmConstants {
@@ -199,7 +199,7 @@ public final class Constants {
     }
 
     public static final class AutonomousConstants {
-        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d());
+        public static final Pose2d WALL = new Pose2d(-1, -1, new Rotation2d()); // figure this
     }
 
     public static final class UtilConstants {
