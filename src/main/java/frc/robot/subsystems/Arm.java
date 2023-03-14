@@ -37,10 +37,15 @@ public class Arm extends SubsystemBase {
     private Motor clawRotationFollower;
     private PFRArmPIDController clawRotationController;
 
+    // Changing these variables changes how the arm moves
+    // Change these variables through the "setters"
     private double desiredArmRadiansPerSecond = 0;
     private double desiredFirstStageMetersPerSecond = 0;
-    private double desiredSecondStageMetersPerSecond = 0;
-    private double desiredClawRadiansPerSecond = 0;
+    private double desiredSecondStageMetersPerSecond = 0; 
+
+    // Changing this variable ONLY changes IF it is not in independent control
+    private double desiredClawRadiansPerSecond = 0; // relative to the arm!
+    private boolean isClawIndependentlyControlled = false;
 
     /**
      * The arm moves the intake It can rotate -180 to 180 degrees and can extend a certain distance.
@@ -229,6 +234,19 @@ public class Arm extends SubsystemBase {
         } else {
             System.out.println("RUH ROH!");
         }
+        
+        // Output velocity is relative to the arm
+        double clawMotorVoltage; 
+        if(isClawIndependentlyControlled)
+        {
+            clawMotorVoltage = clawRotationController.filteredCalculate(getClawAbsoluteAngleRadians(), getClawRelativeRadiansPerSecond(), -desiredArmRadiansPerSecond);
+        }
+        else
+        {
+            clawMotorVoltage = clawRotationController.filteredCalculate(getClawAbsoluteAngleRadians(), getClawRelativeRadiansPerSecond(), desiredClawRadiansPerSecond);
+        }
+
+        armRotationLeader.setVoltage(clawMotorVoltage);
         SmartDashboard.putNumber("Arm Rotation (deg)", Math.toDegrees(getArmRotationRadians()));
         SmartDashboard.putNumber("First Stage (m)", Math.toDegrees(getFirstStageMeters()));
         SmartDashboard.putNumber("Second Stage (m)", Math.toDegrees(getSecondStageMeters()));
@@ -281,6 +299,10 @@ public class Arm extends SubsystemBase {
      */
     public void setClawAbsoluteRadiansPerSecond(double angularVelocity) {
         desiredClawRadiansPerSecond = angularVelocity - getArmRotationRadiansPerSecond();
+    }
+
+    public void setClawIndependentlyControlled(boolean isClawIndependentlyControlled) {
+        this.isClawIndependentlyControlled = isClawIndependentlyControlled;
     }
 
     /**

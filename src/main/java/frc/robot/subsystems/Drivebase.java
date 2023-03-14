@@ -51,8 +51,8 @@ public class Drivebase extends SubsystemBase {
 
     private Motor flWheel, frWheel, blWheel, brWheel;
 
-    // private PneumaticHub pneumaticHub;
-    // private DoubleSolenoid butterflyPistons;
+    private PneumaticHub pneumaticHub;
+    private DoubleSolenoid butterflyPistons;
 
     // TODO: Re-add this once we install the pigeon
     private Pigeon2 gyro;
@@ -118,12 +118,12 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.POSITION_PID,
                         DrivebaseConstants.VELOCITY_PID);
 
-        // pneumaticHub = new PneumaticHub();
-        // pneumaticHub.enableCompressorAnalog(50, 120);
-        // butterflyPistons =
-        //         pneumaticHub.makeDoubleSolenoid(
-        //                 DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
-        //                 DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
+        pneumaticHub = new PneumaticHub();
+        pneumaticHub.enableCompressorAnalog(60, 120);
+        butterflyPistons =
+                pneumaticHub.makeDoubleSolenoid(
+                        DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
+                        DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
         // inertialMeasurementUnit = new Pigeon2(0);
         gyro = new Pigeon2(20);
@@ -176,11 +176,11 @@ public class Drivebase extends SubsystemBase {
     public void periodic() {
         // Ensure butterfly modules are in the right spot
 
-        // if (isMeccanum && getButterflyPistonsValue() != Value.kForward) {
-        //     setButterflyPistons(Value.kForward);
-        // } else if (!isMeccanum && getButterflyPistonsValue() != Value.kReverse) {
-        //     setButterflyPistons(Value.kReverse);
-        // }
+        if (isMeccanum && getButterflyPistonsValue() != Value.kForward) {
+            setButterflyPistons(Value.kForward);
+        } else if (!isMeccanum && getButterflyPistonsValue() != Value.kReverse) {
+            setButterflyPistons(Value.kReverse);
+        }
 
         // Causes the math to work like standard differential drive
         if (!isMeccanum) {
@@ -288,18 +288,18 @@ public class Drivebase extends SubsystemBase {
     /**
      * @return {@link Value} whether the piston is forward or reverse
      */
-    // public Value getButterflyPistonsValue() {
-    //     return butterflyPistons.get();
-    // }
+    public Value getButterflyPistonsValue() {
+        return butterflyPistons.get();
+    }
 
-    // /**
-    //  * Set the whether the butterfly pistons should be out or not
-    //  *
-    //  * @param value to go forward or reverse
-    //  */
-    // public void setButterflyPistons(Value value) {
-    //     butterflyPistons.set(value);
-    // }
+    /**
+     * Set the whether the butterfly pistons should be out or not
+     *
+     * @param value to go forward or reverse
+     */
+    public void setButterflyPistons(Value value) {
+        butterflyPistons.set(value);
+    }
 
     public boolean isMeccanum() {
         return isMeccanum;

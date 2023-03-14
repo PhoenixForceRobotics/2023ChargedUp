@@ -178,14 +178,8 @@ public final class Constants {
         // TODO: Change all of these values when they are known
         public static final int CLAW_MOTOR_PORT = 11;
 
-        public static final double CLAW_MOTOR_SPEED = 1;
-
-        public static final int CONE_SENSOR_CHANNEL = 0;
-        public static final int CUBE_SENSOR_CHANNEL = 1;
-
-        public static final double CONE_TIMER_DELAY_LENGTH =
-                (double) 1 / (double) 10; // TODO: Change value, current value is only a placeholder
-        public static final double CUBE_TIMER_DELAY_LENGTH = 0;
+        public static final double INTAKE_SPEED = 0.5;
+        public static final double OUTPUT_SPEED = -0.5;
     }
 
     public static final class ControllerConstants {

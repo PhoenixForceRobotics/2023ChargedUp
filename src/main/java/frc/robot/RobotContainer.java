@@ -6,25 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.arm.ClawAndArmTesting;
 // import frc.robot.commands.arm.ClawAndArmTesting;
-import frc.robot.commands.drivebase.CycleCenterOfRotation;
-import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
-import frc.robot.commands.drivebase.autonomous.ExampleAutonomousRoutine;
-import frc.robot.commands.drivebase.autonomous.PathPlannerCommandFactory;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 // import frc.robot.subsystems.Arm;
 // import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
-import frc.robot.utils.PFROI;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -73,7 +65,8 @@ public class RobotContainer {
 
     // Seperating the auto commands is helpful :)
     // private final Command middleGridToBottomPiece =
-    //         PathPlannerCommandFactory.fromJSON(drivebase, "MiddleGridToBottomPiece", false, false);
+    //         PathPlannerCommandFactory.fromJSON(drivebase, "MiddleGridToBottomPiece", false,
+    // false);
     // private final Command middleGridToChargeStation =
     //         PathPlannerCommandFactory.fromJSON(
     //                 drivebase, "MiddleGridToChargeStation", false, false);
@@ -116,7 +109,8 @@ public class RobotContainer {
 
     public void initializeListenersAndSendables() {
         // // Add options for chooser
-        // autonomousCommandChooser.addOption("Middle Grid To Bottom Piece", middleGridToBottomPiece);
+        // autonomousCommandChooser.addOption("Middle Grid To Bottom Piece",
+        // middleGridToBottomPiece);
         // autonomousCommandChooser.addOption(
         //         "Middle Grid to Charge Station", middleGridToChargeStation);
         // autonomousCommandChooser.setDefaultOption(

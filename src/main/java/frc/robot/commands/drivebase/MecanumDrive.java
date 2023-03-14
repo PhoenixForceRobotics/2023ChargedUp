@@ -37,7 +37,7 @@ public class MecanumDrive extends CommandBase {
     @Override
     public void initialize() {
         drivebase.setMeccanum(true);
-        // drivebase.setButterflyPistons(Value.kReverse);
+        drivebase.setButterflyPistons(Value.kReverse);
         vxLimiter.reset(0);
         vyLimiter.reset(0);
     }
