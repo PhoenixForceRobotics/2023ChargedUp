@@ -13,9 +13,7 @@ import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.utils.exceptions.AllianceNotSetException;
 import frc.robot.utils.vision.VisionMath;
-
 import java.util.Optional;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -190,7 +188,9 @@ public class TagProcessing extends SubsystemBase {
      * Returns an Optional<Pose2d> containing the best pose guess, if it's properly buffered.
      */
     public Optional<Pose2d> getBestPoseGuess() {
-        return checkIfBuffered() ? Optional.of(mostAccuratePoseGuess) : Optional.empty();
+        return checkIfBuffered()
+            ? Optional.of(mostAccuratePoseGuess)
+            : Optional.empty();
     }
 
     /*

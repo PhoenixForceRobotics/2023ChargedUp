@@ -27,7 +27,7 @@ public class UpdateVisionData extends CommandBase {
     @Override
     public void execute() {
         this.tagProcessor.update();
-        //TODO: upgrade to proper dedicated pose estimator using kalman filtering
+        //TODO: upgrade to proper dedicated fusion-based pose estimator using kalman filtering
         //as it stands this literally just injects any values it gets which is kinda cringe
         //method detailed at https://github.com/PhotonVision/photonvision/blob/master/photonlib-java-examples/simposeest/src/main/java/frc/robot/DrivetrainPoseEstimator.java
         if (tagProcessor.checkIfBuffered()) {
