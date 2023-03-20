@@ -23,7 +23,7 @@ interface EvaluationFunction {
 
 /**
  * Class for optimizing piece placement. Also contains a handy journal of my descent into madness why not
- * TODO: write in functions for actually pulling best slots
+ * TODO: rewrite functions for actually pulling best slots for Speed:tm:
  */
 public class Foresight {
 
