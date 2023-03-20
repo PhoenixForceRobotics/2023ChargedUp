@@ -27,8 +27,7 @@ public class PFRExtensionPIDController extends PIDController {
      * @param velocitySetpoint - METERS PER SECOND
      * @return desired voltage
      */
-    public double filteredCalculate(
-            double positionMeasurement, double velocityMeasurement, double velocitySetpoint) {
+    public double filteredCalculate(double velocityMeasurement, double velocitySetpoint) {
         double pidOutputVolts = calculate(velocityMeasurement, velocitySetpoint);
         double feedForwardVolts = FEED_FORWARD.calculate(velocitySetpoint);
         return MathUtil.clamp(pidOutputVolts, -MAX_CONTROL_EFFORT, MAX_CONTROL_EFFORT)

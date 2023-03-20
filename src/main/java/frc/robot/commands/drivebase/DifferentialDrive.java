@@ -31,7 +31,6 @@ public class DifferentialDrive extends CommandBase {
 
     @Override
     public void execute() {
-
         double xVelocity =
                 vxLimiter.calculate(
                         -driverController.getLeftYSquared()

@@ -7,14 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.arm.ClawAndArmTesting;
-// import frc.robot.commands.arm.ClawAndArmTesting;
+import frc.robot.commands.arm.SetArmVelocities;
+import frc.robot.commands.claw.IntakePiece;
+import frc.robot.commands.claw.OutputPiece;
+import frc.robot.commands.drivebase.CycleCenterOfRotation;
+import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
-// import frc.robot.subsystems.Arm;
-// import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.PFRController;
 
@@ -36,18 +37,18 @@ public class RobotContainer {
     // private final PFROI oi = new PFROI(2);
 
     // The robot's commands are defined here...
-    // private final CycleCenterOfRotation cycleCenterOfRotationUp =
-    //         new CycleCenterOfRotation(drivebase, Direction.UP);
-    // private final CycleCenterOfRotation cycleCenterOfRotationDown =
-    //         new CycleCenterOfRotation(drivebase, Direction.DOWN);
+    private final CycleCenterOfRotation cycleCenterOfRotationUp =
+            new CycleCenterOfRotation(drivebase, Direction.UP);
+    private final CycleCenterOfRotation cycleCenterOfRotationDown =
+            new CycleCenterOfRotation(drivebase, Direction.DOWN);
     private final MecanumDrive mecanumDrive = new MecanumDrive(drivebase, driverController);
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
 
-    private final ClawAndArmTesting clawAndArmTesting =
-            new ClawAndArmTesting(arm, claw, operatorController);
+    private final SetArmVelocities setArmVelocities = new SetArmVelocities(arm, operatorController);
 
-    // TODO: READD THESE AFTER SYSID
+    private final IntakePiece intakePiece = new IntakePiece(claw);
+    private final OutputPiece outputPiece = new OutputPiece(claw);
     //     private final SetLength startingPosition = new SetLength(arm,
     //     ArmConstants.EXTENSION_STARTING_LENGTH);
     //     private final SetLength testing1 = new SetLength(arm,
@@ -97,6 +98,10 @@ public class RobotContainer {
         // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
         // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
 
+        operatorController.aButton().whileTrue(intakePiece);
+        operatorController.bButton().whileTrue(outputPiece);
+        driverController.lBumper().onTrue(mecanumDrive);
+        driverController.rBumper().onTrue(differentialDrive);
         // TODO: READD THESE AFTER SYSID
         // driverController.aButton().onTrue(startingPosition);
         // driverController.xButton().onTrue(testing1);
@@ -129,17 +134,18 @@ public class RobotContainer {
 
     public void scheduleTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
+        setArmVelocities.schedule();
         differentialDrive.schedule();
-        clawAndArmTesting.schedule();
+        // clawAndArmTesting.schedule();
     }
 
-    public MecanumDrive getMecanumDrive() {
-        return mecanumDrive;
-    }
+    // public MecanumDrive getMecanumDrive() {
+    //     return mecanumDrive;
+    // }
 
-    public DifferentialDrive getDifferentialDrive() {
-        return differentialDrive;
-    }
+    // public DifferentialDrive getDifferentialDrive() {
+    //     return differentialDrive;
+    // }
 
     public PFRController getDriverController() {
         return driverController;

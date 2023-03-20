@@ -50,7 +50,7 @@ public final class Constants {
         public static final double BALANCE_PID_MAX_ANGULAR_VELOCITY = 1; // in degrees / second
         public static final PIDValues HOLONOMIC_DRIVE_PID = new PIDValues(1, 0, 0);
 
-        // 25.25 in long (x), 23.5 in wide (y)
+        // 24.75 in long (x), 23.5 in wide (y)
         public static final Translation2d WHEEL_FL_LOCATION = new Translation2d(0.320675, 0.29845);
         public static final Translation2d WHEEL_FR_LOCATION = new Translation2d(0.320675, -0.29845);
         public static final Translation2d WHEEL_BL_LOCATION = new Translation2d(-0.320675, 0.29845);
@@ -85,9 +85,10 @@ public final class Constants {
         // Constants for rotation motors (that rotate the base of the arm)
         public static final int ARM_ROTATION_MOTOR_1_PORT = 5;
         public static final int ARM_ROTATION_MOTOR_2_PORT = 6;
-        public static final boolean ARM_ROTATION_MOTOR_1_REVERSED = false;
-        public static final boolean ARM_ROTATION_MOTOR_2_REVERSED = false;
-        public static final double ARM_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 60.48;
+        public static final boolean ARM_ROTATION_MOTOR_1_REVERSED = true;
+        public static final boolean ARM_ROTATION_MOTOR_2_REVERSED = true;
+        public static final double ARM_ROTATION_MOTOR_GEAR_RATIO =
+                12.0 / 72.0 * 20.0 / 56 * 16.0 / 32.0;
         public static final double ROTATION_MOTOR_WHEEL_DIAMETER = 0;
 
         // Constants for extension motors
@@ -97,10 +98,8 @@ public final class Constants {
         public static final boolean SECOND_STAGE_REVERSED = false;
         public static final double FIRST_STAGE_GEAR_RATIO = (double) 1 / (double) 12;
         public static final double SECOND_STAGE_GEAR_RATIO = (double) 1 / (double) 49;
-        public static final double FIRST_STAGE_WHEEL_DIAMETER = 0;
-        public static final double SECOND_STAGE_WHEEL_DIAMETER = 0;
-        public static final double FIRST_STAGE_DISTANCE_PER_ROTATION = 0.13335;
-        public static final double SECOND_STAGE_DISTANCE_PER_ROTATION = 0.20955;
+        public static final double FIRST_STAGE_DISTANCE_PER_ROTATION = 0.20955;
+        public static final double SECOND_STAGE_DISTANCE_PER_ROTATION = 0.13335;
         // 5.25 inches (second stage)
         // 8.25 inches (first stage)
 
@@ -110,8 +109,7 @@ public final class Constants {
         public static final boolean CLAW_ROTATION_MOTOR_1_REVERSED = false;
         public static final boolean CLAW_ROTATION_MOTOR_2_REVERSED = true;
         public static final double CLAW_ROTATION_MOTOR_GEAR_RATIO = (double) 1 / (double) 70;
-        public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0.1524;
-        public static final double CLAW_ROTATION_SPEED = 0.5;
+        public static final double CLAW_ROTATION_MOTOR_WHEEL_DIAMETER = 0;
 
         // Numbers to caulcuate height and distance
         // PID Constants
@@ -122,22 +120,13 @@ public final class Constants {
         public static final PIDValues ARM_ROTATION_FULL_EXTENSION_PID_VALUES =
                 new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
 
-        public static final PIDValues FIRST_STAGE_0_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues FIRST_STAGE_45_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues FIRST_STAGE_90_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-
-        public static final PIDValues SECOND_STAGE_0_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues SECOND_STAGE_45_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues SECOND_STAGE_90_DEGREES_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        public static final PIDValues FIRST_STAGE_PID_VALUES =
+                new PIDValues(0.13166, 0, 0, 0.2454, 10.455, 0.2584, 0.31572, 7, 0);
+        public static final PIDValues SECOND_STAGE_PID_VALUES =
+                new PIDValues(0.014676, 0, 0, 0.25596, 13.831, 0.63929, 0.15829, 7, 0);
 
         public static final PIDValues CLAW_ROTATION_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+                new PIDValues(0.1751, 0, 0, 0.68585, 0.58437, 0.055603, 0.56109, 7, 0);
 
         public static final PIDValues ARM_ROTATIONAL_POSITION_PID_VALUES = new PIDValues(0, 0, 0);
         public static final PIDValues FIRST_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
@@ -149,14 +138,14 @@ public final class Constants {
                 new Pair<Double, Double>(0.025, 0.025); // meter error, m/s error
         // TODO: Use Sysid to get claw rotation feedforward values
 
-        public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(145);
-        public static final double CLAW_STARTING_ANGLE = Math.toRadians(90);
+        public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(40);
+        public static final double CLAW_STARTING_ANGLE = Math.toRadians(-40);
         // TODO: Change this when we figure out starting config
         // THIS ANGLE IS RELATIVE TO THE ARM!!!!!!!
 
-        public static final double FIRST_STAGE_MIN_EXTENSION = 0.0154; // 1 inch of safety
-        public static final double FIRST_STAGE_MAX_EXTENSION = 0.4; // 17.25 inches to meters
-        public static final double SECOND_STAGE_MIN_EXTENSION = 0.0154; // 1 foot of safety
+        public static final double FIRST_STAGE_MIN_EXTENSION = 0.0454; // 1 inch of safety
+        public static final double FIRST_STAGE_MAX_EXTENSION = 0.27305; // 10.75 inches to meters
+        public static final double SECOND_STAGE_MIN_EXTENSION = 0.05; // 1 foot of safety
         public static final double SECOND_STAGE_MAX_EXTENSION = 0.3; // 12.25 inches to meters
         public static final double NO_EXTENSION_LENGTH = 0.3302; // 13 inches to meters
         public static final double FULL_EXTENSION_LENGTH =
@@ -167,11 +156,10 @@ public final class Constants {
         public static final double LOOKUP_TABLE_BOUNDARY_2 =
                 HALF_EXTENSION_LENGTH + (FULL_EXTENSION_LENGTH - HALF_EXTENSION_LENGTH) / 2;
 
-        public static final double MIN_ARM_ANGLE = Math.toRadians(-20); // relative to ground
-        public static final double MAX_ARM_ANGLE = Math.toRadians(140); // relative to ground
-        public static final double MIN_CLAW_ANGLE = Math.toRadians(-120); // relative to arm
-        public static final double MAX_CLAW_ANGLE = Math.toRadians(120);
-        ; // ]relative to arm
+        public static final double MIN_ARM_ANGLE = Math.toRadians(50); // relative to ground
+        public static final double MAX_ARM_ANGLE = Math.toRadians(110); // relative to ground
+        public static final double MIN_CLAW_ANGLE = Math.toRadians(-110); // relative to arm
+        public static final double MAX_CLAW_ANGLE = Math.toRadians(90); // ]relative to arm
     }
 
     public static final class ClawConstants {
@@ -179,11 +167,11 @@ public final class Constants {
         public static final int CLAW_MOTOR_PORT = 11;
 
         public static final double INTAKE_SPEED = 0.5;
-        public static final double OUTPUT_SPEED = -0.5;
+        public static final double OUTPUT_SPEED = -1;
     }
 
     public static final class ControllerConstants {
-        public static final double AXIS_DEADZONE = 0.05;
+        public static final double AXIS_DEADZONE = 0.1;
         public static final int DPAD_UP = 0;
         public static final int DPAD_RIGHT = 90;
         public static final int DPAD_DOWN = 180;
