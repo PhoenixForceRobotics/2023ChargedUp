@@ -69,7 +69,7 @@ public final class Constants {
                         * 0.9; // free speed of wheel (meters per second)
 
         // used for slew limiters, meters per s^2
-        public static final double MAX_LINEAR_ACCELERATION = 8;
+        public static final double MAX_LINEAR_ACCELERATION = 16;
 
         public static final double MIN_LINEAR_VELOCITY = 0.075; // Prevents undesired creep
         public static final double MAX_LINEAR_VELOCITY = 4; // meters per second
@@ -113,18 +113,19 @@ public final class Constants {
 
         // Numbers to caulcuate height and distance
         // PID Constants
-        public static final PIDValues ARM_ROTATION_NO_EXTENSION_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues ARM_ROTATION_HALF_EXTENSION_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        public static final PIDValues ARM_ROTATION_FULL_EXTENSION_PID_VALUES =
-                new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        // *** NOT USING THESE ANYMORE BECAUSE WILL ONLY ROTATE ONCE *** //
+        // public static final PIDValues ARM_ROTATION_NO_EXTENSION_PID_VALUES =
+        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        // public static final PIDValues ARM_ROTATION_HALF_EXTENSION_PID_VALUES =
+        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        // public static final PIDValues ARM_ROTATION_FULL_EXTENSION_PID_VALUES =
+        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
+        // TODO: Use Sysid to get the new values ONCE ARM IS FINALIZED
 
         public static final PIDValues FIRST_STAGE_PID_VALUES =
                 new PIDValues(0.13166, 0, 0, 0.2454, 10.455, 0.2584, 0.31572, 7, 0);
         public static final PIDValues SECOND_STAGE_PID_VALUES =
                 new PIDValues(0.014676, 0, 0, 0.25596, 13.831, 0.63929, 0.15829, 7, 0);
-
         public static final PIDValues CLAW_ROTATION_PID_VALUES =
                 new PIDValues(0.1751, 0, 0, 0.68585, 0.58437, 0.055603, 0.56109, 7, 0);
 
@@ -136,7 +137,6 @@ public final class Constants {
                 new Pair<Double, Double>(Math.PI / 12, Math.PI / 12); // radian error, rad/s error
         public static final Pair<Double, Double> EXTENSION_SETPOINT_ERROR =
                 new Pair<Double, Double>(0.025, 0.025); // meter error, m/s error
-        // TODO: Use Sysid to get claw rotation feedforward values
 
         public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(40);
         public static final double CLAW_STARTING_ANGLE = Math.toRadians(-40);
@@ -151,11 +151,7 @@ public final class Constants {
         public static final double FULL_EXTENSION_LENGTH =
                 NO_EXTENSION_LENGTH + FIRST_STAGE_MAX_EXTENSION + SECOND_STAGE_MAX_EXTENSION;
         public static final double HALF_EXTENSION_LENGTH = FULL_EXTENSION_LENGTH / 2;
-        public static final double LOOKUP_TABLE_BOUNDARY_1 =
-                NO_EXTENSION_LENGTH + (HALF_EXTENSION_LENGTH - NO_EXTENSION_LENGTH) / 2;
-        public static final double LOOKUP_TABLE_BOUNDARY_2 =
-                HALF_EXTENSION_LENGTH + (FULL_EXTENSION_LENGTH - HALF_EXTENSION_LENGTH) / 2;
-
+        
         public static final double MIN_ARM_ANGLE = Math.toRadians(50); // relative to ground
         public static final double MAX_ARM_ANGLE = Math.toRadians(110); // relative to ground
         public static final double MIN_CLAW_ANGLE = Math.toRadians(-110); // relative to arm
