@@ -117,6 +117,7 @@ public class MecanumStrafesnap extends CommandBase {
         
 
         //x position Shenanigans:tm:
+        //the following is salvaged from MecanumStrafe code
         double xVelocity = this.vxLimiter.calculate(
             -this.driverController.getLeftYSquared() *
             DrivebaseConstants.MAX_LINEAR_VELOCITY

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.utils.exceptions.AllianceNotSetException;
 import frc.robot.utils.vision.VisionMath;
 

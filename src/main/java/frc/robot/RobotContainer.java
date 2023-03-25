@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -32,7 +34,8 @@ import frc.robot.utils.PFRController;
 public class RobotContainer {
     // The robot's subsystems are defined here...
     private final Drivebase drivebase = new Drivebase();
-    private final TagProcessing tagProcessing = new TagProcessing();
+    
+    private TagProcessing tagProcessing;
 
     // The robot's controllers are defined here...
     private final PFRController driverController = new PFRController(0);
@@ -40,52 +43,60 @@ public class RobotContainer {
 
     // // The robot's commands are defined here...
     private final CycleCenterOfRotation cycleCenterOfRotationUp = new CycleCenterOfRotation(
-        drivebase,
+        this.drivebase,
         Direction.UP
     );
     private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(
-        drivebase,
+        this.drivebase,
         Direction.DOWN
     );
     private final MecanumDrive mecanumDrive = new MecanumDrive(
-        drivebase,
-        driverController
+        this.drivebase,
+        this.driverController
     );
     private final DifferentialDrive differentialDrive = new DifferentialDrive(
-        drivebase,
-        driverController
+        this.drivebase,
+        this.driverController
     );
     private final UpdateVisionData updateVisionData = new UpdateVisionData(
-        tagProcessing,
-        drivebase
+        this.tagProcessing,
+        this.drivebase
     );
 
     // Seperating the auto commands is helpful :)
     private final Command middleGridToBottomPiece = PathPlannerCommandFactory.fromJSON(
-        drivebase,
+        this.drivebase,
         "MiddleGridToBottomPiece",
         false,
         false
     );
     private final Command middleGridToChargeStation = PathPlannerCommandFactory.fromJSON(
-        drivebase,
+        this.drivebase,
         "MiddleGridToChargeStation",
         false,
         false
     );
     private final ExampleAutonomousRoutine exampleAutonomousRoutine = new ExampleAutonomousRoutine(
-        drivebase
+        this.drivebase
     );
 
     // And things we want to put on the main tab (SmartDashboard) :)
     private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /** The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
+        try {
+            this.tagProcessing = new TagProcessing();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // Configure the button bindings
         System.out.println("Initializing robotContainer");
-        configureButtonBindings();
-        initializeListenersAndSendables();
+        this.configureButtonBindings();
+        this.initializeListenersAndSendables();
+        
     }
 
     /**
@@ -95,33 +106,33 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driverController.lBumper().onTrue(mecanumDrive);
-        driverController.rBumper().onTrue(differentialDrive);
-        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        this.driverController.lBumper().onTrue(this.mecanumDrive);
+        this.driverController.rBumper().onTrue(this.differentialDrive);
+        this.driverController.dPadDownButton().onTrue(this.cycleCenterOfRotationDown);
+        this.driverController.dPadUpButton().onTrue(this.cycleCenterOfRotationUp);
     }
 
     public void initializeListenersAndSendables() {
         // Add options for chooser
-        autonomousCommandChooser.addOption(
+        this.autonomousCommandChooser.addOption(
             "Middle Grid To Bottom Piece",
-            middleGridToBottomPiece
+            this.middleGridToBottomPiece
         );
-        autonomousCommandChooser.addOption(
+        this.autonomousCommandChooser.addOption(
             "Middle Grid to Charge Station",
-            middleGridToChargeStation
+            this.middleGridToChargeStation
         );
-        autonomousCommandChooser.setDefaultOption(
+        this.autonomousCommandChooser.setDefaultOption(
             "Example autonomous Routine",
-            exampleAutonomousRoutine
+            this.exampleAutonomousRoutine
         );
 
         // Places chooser on mainTab (where all "main stuff" is)
-        SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
+        SmartDashboard.putData("Choose Auto Routine", this.autonomousCommandChooser);
     }
 
     public void scheduleAutonomousCommands() {
-        Command selectedAutonomousRoutine = autonomousCommandChooser.getSelected();
+        Command selectedAutonomousRoutine = this.autonomousCommandChooser.getSelected();
         if (selectedAutonomousRoutine != null) {
             selectedAutonomousRoutine.schedule();
         }
@@ -129,8 +140,8 @@ public class RobotContainer {
 
     public void scheduleTeleopCommands() {
         CommandScheduler.getInstance().cancelAll();
-        mecanumDrive.schedule();
-        updateVisionData.schedule();
+        this.mecanumDrive.schedule();
+        this.updateVisionData.schedule();
     }
 
     public void teleopPeriodic() {}

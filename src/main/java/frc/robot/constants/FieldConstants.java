@@ -1,12 +1,12 @@
 package frc.robot.constants;
 
-import edu.wpi.first.apriltag.AprilTag;
+/*import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.util.Units;*/
 import frc.robot.utils.vision.UnitConverter;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 // The following is all in inches
 // I'm so sorry
@@ -138,13 +138,13 @@ public final class FieldConstants {
                     new Rotation3d()
                 )
             ),
-        };*/
+        };
 
         public static final AprilTagFieldLayout TAG_GAME_FIELD = new AprilTagFieldLayout(
             Arrays.asList(TAG_LOCATIONS),
             FieldConstants.FIELD_LENGTH,
             FieldConstants.FIELD_WIDTH
-        );
+        );*/
     }
 
     public static final double FIELD_LENGTH =
