@@ -15,23 +15,22 @@ public class Arm extends SubsystemBase {
     // Extension motors + controller
     private Motor firstStageExtensionMotor; // Fullsized Neo (bottom side)
     private Motor secondStageExtensionMotor; // Neo 550 (top side)
-    private PFRExtensionPIDController firstStageExtensionController; // Extension once it's all the way down
-    private PFRExtensionPIDController secondStageExtensionController; // Extension once it's all the way down
+    private PFRExtensionPIDController
+            firstStageExtensionController; // Extension once it's all the way down
+    private PFRExtensionPIDController
+            secondStageExtensionController; // Extension once it's all the way down
 
     // Motors + controller for rotating claw independently to keep it level when arm has rotated
     private Motor clawRotationLeader;
-    // private Motor clawRotationFollower; // TODO: Re'add this once we get the motors
+    private Motor clawRotationFollower; // TODO: Re'add this once we get the motor installed
     private PFRArmPIDController clawRotationController;
 
     // Changing these variables changes how the arm moves
     // Change these variables through the "setters"
-    private double desiredArmRadiansPerSecond = 0;
     private double desiredFirstStageMetersPerSecond = 0;
     private double desiredSecondStageMetersPerSecond = 0;
 
-    // Changing this variable ONLY changes IF it is not in independent control
     private double desiredClawRadiansPerSecond = 0; // relative to the arm!
-    private boolean isClawIndependentlyControlled = false;
 
     /**
      * The arm moves the intake It can rotate -180 to 180 degrees and can extend a certain distance.
@@ -75,21 +74,21 @@ public class Arm extends SubsystemBase {
                 new PFRExtensionPIDController(ArmConstants.SECOND_STAGE_PID_VALUES);
 
         // Define claw rotational motors
-        // clawRotationFollower =
-        //         new Motor(
-        //                 ArmConstants.CLAW_ROTATION_MOTOR_1_PORT,
-        //                 ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED,
-        //                 ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
-        //                 ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
-        clawRotationLeader =
+        clawRotationLeader=
+                new Motor(
+                        ArmConstants.CLAW_ROTATION_MOTOR_1_PORT,
+                        ArmConstants.CLAW_ROTATION_MOTOR_1_REVERSED,
+                        ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
+                        ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
+        clawRotationFollower =
                 new Motor(
                         ArmConstants.CLAW_ROTATION_MOTOR_2_PORT,
                         ArmConstants.CLAW_ROTATION_MOTOR_2_REVERSED,
                         ArmConstants.CLAW_ROTATION_MOTOR_GEAR_RATIO,
                         ArmConstants.CLAW_ROTATION_MOTOR_WHEEL_DIAMETER);
 
-        // make follwer follw the leader, BUT INVERTED (due to how it works)
-        // clawRotationFollower.follow(clawRotationLeader, true);
+        // make follwer follow the leader, BUT INVERTED (due to how it works)
+        clawRotationFollower.follow(clawRotationLeader, true);
 
         // Claw rotation controller
         clawRotationController = new PFRArmPIDController(ArmConstants.CLAW_ROTATION_PID_VALUES);
@@ -97,61 +96,21 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (getArmRotationRadians() <= ArmConstants.MIN_ARM_ANGLE) {
-            desiredArmRadiansPerSecond = Math.max(0, desiredArmRadiansPerSecond);
-        } else if (ArmConstants.MAX_ARM_ANGLE <= getArmRotationRadians()) {
-            desiredArmRadiansPerSecond = Math.min(desiredArmRadiansPerSecond, 0);
-        }
-
         if (ArmConstants.FIRST_STAGE_MIN_EXTENSION >= getFirstStageMeters()) {
             desiredFirstStageMetersPerSecond = Math.max(0, desiredFirstStageMetersPerSecond);
         } else if (ArmConstants.FIRST_STAGE_MAX_EXTENSION <= getFirstStageMeters()) {
             desiredFirstStageMetersPerSecond = Math.min(desiredFirstStageMetersPerSecond, 0);
-
         }
         if (ArmConstants.SECOND_STAGE_MIN_EXTENSION >= getSecondStageMeters()) {
             desiredSecondStageMetersPerSecond = Math.max(0, desiredSecondStageMetersPerSecond);
         } else if (ArmConstants.SECOND_STAGE_MAX_EXTENSION <= getSecondStageMeters()) {
             desiredSecondStageMetersPerSecond = Math.min(desiredSecondStageMetersPerSecond, 0);
         }
-        System.out.println(desiredClawRadiansPerSecond);
         if (ArmConstants.MIN_CLAW_ANGLE >= getClawRelativeAngleRadians()) {
-            desiredClawRadiansPerSecond = Math.min(0, desiredClawRadiansPerSecond);
-            System.out.println("CLAW AT MIN ROTATION");
+            desiredClawRadiansPerSecond = Math.max(0, desiredClawRadiansPerSecond);
         } else if (ArmConstants.MAX_CLAW_ANGLE <= getClawRelativeAngleRadians()) {
-            desiredClawRadiansPerSecond = Math.max(desiredClawRadiansPerSecond, 0);
-            System.out.println("CLAW AT MAX ROTATION");
+            desiredClawRadiansPerSecond = Math.min(desiredClawRadiansPerSecond, 0);
         }
-        // TODO: Re-enable these once we have feedforwards
-        // *** NOW OBSOLETE SINCE WE WILL ONLY ROTATE THE ARM ONCE *** // 
-        // // Choose which arm rotation feedforward would be best
-        // double armRotationVoltageNoExtension =
-        //         armRotationControllerNoExtension.filteredCalculate(
-        //                 getArmRotationRadians(),
-        //                 getArmRotationRadiansPerSecond(),
-        //                 desiredArmRadiansPerSecond);
-        // double armRotationVoltageHalfExtension =
-        //         armRotationControllerHalfExtension.filteredCalculate(
-        //                 getArmRotationRadians(),
-        //                 getArmRotationRadiansPerSecond(),
-        //                 desiredArmRadiansPerSecond);
-        // double armRotationVoltageFullExtension =
-        //         armRotationControllerFullExtension.filteredCalculate(
-        //                 getArmRotationRadians(),
-        //                 getArmRotationRadiansPerSecond(),
-        //                 desiredArmRadiansPerSecond);
-
-        // double armLength = getFullExtensionMeters();
-        // if (armLength <= ArmConstants.LOOKUP_TABLE_BOUNDARY_1) {
-        //     // armRotationLeader.setVoltage(armRotationVoltageNoExtension);
-        // } else if (ArmConstants.LOOKUP_TABLE_BOUNDARY_1 <= armLength
-        //         && armLength <= ArmConstants.LOOKUP_TABLE_BOUNDARY_2) {
-        //     // armRotationLeader.setVoltage(armRotationVoltageHalfExtension);
-        // } else if (ArmConstants.LOOKUP_TABLE_BOUNDARY_2 <= armLength) {
-        //     // armRotationLeader.setVoltage(armRotationVoltageFullExtension);
-        // } else {
-        //     System.out.println("Ruh Roh!!!!!");
-        // }
 
         double firstStageVoltage =
                 firstStageExtensionController.filteredCalculate(
@@ -170,6 +129,7 @@ public class Arm extends SubsystemBase {
                         desiredClawRadiansPerSecond);
         clawRotationLeader.setVoltage(clawMotorVoltage);
 
+        SmartDashboard.putNumber("Desired Claw Velocity (rad/s)", desiredClawRadiansPerSecond);
         SmartDashboard.putNumber("Arm Rotation (deg)", Math.toDegrees(getArmRotationRadians()));
         SmartDashboard.putNumber("First Stage (m)", getFirstStageMeters());
         SmartDashboard.putNumber("Second Stage (m)", getSecondStageMeters());
@@ -181,15 +141,10 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Velocity", getClawRelativeRadiansPerSecond());
     }
 
-    /**
-     * Sets the angular velocity of the rotation motors in radians per second
-     *
-     * @param angularVelocity - velocity of the rotation motors in radians per second
-     */
-    public void setArmRotationRadiansPerSecond(double angularVelocity) {
-        desiredArmRadiansPerSecond = angularVelocity;
+    public void resetArmEncoder()
+    {
+        armRotationLeader.getEncoder().setPosition(0);
     }
-
     /**
      * Sets the velocity for the extension motors
      *
@@ -198,6 +153,7 @@ public class Arm extends SubsystemBase {
     public void setFirstStageMetersPerSecond(double velocity) {
         desiredFirstStageMetersPerSecond = velocity;
     }
+
 
     public void setSecondStageMetersPerSecond(double velocity) {
         desiredSecondStageMetersPerSecond = velocity;
@@ -224,10 +180,6 @@ public class Arm extends SubsystemBase {
      */
     public void setClawAbsoluteRadiansPerSecond(double angularVelocity) {
         desiredClawRadiansPerSecond = angularVelocity - getArmRotationRadiansPerSecond();
-    }
-
-    public void setClawIndependentlyControlled(boolean isClawIndependentlyControlled) {
-        this.isClawIndependentlyControlled = isClawIndependentlyControlled;
     }
 
     /**
@@ -278,6 +230,16 @@ public class Arm extends SubsystemBase {
         return getFirstStageMetersPerSecond() + getSecondStageMeters();
     }
 
+    public void resetFirstStageEncoder(double meters)
+    {
+        firstStageExtensionMotor.getEncoder().setPosition(meters * ArmConstants.FIRST_STAGE_GEAR_RATIO * ArmConstants.FIRST_STAGE_DISTANCE_PER_ROTATION);
+    }
+
+    public void resetSecondStageEncoder(double meters)
+    {
+        secondStageExtensionMotor.getEncoder().setPosition(meters * ArmConstants.FIRST_STAGE_GEAR_RATIO * ArmConstants.FIRST_STAGE_DISTANCE_PER_ROTATION);
+    }
+
     /**
      * Gets the claw offset angle relative to parralel with arm
      *
@@ -293,7 +255,8 @@ public class Arm extends SubsystemBase {
      * @return radians (CCW+, 🔄 positive, when viewed from STARBOARD SIDE)
      */
     public double getClawAbsoluteAngleRadians() {
-        return getClawRelativeAngleRadians() + getArmRotationRadians();
+        return getClawRelativeAngleRadians()
+                + getArmRotationRadians(); // ARM IS NOT ALWAYS AT 42 DEGREES NOW
     }
 
     /**
@@ -315,20 +278,7 @@ public class Arm extends SubsystemBase {
     }
 
     // ***STUFF FOR TESTING*** //
-    // TODO: REMOVE THESE EVENTUALLY
     public void setRotationMotor(double percentage) {
         armRotationLeader.set(percentage);
-    }
-
-    public void setFirstStageMotor(double percentage) {
-        firstStageExtensionMotor.set(percentage);
-    }
-
-    public void setSecondStageMotor(double percentage) {
-        secondStageExtensionMotor.set(percentage);
-    }
-
-    public void setWristMotor(double percentage) {
-        clawRotationLeader.set(percentage);
     }
 }

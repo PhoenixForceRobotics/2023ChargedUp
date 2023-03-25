@@ -51,8 +51,8 @@ public class Drivebase extends SubsystemBase {
 
     private Motor flWheel, frWheel, blWheel, brWheel;
 
-    private PneumaticHub pneumaticHub;
-    private DoubleSolenoid butterflyPistons;
+    private PneumaticHub pneumaticHub = new PneumaticHub(1);
+    private DoubleSolenoid butterflyPistons = pneumaticHub.makeDoubleSolenoid(0, 1);
 
     // TODO: Re-add this once we install the pigeon
     // private Pigeon2 gyro;
@@ -119,12 +119,7 @@ public class Drivebase extends SubsystemBase {
                         DrivebaseConstants.POSITION_PID,
                         DrivebaseConstants.VELOCITY_PID);
 
-        pneumaticHub = new PneumaticHub();
         pneumaticHub.enableCompressorAnalog(60, 120);
-        butterflyPistons =
-                pneumaticHub.makeDoubleSolenoid(
-                        DrivebaseConstants.BUTTERFLY_FORWARD_PORT,
-                        DrivebaseConstants.BUTTERFLY_REVERSE_PORT);
 
         // inertialMeasurementUnit = new Pigeon2(0);
         // gyro = new Pigeon2(20);
@@ -291,7 +286,7 @@ public class Drivebase extends SubsystemBase {
      * @return {@link Value} whether the piston is forward or reverse
      */
     public Value getButterflyPistonsValue() {
-        return butterflyPistons.get();
+        return butterflyPistons != null ? butterflyPistons.get() : Value.kForward;
     }
 
     /**
@@ -300,7 +295,10 @@ public class Drivebase extends SubsystemBase {
      * @param value to go forward or reverse
      */
     public void setButterflyPistons(Value value) {
-        butterflyPistons.set(value);
+        if(butterflyPistons != null)
+        {
+            butterflyPistons.set(value);
+        }
     }
 
     public boolean isMeccanum() {

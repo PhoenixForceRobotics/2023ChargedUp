@@ -41,9 +41,10 @@ public final class Constants {
 
         // TODO: Recalculate all of these values
         public static final PIDValues POSITION_PID =
-                new PIDValues(109.13, 0, 4.853, 0.18295, 2.8829, 0.14847, 7, 4);
+                new PIDValues(133.86, 0, 9.3332, 0.13778, 2.8585, 0.41203, 7, 4);
         public static final PIDValues VELOCITY_PID =
-                new PIDValues(0.20838, 0, 0, 0.18295, 2.8829, 0.14847, 7, 4);
+                new PIDValues(1.5336, 0, 0, 0.13778, 2.8585, 0.41203, 7, 4);
+
         public static final PIDValues BALANCE_PID = new PIDValues(0.1, 0, 0.001, 0, 0, 0, 0.75, 0);
         public static final double BALANCE_PID_MAX_ANGLE =
                 2.5; // in degrees, max angle to be LEVEL, according to rulebook
@@ -69,18 +70,18 @@ public final class Constants {
                         * 0.9; // free speed of wheel (meters per second)
 
         // used for slew limiters, meters per s^2
-        public static final double MAX_LINEAR_ACCELERATION = 16;
+        public static final double MAX_LINEAR_ACCELERATION = 4;
 
         public static final double MIN_LINEAR_VELOCITY = 0.075; // Prevents undesired creep
         public static final double MAX_LINEAR_VELOCITY = 4; // meters per second
 
+        public static final double MAX_ANGULAR_ACCELERATION = Math.PI;
+
         public static final double MIN_ANGULAR_VELOCITY = Math.PI / 12; // prevents creep
-        public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI; // radians per second
+        public static final double MAX_ANGULAR_VELOCITY = 0.75 * Math.PI; // radians per second
     }
 
     public static final class ArmConstants {
-        // TODO: Edit constants so that they match actual values on robot (gear ratios, wheel
-        // diameters, ports, etc.)
 
         // Constants for rotation motors (that rotate the base of the arm)
         public static final int ARM_ROTATION_MOTOR_1_PORT = 5;
@@ -113,21 +114,13 @@ public final class Constants {
 
         // Numbers to caulcuate height and distance
         // PID Constants
-        // *** NOT USING THESE ANYMORE BECAUSE WILL ONLY ROTATE ONCE *** //
-        // public static final PIDValues ARM_ROTATION_NO_EXTENSION_PID_VALUES =
-        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        // public static final PIDValues ARM_ROTATION_HALF_EXTENSION_PID_VALUES =
-        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        // public static final PIDValues ARM_ROTATION_FULL_EXTENSION_PID_VALUES =
-        //         new PIDValues(0, 0, 0, 0, 0, 0, 7, 0);
-        // TODO: Use Sysid to get the new values ONCE ARM IS FINALIZED
 
         public static final PIDValues FIRST_STAGE_PID_VALUES =
-                new PIDValues(0.13166, 0, 0, 0.2454, 10.455, 0.2584, 0.31572, 7, 0);
+                new PIDValues(0.12589, 0, 0, 0.29254, 6.3845, 0.21586, 0.25358, 7, 0);
         public static final PIDValues SECOND_STAGE_PID_VALUES =
-                new PIDValues(0.014676, 0, 0, 0.25596, 13.831, 0.63929, 0.15829, 7, 0);
+                new PIDValues(0.14801, 0, 0, 0.14281, 23.875, 0.46786, 0.14937, 7, 0);
         public static final PIDValues CLAW_ROTATION_PID_VALUES =
-                new PIDValues(0.1751, 0, 0, 0.68585, 0.58437, 0.055603, 0.56109, 7, 0);
+                new PIDValues(0.15192, 0, 0, 0.15147, 0.67111, 0.039827, 0.21757, 7, 0);
 
         public static final PIDValues ARM_ROTATIONAL_POSITION_PID_VALUES = new PIDValues(0, 0, 0);
         public static final PIDValues FIRST_STAGE_LENGTH_PID_VALUES = new PIDValues(0, 0, 0);
@@ -139,30 +132,27 @@ public final class Constants {
                 new Pair<Double, Double>(0.025, 0.025); // meter error, m/s error
 
         public static final double ARM_ROTATION_STARTING_ANGLE = Math.toRadians(40);
-        public static final double CLAW_STARTING_ANGLE = Math.toRadians(-40);
-        // TODO: Change this when we figure out starting config
+        public static final double CLAW_STARTING_ANGLE = Math.toRadians(-130);
         // THIS ANGLE IS RELATIVE TO THE ARM!!!!!!!
 
-        public static final double FIRST_STAGE_MIN_EXTENSION = 0.0454; // 1 inch of safety
-        public static final double FIRST_STAGE_MAX_EXTENSION = 0.27305; // 10.75 inches to meters
-        public static final double SECOND_STAGE_MIN_EXTENSION = 0.05; // 1 foot of safety
-        public static final double SECOND_STAGE_MAX_EXTENSION = 0.3; // 12.25 inches to meters
-        public static final double NO_EXTENSION_LENGTH = 0.3302; // 13 inches to meters
+        public static final double FIRST_STAGE_MIN_EXTENSION = 0.05; // 1 inch of safety
+        public static final double FIRST_STAGE_MAX_EXTENSION = 0.12; // 4.6 inches to meters
+        public static final double SECOND_STAGE_MIN_EXTENSION = 0.0454; // 1 inch of safety
+        public static final double SECOND_STAGE_MAX_EXTENSION = 0.24; // 10 inches to meters
+        public static final double NO_EXTENSION_LENGTH = 0.9398; // 37 inches to meters
         public static final double FULL_EXTENSION_LENGTH =
                 NO_EXTENSION_LENGTH + FIRST_STAGE_MAX_EXTENSION + SECOND_STAGE_MAX_EXTENSION;
         public static final double HALF_EXTENSION_LENGTH = FULL_EXTENSION_LENGTH / 2;
-        
-        public static final double MIN_ARM_ANGLE = Math.toRadians(50); // relative to ground
-        public static final double MAX_ARM_ANGLE = Math.toRadians(110); // relative to ground
-        public static final double MIN_CLAW_ANGLE = Math.toRadians(-110); // relative to arm
-        public static final double MAX_CLAW_ANGLE = Math.toRadians(90); // ]relative to arm
+
+        public static final double MIN_CLAW_ANGLE = Math.toRadians(-130); // relative to arm
+        public static final double MAX_CLAW_ANGLE = Math.toRadians(135); // ]relative to arm
     }
 
     public static final class ClawConstants {
-        // TODO: Change all of these values when they are known
         public static final int CLAW_MOTOR_PORT = 11;
+        public static final boolean CLAW_MOTOR_REVERSED = true;
 
-        public static final double INTAKE_SPEED = 0.5;
+        public static final double INTAKE_SPEED = 0.4;
         public static final double OUTPUT_SPEED = -1;
     }
 

@@ -1,12 +1,11 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.utils.Motor;
 
 public class Claw extends SubsystemBase {
-    private CANSparkMax motor; // References the motor of the claw
+    private Motor motor; // References the motor of the claw
 
     /**
      * This class references the claw subsystem. It is able to pick up game pieces with an intake
@@ -14,7 +13,7 @@ public class Claw extends SubsystemBase {
      * motor to a new object using Constants.java.
      */
     public Claw() {
-        motor = new CANSparkMax(ClawConstants.CLAW_MOTOR_PORT, MotorType.kBrushed);
+        motor = new Motor(ClawConstants.CLAW_MOTOR_PORT, ClawConstants.CLAW_MOTOR_REVERSED);
     }
 
     /**

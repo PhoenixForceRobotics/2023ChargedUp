@@ -6,14 +6,27 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.arm.SetArmLengthBangBang;
 import frc.robot.commands.arm.SetArmVelocities;
+import frc.robot.commands.arm.SetWristAngle;
+import frc.robot.commands.arm.StowArm;
+import frc.robot.commands.arm.placement.FirstStagePlacement;
+import frc.robot.commands.arm.placement.IntakeSequence;
+import frc.robot.commands.arm.placement.SecondStagePlacement;
+import frc.robot.commands.arm.placement.ThirdStagePlacement;
 import frc.robot.commands.claw.IntakePiece;
 import frc.robot.commands.claw.OutputPiece;
 import frc.robot.commands.drivebase.CycleCenterOfRotation;
 import frc.robot.commands.drivebase.CycleCenterOfRotation.Direction;
 import frc.robot.commands.drivebase.DifferentialDrive;
 import frc.robot.commands.drivebase.MecanumDrive;
+import frc.robot.commands.drivebase.autonomous.ExampleAutonomousRoutine;
+import frc.robot.commands.drivebase.autonomous.PathPlannerCommandFactory;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
@@ -34,7 +47,7 @@ public class RobotContainer {
     // The robot's controllers are defined here...
     private final PFRController driverController = new PFRController(0);
     private final PFRController operatorController = new PFRController(1);
-    // private final PFROI oi = new PFROI(2);
+    private final PFRController secondaryController = new PFRController(2);
 
     // The robot's commands are defined here...
     private final CycleCenterOfRotation cycleCenterOfRotationUp =
@@ -45,47 +58,37 @@ public class RobotContainer {
     private final DifferentialDrive differentialDrive =
             new DifferentialDrive(drivebase, driverController);
 
-    private final SetArmVelocities setArmVelocities = new SetArmVelocities(arm, operatorController);
+    private final SetArmVelocities setArmVelocities = new SetArmVelocities(arm, operatorController, secondaryController);
 
     private final IntakePiece intakePiece = new IntakePiece(claw);
     private final OutputPiece outputPiece = new OutputPiece(claw);
-    //     private final SetLength startingPosition = new SetLength(arm,
-    //     ArmConstants.EXTENSION_STARTING_LENGTH);
-    //     private final SetLength testing1 = new SetLength(arm,
-    // ArmConstants.EXTENSION_STARTING_LENGTH
-    //     + (ArmConstants.FIRST_STAGE_MAX_EXTENSION + ArmConstants.SECOND_STAGE_MAX_EXTENSION) *
-    // 0.2);
-    //     private final SetLength testing2 = new SetLength(arm,
-    // ArmConstants.EXTENSION_STARTING_LENGTH
-    //     + (ArmConstants.FIRST_STAGE_MAX_EXTENSION + ArmConstants.SECOND_STAGE_MAX_EXTENSION) *
-    // 0.5);
-    //     private final SetAngle startingAngle = new SetAngle(arm,
-    //     ArmConstants.ARM_ROTATION_STARTING_ANGLE);
-    //     private final SetAngle testingAngle1 = new SetAngle(arm, 0);
-    //     private final SetAngle testingAngle2 = new SetAngle(arm, Math.toRadians(90));
 
     // Seperating the auto commands is helpful :)
-    // private final Command middleGridToBottomPiece =
-    //         PathPlannerCommandFactory.fromJSON(drivebase, "MiddleGridToBottomPiece", false,
-    // false);
-    // private final Command middleGridToChargeStation =
-    //         PathPlannerCommandFactory.fromJSON(
-    //                 drivebase, "MiddleGridToChargeStation", false, false);
-    // private final ExampleAutonomousRoutine exampleAutonomousRoutine =
-    //         new ExampleAutonomousRoutine(drivebase);
+    private final Command middleGridToBottomPiece =
+            PathPlannerCommandFactory.fromJSON(drivebase, "MiddleGridToBottomPiece", false, false);
+    private final Command middleGridToChargeStation =
+            PathPlannerCommandFactory.fromJSON(
+                    drivebase, "MiddleGridToChargeStation", false, false);
+    private final ExampleAutonomousRoutine exampleAutonomousRoutine =
+            new ExampleAutonomousRoutine(drivebase);
+    private final FirstStagePlacement firstStagePlacement = new FirstStagePlacement(arm, claw);
+    private final SecondStagePlacement secondStagePlacement = new SecondStagePlacement(arm, claw);
+    private final ThirdStagePlacement thirdStagePlacement = new ThirdStagePlacement(arm, claw);
+    private final IntakeSequence intakeSequence = new IntakeSequence(arm, claw);
 
+    // TODO: REMOVE AFTER TESTING
+    private final SetWristAngle parallel = new SetWristAngle(arm, 0);
+    private final SetWristAngle stowed = new SetWristAngle(arm, Math.toRadians(90));
+
+    private final StowArm stowArm = new StowArm(arm);
     // And things we want to put on the main tab (SmartDashboard) :)
-    // private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
-
-    // It's useful to set the autonomous commands seperately
-
-    // And the NetworkTable/NetworkTable/CommandChooser variables :)
+    private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Configure the button bindings
         configureButtonBindings();
-        // initializeListenersAndSendables();
+        initializeListenersAndSendables();
     }
 
     /**
@@ -95,34 +98,44 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        // driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
-        // driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        driverController.dPadDownButton().onTrue(cycleCenterOfRotationDown);
+        driverController.dPadUpButton().onTrue(cycleCenterOfRotationUp);
+        driverController.rBumper().whileTrue(mecanumDrive).whileFalse(differentialDrive);
 
-        operatorController.aButton().whileTrue(intakePiece);
-        operatorController.bButton().whileTrue(outputPiece);
-        driverController.lBumper().onTrue(mecanumDrive);
-        driverController.rBumper().onTrue(differentialDrive);
-        // TODO: READD THESE AFTER SYSID
-        // driverController.aButton().onTrue(startingPosition);
-        // driverController.xButton().onTrue(testing1);
-        // driverController.yButton().onTrue(testing2);
+        // Standard Control
 
-        // operatorController.aButton().onTrue(startingAngle);
-        // operatorController.xButton().onTrue(testingAngle1);
-        // operatorController.yButton().whileTrue(testingAngle2);
+        operatorController.aButton().whileTrue(firstStagePlacement).onFalse(setArmVelocities);
+        operatorController.bButton().whileTrue(secondStagePlacement).onFalse(setArmVelocities);
+        operatorController.yButton().whileTrue(thirdStagePlacement).onFalse(setArmVelocities);
+        operatorController.xButton().whileTrue(intakeSequence).onFalse(setArmVelocities);
+        // THE REST ARE HANDLED IN ARM VELOCITIES
+
+        // OVERRIDE CONTROL
+
+        secondaryController.bButton().whileTrue(intakePiece);
+        secondaryController.aButton().whileTrue(outputPiece);
+        // Standard Bindings
+        // driverController.lBumper().onTrue(mecanumDrive);
+        // driverController.rBumper().onTrue(differentialDrive);
+
+        // Chloe's Bindings (insert joke here)
+    }
+
+    public void periodic()
+    {
+
     }
 
     public void initializeListenersAndSendables() {
-        // // Add options for chooser
-        // autonomousCommandChooser.addOption("Middle Grid To Bottom Piece",
-        // middleGridToBottomPiece);
-        // autonomousCommandChooser.addOption(
-        //         "Middle Grid to Charge Station", middleGridToChargeStation);
-        // autonomousCommandChooser.setDefaultOption(
-        //         "Example autonomous Routine", exampleAutonomousRoutine);
+        // Add options for chooser
+        autonomousCommandChooser.addOption("Middle Grid To Bottom Piece", middleGridToBottomPiece);
+        autonomousCommandChooser.addOption(
+                "Middle Grid to Charge Station", middleGridToChargeStation);
+        autonomousCommandChooser.setDefaultOption(
+                "Example autonomous Routine", exampleAutonomousRoutine);
 
-        // // Places chooser on mainTab (where all "main stuff" is)
-        // SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
+        // Places chooser on mainTab (where all "main stuff" is)
+        SmartDashboard.putData("Choose Auto Routine", autonomousCommandChooser);
     }
 
     public void scheduleAutonomousCommands() {
@@ -136,16 +149,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         setArmVelocities.schedule();
         differentialDrive.schedule();
-        // clawAndArmTesting.schedule();
     }
-
-    // public MecanumDrive getMecanumDrive() {
-    //     return mecanumDrive;
-    // }
-
-    // public DifferentialDrive getDifferentialDrive() {
-    //     return differentialDrive;
-    // }
 
     public PFRController getDriverController() {
         return driverController;
@@ -154,4 +158,5 @@ public class RobotContainer {
     public PFRController getOperatorController() {
         return operatorController;
     }
+
 }

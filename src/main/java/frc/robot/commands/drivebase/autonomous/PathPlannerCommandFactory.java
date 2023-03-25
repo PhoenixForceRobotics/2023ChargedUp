@@ -46,8 +46,8 @@ public class PathPlannerCommandFactory {
                 new PPMecanumControllerCommand(
                         trajectory,
                         drivebase::getPose,
-                        new PIDController(1, 0, 0.05),
-                        new PIDController(1, 0, 0.05), // TODO: Set PID values and use constants
+                        new PIDController(0.5, 0, 0.005),
+                        new PIDController(0.5, 0, 0.005), // TODO: Set PID values and use constants
                         new PIDController(Math.PI / 4, 0, 0.025 * Math.PI),
                         drivebase::setChassisSpeeds,
                         useAllianceColor,
