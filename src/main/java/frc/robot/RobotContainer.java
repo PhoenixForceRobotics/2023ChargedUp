@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.arm.ResetArmEncoder;
 import frc.robot.commands.arm.SetArmLengthBangBang;
 import frc.robot.commands.arm.SetArmVelocities;
 import frc.robot.commands.arm.SetWristAngle;
@@ -77,9 +79,7 @@ public class RobotContainer {
     private final IntakeSequence intakeSequence = new IntakeSequence(arm, claw);
 
     // TODO: REMOVE AFTER TESTING
-    private final SetWristAngle parallel = new SetWristAngle(arm, 0);
-    private final SetWristAngle stowed = new SetWristAngle(arm, Math.toRadians(90));
-
+    private final ResetArmEncoder resetArmEncoder = new ResetArmEncoder(arm);
     private final StowArm stowArm = new StowArm(arm);
     // And things we want to put on the main tab (SmartDashboard) :)
     private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
@@ -103,17 +103,19 @@ public class RobotContainer {
         driverController.rBumper().whileTrue(mecanumDrive).whileFalse(differentialDrive);
 
         // Standard Control
-
         operatorController.aButton().whileTrue(firstStagePlacement).onFalse(setArmVelocities);
         operatorController.bButton().whileTrue(secondStagePlacement).onFalse(setArmVelocities);
         operatorController.yButton().whileTrue(thirdStagePlacement).onFalse(setArmVelocities);
         operatorController.xButton().whileTrue(intakeSequence).onFalse(setArmVelocities);
+        operatorController.rBumper().whileTrue(stowArm).onFalse(setArmVelocities);
         // THE REST ARE HANDLED IN ARM VELOCITIES
 
         // OVERRIDE CONTROL
-
+        secondaryController.yButton().onTrue(resetArmEncoder);
         secondaryController.bButton().whileTrue(intakePiece);
         secondaryController.aButton().whileTrue(outputPiece);
+        // THE REST ARE HANDLED IN ARM VELOCITIES
+
         // Standard Bindings
         // driverController.lBumper().onTrue(mecanumDrive);
         // driverController.rBumper().onTrue(differentialDrive);
