@@ -23,6 +23,7 @@ public class Motor extends CANSparkMax {
         this.wheelDiameter = wheelDiameter;
         this.positionPID = new PFRPIDController(positionPID);
         this.velocityPID = new PFRPIDController(velocityPID);
+
         setInverted(reversed);
     }
 

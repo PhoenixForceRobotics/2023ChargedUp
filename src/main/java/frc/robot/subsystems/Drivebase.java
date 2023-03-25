@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,9 +11,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -45,18 +45,18 @@ public class Drivebase extends SubsystemBase {
          * @return Translation2d of the position
          */
         public Translation2d get() {
-            return location;
+            return this.location;
         }
     }
 
     private Motor flWheel, frWheel, blWheel, brWheel;
 
-    private PneumaticHub pneumaticHub;
-    private Solenoid butterflyPistons;
+    private PneumaticHub pneumaticHub = new PneumaticHub(1);
+    private DoubleSolenoid butterflyPistons = this.pneumaticHub.makeDoubleSolenoid(0, 1);
 
     // TODO: Re-add this once we install the pigeon
-    private WPI_Pigeon2 inertialMeasurementUnit;
-    // private ADXRS450_Gyro gyro;
+    // private Pigeon2 gyro;
+    private ADXRS450_Gyro gyro;
 
     private MecanumDriveWheelPositions currentWheelPositions; // the distance each wheel has travelled
     private MecanumDriveWheelSpeeds currentWheelSpeeds; // the velocities of each wheel (not just "speed" :/)
@@ -82,7 +82,7 @@ public class Drivebase extends SubsystemBase {
 
     public Drivebase() {
         // creates the components on the drivebase
-        flWheel =
+        this.flWheel =
             new Motor(
                 DrivebaseConstants.WHEEL_FL_CAN_ID,
                 DrivebaseConstants.WHEEL_FL_REVERSED,
@@ -91,7 +91,7 @@ public class Drivebase extends SubsystemBase {
                 DrivebaseConstants.POSITION_PID,
                 DrivebaseConstants.VELOCITY_PID
             );
-        frWheel =
+        this.frWheel =
             new Motor(
                 DrivebaseConstants.WHEEL_FR_CAN_ID,
                 DrivebaseConstants.WHEEL_FR_REVERSED,
@@ -100,7 +100,7 @@ public class Drivebase extends SubsystemBase {
                 DrivebaseConstants.POSITION_PID,
                 DrivebaseConstants.VELOCITY_PID
             );
-        blWheel =
+        this.blWheel =
             new Motor(
                 DrivebaseConstants.WHEEL_BL_CAN_ID,
                 DrivebaseConstants.WHEEL_BL_REVERSED,
@@ -109,7 +109,7 @@ public class Drivebase extends SubsystemBase {
                 DrivebaseConstants.POSITION_PID,
                 DrivebaseConstants.VELOCITY_PID
             );
-        brWheel =
+        this.brWheel =
             new Motor(
                 DrivebaseConstants.WHEEL_BR_CAN_ID,
                 DrivebaseConstants.WHEEL_BR_REVERSED,
@@ -119,33 +119,29 @@ public class Drivebase extends SubsystemBase {
                 DrivebaseConstants.VELOCITY_PID
             );
 
-        pneumaticHub =
-            new PneumaticHub(DrivebaseConstants.PNEUMATIC_HUB_CAN_ID);
-        butterflyPistons =
-            pneumaticHub.makeSolenoid(
-                DrivebaseConstants.BUTTERFLY_FORWARD_PORT
-            );
+        this.pneumaticHub.enableCompressorAnalog(60, 120);
 
-        inertialMeasurementUnit = new WPI_Pigeon2(20);
-        // gyro = new ADXRS450_Gyro();
+        // inertialMeasurementUnit = new Pigeon2(0);
+        // gyro = new Pigeon2(20);
+        this.gyro = new ADXRS450_Gyro();
 
         // Sets the current wheel positions
-        currentWheelPositions =
+        this.currentWheelPositions =
             new MecanumDriveWheelPositions(
-                flWheel.getMeters(),
-                frWheel.getMeters(),
-                blWheel.getMeters(),
-                brWheel.getMeters()
+                this.flWheel.getMeters(),
+                this.frWheel.getMeters(),
+                this.blWheel.getMeters(),
+                this.brWheel.getMeters()
             );
 
-        currentWheelSpeeds = new MecanumDriveWheelSpeeds(); // the velocities of each wheel (not just "speed" :/)
-        desiredWheelSpeeds = new MecanumDriveWheelSpeeds(); // the *velocities* being sent to pid controllers
-        currentChassisSpeeds = new ChassisSpeeds(); // the VELOCITIES of the robot relative to the robot
-        desiredChassisSpeeds = new ChassisSpeeds(); // The ***VELOCITY*** we want to the set the robot to
+        this.currentWheelSpeeds = new MecanumDriveWheelSpeeds(); // the velocities of each wheel (not just "speed" :/)
+        this.desiredWheelSpeeds = new MecanumDriveWheelSpeeds(); // the *velocities* being sent to pid controllers
+        this.currentChassisSpeeds = new ChassisSpeeds(); // the VELOCITIES of the robot relative to the robot
+        this.desiredChassisSpeeds = new ChassisSpeeds(); // The ***VELOCITY*** we want to the set the robot to
         // (WPI needs to work on their language and correct terminology)
 
         // Creates the kinematics
-        kinematics =
+        this.kinematics =
             new MecanumDriveKinematics(
                 DrivebaseConstants.WHEEL_FL_LOCATION,
                 DrivebaseConstants.WHEEL_FR_LOCATION,
@@ -154,101 +150,101 @@ public class Drivebase extends SubsystemBase {
             );
 
         // Creates the odometry (SET POSE BEFORE AUTO STARTS)
-        odometry =
+        this.odometry =
             new MecanumDriveOdometry(
-                kinematics,
-                getRotation2d(),
-                currentWheelPositions
+                this.kinematics,
+                this.getRotation2d(),
+                this.currentWheelPositions
             );
 
-        centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
+        this.centerOfRotation = CenterOfRotation.CENTER; // used to have custom CoR for holonomic control
 
         // Allows the robot to be seen on the field
-        fieldWidget = new Field2d();
-        fieldWidget.setRobotPose(getPose());
+        this.fieldWidget = new Field2d();
+        this.fieldWidget.setRobotPose(this.getPose());
 
         // Non-essential telemetry for troubleshooting
-        drivebaseTab = Shuffleboard.getTab("Drivebase");
+        this.drivebaseTab = Shuffleboard.getTab("Drivebase");
 
-        currentXVelocityEntry =
-            drivebaseTab.add("Current X Velocity", 0).getEntry();
-        currentYVelocityEntry =
-            drivebaseTab.add("Current Y Velocity", 0).getEntry();
-        currentRotationalVelocityEntry =
-            drivebaseTab.add("Current Rotational Velocity", 0).getEntry();
+        this.currentXVelocityEntry =
+            this.drivebaseTab.add("Current X Velocity", 0).getEntry();
+        this.currentYVelocityEntry =
+            this.drivebaseTab.add("Current Y Velocity", 0).getEntry();
+        this.currentRotationalVelocityEntry =
+            this.drivebaseTab.add("Current Rotational Velocity", 0).getEntry();
     }
 
     @Override
     public void periodic() {
         // Ensure butterfly modules are in the right spot
 
-        if (isMeccanum && getButterflyPistonsValue() != Value.kForward) {
-            setButterflyPistons(Value.kForward);
+        if (this.isMeccanum && this.getButterflyPistonsValue() != Value.kForward) {
+            this.setButterflyPistons(Value.kForward);
         } else if (
-            !isMeccanum && getButterflyPistonsValue() != Value.kReverse
+            !this.isMeccanum && this.getButterflyPistonsValue() != Value.kReverse
         ) {
-            setButterflyPistons(Value.kReverse);
+            this.setButterflyPistons(Value.kReverse);
         }
 
         // Causes the math to work like standard differential drive
-        if (!isMeccanum) {
-            desiredChassisSpeeds.vyMetersPerSecond = 0; // Zero's out the y component
-            centerOfRotation = CenterOfRotation.CENTER;
+        if (!this.isMeccanum) {
+            this.desiredChassisSpeeds.vyMetersPerSecond = 0; // Zero's out the y component
+            this.centerOfRotation = CenterOfRotation.CENTER;
         }
 
-        currentWheelPositions =
+        this.currentWheelPositions =
             new MecanumDriveWheelPositions(
-                flWheel.getMeters(),
-                frWheel.getMeters(),
-                blWheel.getMeters(),
-                brWheel.getMeters()
+                this.flWheel.getMeters(),
+                this.frWheel.getMeters(),
+                this.blWheel.getMeters(),
+                this.brWheel.getMeters()
             );
 
-        currentWheelSpeeds =
+        this.currentWheelSpeeds =
             new MecanumDriveWheelSpeeds(
-                flWheel.getMetersPerSecond(),
-                frWheel.getMetersPerSecond(),
-                blWheel.getMetersPerSecond(),
-                brWheel.getMetersPerSecond()
+                this.flWheel.getMetersPerSecond(),
+                this.frWheel.getMetersPerSecond(),
+                this.blWheel.getMetersPerSecond(),
+                this.brWheel.getMetersPerSecond()
             );
 
         // convert wheel speeds to chassis speeds (relative to robot)
-        currentChassisSpeeds = kinematics.toChassisSpeeds(currentWheelSpeeds);
+        this.currentChassisSpeeds = this.kinematics.toChassisSpeeds(this.currentWheelSpeeds);
 
         // Update then set the (estimated) pose from odometry (not very accurate, reset odometry
         // often, whether with known locations or with APRIL TAGS!!!!!)
-        odometry.update(getRotation2d(), currentWheelPositions);
+        this.odometry.update(this.getRotation2d(), this.currentWheelPositions);
 
         // Updates the velocities sent to each wheel's PID
-        desiredWheelSpeeds =
-            kinematics.toWheelSpeeds(
-                desiredChassisSpeeds,
-                centerOfRotation.get()
+        this.desiredWheelSpeeds =
+            this.kinematics.toWheelSpeeds(
+                this.desiredChassisSpeeds,
+                this.centerOfRotation.get()
             );
 
         // Scales the values to prevent values from being too high
-        desiredWheelSpeeds.desaturate(
+        this.desiredWheelSpeeds.desaturate(
             DrivebaseConstants.MAX_OBTAINABLE_WHEEL_VELOCITY
         );
 
         // Calculate voltages for wheels using feedforward and PID
         // Set the output of motors
-        flWheel.setMetersPerSecond(desiredWheelSpeeds.frontLeftMetersPerSecond);
-        frWheel.setMetersPerSecond(
-            desiredWheelSpeeds.frontRightMetersPerSecond
+        this.flWheel.setMetersPerSecond(this.desiredWheelSpeeds.frontLeftMetersPerSecond);
+        this.frWheel.setMetersPerSecond(
+            this.desiredWheelSpeeds.frontRightMetersPerSecond
         );
-        blWheel.setMetersPerSecond(desiredWheelSpeeds.rearLeftMetersPerSecond);
-        brWheel.setMetersPerSecond(desiredWheelSpeeds.rearRightMetersPerSecond);
+        this.blWheel.setMetersPerSecond(this.desiredWheelSpeeds.rearLeftMetersPerSecond);
+        this.brWheel.setMetersPerSecond(this.desiredWheelSpeeds.rearRightMetersPerSecond);
 
         // Puts the new pose on the main tab
-        fieldWidget.setRobotPose(getPose());
-        SmartDashboard.putData("Robot Pose", fieldWidget);
+        this.fieldWidget.setRobotPose(this.getPose());
+        SmartDashboard.putData("Robot Pose", this.fieldWidget);
 
         // Publishes the data to the telemetry tab
-        currentXVelocityEntry.setDouble(currentChassisSpeeds.vxMetersPerSecond);
-        currentYVelocityEntry.setDouble(currentChassisSpeeds.vyMetersPerSecond);
-        currentRotationalVelocityEntry.setDouble(
-            currentChassisSpeeds.omegaRadiansPerSecond * 180 / Math.PI
+        this.currentXVelocityEntry.setDouble(this.currentChassisSpeeds.vxMetersPerSecond);
+        this.currentYVelocityEntry.setDouble(this.currentChassisSpeeds.vyMetersPerSecond);
+        this.currentRotationalVelocityEntry.setDouble(
+            this.currentChassisSpeeds.omegaRadiansPerSecond * 180 / Math.PI
         );
     }
 
@@ -271,7 +267,7 @@ public class Drivebase extends SubsystemBase {
      * @param theta velocity counter-clockwise (🔄 Positive)
      */
     public void setChassisSpeeds(double vx, double vy, double theta) {
-        desiredChassisSpeeds = new ChassisSpeeds(vx, vy, theta);
+        this.desiredChassisSpeeds = new ChassisSpeeds(vx, vy, theta);
     }
 
     /**
@@ -282,7 +278,7 @@ public class Drivebase extends SubsystemBase {
     public void setFieldRelativeChassisSpeeds(
         ChassisSpeeds desiredChassisSpeeds
     ) {
-        setFieldRelativeChassisSpeeds(
+        this.setFieldRelativeChassisSpeeds(
             desiredChassisSpeeds.vxMetersPerSecond,
             desiredChassisSpeeds.vyMetersPerSecond,
             desiredChassisSpeeds.omegaRadiansPerSecond
@@ -301,18 +297,18 @@ public class Drivebase extends SubsystemBase {
         double vy,
         double theta
     ) {
-        desiredChassisSpeeds =
+        this.desiredChassisSpeeds =
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 vx,
                 vy,
                 theta,
-                getRotation2d()
+                this.getRotation2d()
             );
     }
 
     /** Stops the robot */
     public void stop() {
-        desiredChassisSpeeds = new ChassisSpeeds();
+        this.desiredChassisSpeeds = new ChassisSpeeds();
     }
 
     // ---- BUTTERFLY MODULE FUNCTION ----//
@@ -321,7 +317,7 @@ public class Drivebase extends SubsystemBase {
      * @return {@link Value} whether the piston is forward or reverse
      */
     public Value getButterflyPistonsValue() {
-        return butterflyPistons.get() ? Value.kForward : Value.kReverse;
+        return this.butterflyPistons != null ? this.butterflyPistons.get() : Value.kForward;
     }
 
     /**
@@ -330,15 +326,14 @@ public class Drivebase extends SubsystemBase {
      * @param value to go forward or reverse
      */
     public void setButterflyPistons(Value value) {
-        if (value == Value.kForward) {
-            butterflyPistons.set(true);
-        } else {
-            butterflyPistons.set(false);
+        if(this.butterflyPistons != null)
+        {
+            this.butterflyPistons.set(value);
         }
     }
 
     public boolean isMeccanum() {
-        return isMeccanum;
+        return this.isMeccanum;
     }
 
     public void setMeccanum(boolean isMeccanum) {
@@ -353,7 +348,7 @@ public class Drivebase extends SubsystemBase {
      * @return the enum value that contains position
      */
     public CenterOfRotation getCenterOfRotation() {
-        return centerOfRotation;
+        return this.centerOfRotation;
     }
 
     /** Set custom rotation for holonimic control (extra control, v funky) */
@@ -367,7 +362,7 @@ public class Drivebase extends SubsystemBase {
      * @return The pose2d of the robot (in meters)
      */
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        return this.odometry.getPoseMeters();
     }
 
     /**
@@ -376,9 +371,9 @@ public class Drivebase extends SubsystemBase {
      * @param poseMeters The position on the field that your robot is at.
      */
     public void resetPose(Pose2d poseMeters) {
-        odometry.resetPosition(
-            getRotation2d(),
-            currentWheelPositions,
+        this.odometry.resetPosition(
+            this.getRotation2d(),
+            this.currentWheelPositions,
             poseMeters
         );
     }
@@ -389,8 +384,7 @@ public class Drivebase extends SubsystemBase {
      * @return current heading (CCW+)
      */
     public double getHeading() {
-        return inertialMeasurementUnit.getYaw();
-        // return gyro.getAngle();
+        return -this.gyro.getAngle();
     }
 
     /**
@@ -399,8 +393,8 @@ public class Drivebase extends SubsystemBase {
      * @return current heading in the form of a {@link Rotation2d}
      */
     public Rotation2d getRotation2d() {
-        return inertialMeasurementUnit.getRotation2d();
-        // return gyro.getRotation2d();
+        // return new Rotation2d(Math.toRadians(gyro.getYaw()));
+        return this.gyro.getRotation2d();
     }
 
     /**
@@ -409,7 +403,8 @@ public class Drivebase extends SubsystemBase {
      * @return pitch (in degrees) (Positive for upwards, Negative for downwards)
      */
     public double getPitch() {
-        return inertialMeasurementUnit.getPitch();
+        return 0;
+        // return inertialMeasurementUnit.getPitch();
     }
 
     // We shouldn't be changing the yaw on the IMU, rather changing it within the pose estimation :D

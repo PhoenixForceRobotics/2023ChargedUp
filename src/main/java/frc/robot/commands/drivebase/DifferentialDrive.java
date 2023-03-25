@@ -15,49 +15,42 @@ public class DifferentialDrive extends CommandBase {
     // Caps the acceleration of the robot
     private final SlewRateLimiter vxLimiter;
 
-    public DifferentialDrive(
-        Drivebase drivebase,
-        PFRController driverController
-    ) {
+    public DifferentialDrive(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
-        addRequirements(drivebase);
-        vxLimiter =
-            new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
+        this.addRequirements(drivebase);
+        this.vxLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
     }
 
     @Override
     public void initialize() {
-        drivebase.setMeccanum(false);
-        drivebase.setButterflyPistons(Value.kReverse);
-        vxLimiter.reset(0);
+        this.drivebase.setMeccanum(false);
+        this.drivebase.setButterflyPistons(Value.kReverse);
+        this.vxLimiter.reset(0);
     }
 
     @Override
     public void execute() {
-        double xVelocity = vxLimiter.calculate(
-            -driverController.getLeftYSquared() *
-            DrivebaseConstants.MAX_LINEAR_VELOCITY
-        );
+        double xVelocity =
+                this.vxLimiter.calculate(
+                        -this.driverController.getLeftYSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
         double yVelocity = 0; // acts as DifferentialDrive
         double angularVelocity =
-            -driverController.getRightXSquared() *
-            DrivebaseConstants.MAX_ANGULAR_VELOCITY;
+                -this.driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
         // Adds deadzones to velocities(to prevent unwanted drifting)
         xVelocity =
-            MathUtil.applyDeadband(
-                xVelocity,
-                DrivebaseConstants.MIN_LINEAR_VELOCITY,
-                DrivebaseConstants.MAX_LINEAR_VELOCITY
-            );
+                MathUtil.applyDeadband(
+                        xVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-            MathUtil.applyDeadband(
-                angularVelocity,
-                DrivebaseConstants.MIN_ANGULAR_VELOCITY,
-                DrivebaseConstants.MAX_ANGULAR_VELOCITY
-            );
-        drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
+                MathUtil.applyDeadband(
+                        angularVelocity,
+                        DrivebaseConstants.MIN_ANGULAR_VELOCITY,
+                        DrivebaseConstants.MAX_ANGULAR_VELOCITY);
+        this.drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
     }
 
     @Override
@@ -67,6 +60,6 @@ public class DifferentialDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drivebase.stop();
+        this.drivebase.stop();
     }
 }

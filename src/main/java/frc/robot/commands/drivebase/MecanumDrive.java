@@ -3,6 +3,7 @@ package frc.robot.commands.drivebase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.Constants.DrivebaseConstants;
 import frc.robot.subsystems.Drivebase;
@@ -27,76 +28,69 @@ public class MecanumDrive extends CommandBase {
     public MecanumDrive(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
-        frameOfReference = FrameOfReference.ROBOT;
-        addRequirements(drivebase);
+        this.frameOfReference = FrameOfReference.ROBOT;
+        this.addRequirements(drivebase);
 
-        vxLimiter =
-            new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
-        vyLimiter =
-            new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
+        this.vxLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
+        this.vyLimiter = new SlewRateLimiter(DrivebaseConstants.MAX_LINEAR_ACCELERATION);
     }
 
     @Override
     public void initialize() {
-        drivebase.setMeccanum(true);
-        drivebase.setButterflyPistons(Value.kReverse);
-        vxLimiter.reset(0);
-        vyLimiter.reset(0);
+        this.drivebase.setMeccanum(true);
+        this.drivebase.setButterflyPistons(Value.kReverse);
+        this.vxLimiter.reset(0);
+        this.vyLimiter.reset(0);
     }
 
     @Override
     public void execute() {
-        if (driverController.getLeftBumperPressed()) {
+
+        if (this.driverController.getAButton()) {
             // allows us to toggle frame of reference when button pressed
-            if (frameOfReference == FrameOfReference.ROBOT) {
-                frameOfReference = FrameOfReference.FIELD;
+            if (this.frameOfReference == FrameOfReference.ROBOT) {
+                this.frameOfReference = FrameOfReference.FIELD;
             } else {
-                frameOfReference = FrameOfReference.ROBOT;
+                this.frameOfReference = FrameOfReference.ROBOT;
             }
         }
 
-        double xVelocity = vxLimiter.calculate(
-            -driverController.getLeftYSquared() *
-            DrivebaseConstants.MAX_LINEAR_VELOCITY
-        );
-        double yVelocity = vyLimiter.calculate(
-            -driverController.getLeftXSquared() *
-            DrivebaseConstants.MAX_LINEAR_VELOCITY
-        );
+        double xVelocity =
+                this.vxLimiter.calculate(
+                        -this.driverController.getLeftYSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
+        double yVelocity =
+                this.vyLimiter.calculate(
+                        -this.driverController.getLeftXSquared()
+                                * DrivebaseConstants.MAX_LINEAR_VELOCITY);
         double angularVelocity =
-            -driverController.getRightXSquared() *
-            DrivebaseConstants.MAX_ANGULAR_VELOCITY;
+                -this.driverController.getRightXSquared() * DrivebaseConstants.MAX_ANGULAR_VELOCITY;
 
         // Adds deadzones to velocities(to prevent unwanted drifting)
         xVelocity =
-            MathUtil.clamp(
-                xVelocity,
-                DrivebaseConstants.MIN_LINEAR_VELOCITY,
-                DrivebaseConstants.MAX_LINEAR_VELOCITY
-            );
+                MathUtil.applyDeadband(
+                        xVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
         yVelocity =
-            MathUtil.clamp(
-                yVelocity,
-                DrivebaseConstants.MIN_LINEAR_VELOCITY,
-                DrivebaseConstants.MAX_LINEAR_VELOCITY
-            );
+                MathUtil.applyDeadband(
+                        yVelocity,
+                        DrivebaseConstants.MIN_LINEAR_VELOCITY,
+                        DrivebaseConstants.MAX_LINEAR_VELOCITY);
         angularVelocity =
-            MathUtil.clamp(
-                angularVelocity,
-                DrivebaseConstants.MIN_ANGULAR_VELOCITY,
-                DrivebaseConstants.MAX_ANGULAR_VELOCITY
-            );
+                MathUtil.applyDeadband(
+                        angularVelocity,
+                        DrivebaseConstants.MIN_ANGULAR_VELOCITY,
+                        DrivebaseConstants.MAX_ANGULAR_VELOCITY);
 
         // sets ChassisSpeeds according to indicated frame of reference
-        if (frameOfReference == FrameOfReference.ROBOT) {
-            drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
+        if (this.frameOfReference == FrameOfReference.ROBOT) {
+            this.drivebase.setChassisSpeeds(xVelocity, yVelocity, angularVelocity);
         } else { // frame of reference must be field-relative
-            drivebase.setFieldRelativeChassisSpeeds(
-                xVelocity,
-                yVelocity,
-                angularVelocity
-            );
+            this.drivebase.setFieldRelativeChassisSpeeds(xVelocity, yVelocity, angularVelocity);
         }
+        SmartDashboard.putBoolean(
+                "Field Oriented", this.frameOfReference == FrameOfReference.FIELD);
     }
 
     @Override
@@ -106,6 +100,6 @@ public class MecanumDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drivebase.stop();
+        this.drivebase.stop();
     }
 }
