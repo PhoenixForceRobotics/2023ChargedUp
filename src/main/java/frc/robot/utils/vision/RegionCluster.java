@@ -15,8 +15,11 @@ public class RegionCluster {
 
     /**
      * Creates a RegionCluster from an array of regions (seeing as that's all this class is a
-     * wrapper for). Regions are numbered as follows:<br></br>[0][1][2]<br></br>[3][4][5]<br></br>&emsp;&nbsp;[6] (the aprilTag
-     * itself)<br></br>[7][8][9]
+     * wrapper for). Regions are numbered as follows:<br>
+     * </br>[0][1][2]<br>
+     * </br>[3][4][5]<br>
+     * </br>&emsp;&nbsp;[6] (the aprilTag itself)<br>
+     * </br>[7][8][9]
      *
      * @param newCluster
      * @exception MapWrongSizeException Thrown if the given map is incorrectly sized (i.e. not size
@@ -37,13 +40,10 @@ public class RegionCluster {
     public RegionCluster() throws MapWrongSizeException {
         // If not given arguments, a cluster will be produced from the primary map
         cluster = new Region[10];
-        for (
-            int regionIndex = 0;
-            regionIndex < ProcessingConstants.PRIMARY_MAP.length;
-            regionIndex++
-        ) {
-            double[][] regionPoints =
-                ProcessingConstants.PRIMARY_MAP[regionIndex];
+        for (int regionIndex = 0;
+                regionIndex < ProcessingConstants.PRIMARY_MAP.length;
+                regionIndex++) {
+            double[][] regionPoints = ProcessingConstants.PRIMARY_MAP[regionIndex];
             Point[] points = {
                 new Point(regionPoints[0]),
                 new Point(regionPoints[1]),

@@ -1,8 +1,9 @@
-package frc.robot.utils;
+package frc.robot.utils.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.utils.PIDValues;
 
 public class PFRArmPIDController extends PIDController {
     private final double MAX_CONTROL_EFFORT;

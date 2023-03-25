@@ -1,8 +1,8 @@
 package frc.robot.utils.motors;
 
 import com.revrobotics.CANSparkMax;
-import frc.robot.utils.PFRPIDController;
 import frc.robot.utils.PIDValues;
+import frc.robot.utils.pid.PFRPIDController;
 
 public class Motor extends CANSparkMax {
     private double gearRatio;
@@ -11,13 +11,12 @@ public class Motor extends CANSparkMax {
     private PFRPIDController velocityPID;
 
     public Motor(
-        int port,
-        boolean reversed,
-        double gearRatio,
-        double wheelDiameter,
-        PIDValues positionPID,
-        PIDValues velocityPID
-    ) {
+            int port,
+            boolean reversed,
+            double gearRatio,
+            double wheelDiameter,
+            PIDValues positionPID,
+            PIDValues velocityPID) {
         super(port, MotorType.kBrushless);
         this.gearRatio = gearRatio;
         this.wheelDiameter = wheelDiameter;
@@ -27,20 +26,14 @@ public class Motor extends CANSparkMax {
         setInverted(reversed);
     }
 
-    public Motor(
-        int port,
-        boolean reversed,
-        double gearRatio,
-        double wheelDiameter
-    ) {
+    public Motor(int port, boolean reversed, double gearRatio, double wheelDiameter) {
         this(
-            port,
-            reversed,
-            gearRatio,
-            wheelDiameter,
-            new PIDValues(0, 0, 0),
-            new PIDValues(0, 0, 0)
-        );
+                port,
+                reversed,
+                gearRatio,
+                wheelDiameter,
+                new PIDValues(0, 0, 0),
+                new PIDValues(0, 0, 0));
     }
 
     public Motor(int port, boolean reversed) {
@@ -48,10 +41,7 @@ public class Motor extends CANSparkMax {
     }
 
     public void setMetersPerSecond(double metersPerSecond) {
-        double output = velocityPID.filteredCalculate(
-            getMetersPerSecond(),
-            metersPerSecond
-        );
+        double output = velocityPID.filteredCalculate(getMetersPerSecond(), metersPerSecond);
         setVoltage(output);
     }
 

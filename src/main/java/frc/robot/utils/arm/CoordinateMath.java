@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.arm;
 
 import edu.wpi.first.math.Pair;
 
@@ -6,19 +6,16 @@ public class CoordinateMath {
 
     public static class PolarCoordinates extends Pair<Double, Double> {
 
-        public PolarCoordinates(
-            double radialCoordinate,
-            double angularCoordinate
-        ) {
+        public PolarCoordinates(double radialCoordinate, double angularCoordinate) {
             super(radialCoordinate, angularCoordinate);
         }
 
         public double getRadialCoordinate() {
-            return getFirst();
+            return this.getFirst();
         }
 
         public double getAngularCoordinate() {
-            return getSecond();
+            return this.getSecond();
         }
     }
 
@@ -29,11 +26,11 @@ public class CoordinateMath {
         }
 
         public double getRadialVelocity() {
-            return getFirst();
+            return this.getFirst();
         }
 
         public double getAngularVelocity() {
-            return getSecond();
+            return this.getSecond();
         }
     }
 
@@ -44,11 +41,11 @@ public class CoordinateMath {
         }
 
         public double getXCoordinate() {
-            return getFirst();
+            return this.getFirst();
         }
 
         public double getYCoordinate() {
-            return getSecond();
+            return this.getSecond();
         }
     }
 
@@ -59,56 +56,48 @@ public class CoordinateMath {
         }
 
         public double getXVelocity() {
-            return getFirst();
+            return this.getFirst();
         }
 
         public double getYVelocity() {
-            return getSecond();
+            return this.getSecond();
         }
     }
 
     public static PolarCoordinates cartesianToPolarCoordinates(
-        CartesianCoordinates cartesianCoordinates
-    ) {
-        double radialCoordinate = Math.sqrt(
-            Math.pow(cartesianCoordinates.getXCoordinate(), 2) +
-            Math.pow(cartesianCoordinates.getYCoordinate(), 2)
-        );
-        double angularCoordinate = Math.atan2(
-            cartesianCoordinates.getYCoordinate(),
-            cartesianCoordinates.getXCoordinate()
-        );
+            CartesianCoordinates cartesianCoordinates) {
+        double radialCoordinate =
+                Math.sqrt(
+                        Math.pow(cartesianCoordinates.getXCoordinate(), 2)
+                                + Math.pow(cartesianCoordinates.getYCoordinate(), 2));
+        double angularCoordinate =
+                Math.atan2(
+                        cartesianCoordinates.getYCoordinate(),
+                        cartesianCoordinates.getXCoordinate());
 
         return new PolarCoordinates(radialCoordinate, angularCoordinate);
     }
 
     public static CartesianCoordinates polarToCartesianCoordinates(
-        PolarCoordinates polarCoordinates
-    ) {
+            PolarCoordinates polarCoordinates) {
         double x =
-            polarCoordinates.getRadialCoordinate() *
-            Math.cos(polarCoordinates.getAngularCoordinate());
+                polarCoordinates.getRadialCoordinate()
+                        * Math.cos(polarCoordinates.getAngularCoordinate());
         double y =
-            polarCoordinates.getRadialCoordinate() *
-            Math.sin(polarCoordinates.getAngularCoordinate());
+                polarCoordinates.getRadialCoordinate()
+                        * Math.sin(polarCoordinates.getAngularCoordinate());
 
         return new CartesianCoordinates(x, y);
     }
 
     public static PolarVelocities cartesianVelocitiesToPolarVelocities(
-        PolarCoordinates polarCoordinates,
-        CartesianVelocities cartesianVelocities
-    ) {
-        return cartesianVelocitiesToPolarVelocities(
-            polarToCartesianCoordinates(polarCoordinates),
-            cartesianVelocities
-        );
+            PolarCoordinates polarCoordinates, CartesianVelocities cartesianVelocities) {
+        return CoordinateMath.cartesianVelocitiesToPolarVelocities(
+                CoordinateMath.polarToCartesianCoordinates(polarCoordinates), cartesianVelocities);
     }
 
     public static PolarVelocities cartesianVelocitiesToPolarVelocities(
-        CartesianCoordinates cartesianCoordinates,
-        CartesianVelocities cartesianVelocities
-    ) {
+            CartesianCoordinates cartesianCoordinates, CartesianVelocities cartesianVelocities) {
         // shorter variables to make code readable
         double x = cartesianCoordinates.getXCoordinate();
         double y = cartesianCoordinates.getYCoordinate();
@@ -118,12 +107,10 @@ public class CoordinateMath {
         // Use the above to calculate the velocities
 
         // (x * dx/dt + y * dy/dt ) / (sqrt(x^2 + y^2))
-        double radialVelocity =
-            (x * dx + y * dy) / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        double radialVelocity = (x * dx + y * dy) / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
         // (x * dy/dt - dx/dt * y) / (x^2 + y^2)
-        double angularVelocity =
-            (x * dy - dx * y) / (Math.pow(x, 2) + Math.pow(y, 2));
+        double angularVelocity = (x * dy - dx * y) / (Math.pow(x, 2) + Math.pow(y, 2));
 
         return new PolarVelocities(radialVelocity, angularVelocity);
     }

@@ -49,25 +49,22 @@ public class MecanumGridsnap extends CommandBase {
         this.gridCoordinates = new int[2];
 
         this.pidX =
-            new PIDController(
-                StrafePIDValues.PID_X_VALUES.P,
-                StrafePIDValues.PID_X_VALUES.I,
-                StrafePIDValues.PID_X_VALUES.D
-            );
+                new PIDController(
+                        StrafePIDValues.PID_X_VALUES.P,
+                        StrafePIDValues.PID_X_VALUES.I,
+                        StrafePIDValues.PID_X_VALUES.D);
 
         this.pidY =
-            new PIDController(
-                StrafePIDValues.PID_Y_VALUES.P,
-                StrafePIDValues.PID_Y_VALUES.I,
-                StrafePIDValues.PID_Y_VALUES.D
-            );
+                new PIDController(
+                        StrafePIDValues.PID_Y_VALUES.P,
+                        StrafePIDValues.PID_Y_VALUES.I,
+                        StrafePIDValues.PID_Y_VALUES.D);
 
         this.pidTheta =
-            new PIDController(
-                StrafePIDValues.PID_THETA_VALUES.P,
-                StrafePIDValues.PID_THETA_VALUES.I,
-                StrafePIDValues.PID_THETA_VALUES.D
-            );
+                new PIDController(
+                        StrafePIDValues.PID_THETA_VALUES.P,
+                        StrafePIDValues.PID_THETA_VALUES.I,
+                        StrafePIDValues.PID_THETA_VALUES.D);
     }
 
     @Override
@@ -90,11 +87,8 @@ public class MecanumGridsnap extends CommandBase {
 
             // remember: this is chained to the line on like ln128ish
             this.targetPos =
-                SnapGridMath.getSnapPositionFromIndex(
-                    this.alliance,
-                    this.pose,
-                    this.gridCoordinates[1]
-                );
+                    SnapGridMath.getSnapPositionFromIndex(
+                            this.alliance, this.pose, this.gridCoordinates[1]);
         }
     }
 
@@ -105,16 +99,10 @@ public class MecanumGridsnap extends CommandBase {
         // now for the funny (pain)
         // Y is for selecting slot (short distance is Y)
         int yIntent =
-            (
-                this.driverController.getPOV() == ControllerConstants.DPAD_LEFT
-                    ? 1
-                    : 0
-            ) -
-            (
-                this.driverController.getPOV() == ControllerConstants.DPAD_RIGHT
-                    ? 1
-                    : 0
-            );
+                (this.driverController.getPOV() == ControllerConstants.DPAD_LEFT ? 1 : 0)
+                        - (this.driverController.getPOV() == ControllerConstants.DPAD_RIGHT
+                                ? 1
+                                : 0);
         // TODO: add X intent for arm manipulation
 
         // set coords based on intent
@@ -122,17 +110,11 @@ public class MecanumGridsnap extends CommandBase {
             if (this.risingEdgeY) {
                 this.risingEdgeY = false;
                 this.gridCoordinates[1] =
-                    VisionMath.clamp(
-                        this.gridCoordinates[1] + yIntent,
-                        0,
-                        SnapGrid.GRID_SNAP_Y.length
-                    );
+                        VisionMath.clamp(
+                                this.gridCoordinates[1] + yIntent, 0, SnapGrid.GRID_SNAP_Y.length);
                 this.targetPos =
-                    SnapGridMath.getSnapPositionFromIndex(
-                        this.alliance,
-                        this.pose,
-                        this.gridCoordinates[1]
-                    );
+                        SnapGridMath.getSnapPositionFromIndex(
+                                this.alliance, this.pose, this.gridCoordinates[1]);
             }
         } else {
             // reset rising edge tracker if not pressing a y axis button (which is x axis on the
@@ -141,13 +123,10 @@ public class MecanumGridsnap extends CommandBase {
         }
 
         this.drivebase.setFieldRelativeChassisSpeeds(
-            this.pidX.calculate(this.pose.getX(), this.targetPos.getX()),
-            this.pidY.calculate(this.pose.getY(), this.targetPos.getY()),
-            this.pidTheta.calculate(
-                this.pose.getRotation().getDegrees(),
-                this.targetPos.getX()
-            )
-        );
+                this.pidX.calculate(this.pose.getX(), this.targetPos.getX()),
+                this.pidY.calculate(this.pose.getY(), this.targetPos.getY()),
+                this.pidTheta.calculate(
+                        this.pose.getRotation().getDegrees(), this.targetPos.getX()));
     }
 
     @Override

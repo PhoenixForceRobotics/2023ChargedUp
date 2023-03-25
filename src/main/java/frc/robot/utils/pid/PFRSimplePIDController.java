@@ -1,8 +1,9 @@
-package frc.robot.utils;
+package frc.robot.utils.pid;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.utils.PIDValues;
 
 public class PFRSimplePIDController extends PIDController {
     private final double MAX_CONTROL_EFFORT;

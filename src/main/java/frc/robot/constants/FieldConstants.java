@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;*/
 import frc.robot.utils.vision.UnitConverter;
-//import java.util.Arrays;
+// import java.util.Arrays;
 
 // The following is all in inches
 // I'm so sorry
@@ -19,7 +19,8 @@ public final class FieldConstants {
      * TODO: IF YOU IGNORE ALL OF THESE TODOS YOU HAVE NOBODY BUT YOURSELF TO BLAME
      */
     public static final class SnapGrid {
-        public static final double DEFAULT_SNAP_MAX_DISTANCE = 54; // how far away before gridsnap gives up (inches)
+        public static final double DEFAULT_SNAP_MAX_DISTANCE =
+                54; // how far away before gridsnap gives up (inches)
 
         public static final double GRID_SNAP_X = 527;
         /*
@@ -27,10 +28,7 @@ public final class FieldConstants {
          * THESE ARE MIDPOINTS. NOT DIVIDERS OR ENDPOINTS.
          */
         public static final double[] GRID_SNAP_Y = { // TODO: actual values
-            16,
-            34.375,
-            52.875,
-            71.25,
+            16, 34.375, 52.875, 71.25,
         };
 
         /*
@@ -42,29 +40,27 @@ public final class FieldConstants {
          * Length of the substation.
          */
         public static final double TOTAL_SUBSTATION_LENGTH =
-            FieldConstants.FIELD_LENGTH - SnapGrid.TOTAL_GRID_LENGTH;
+                FieldConstants.FIELD_LENGTH - SnapGrid.TOTAL_GRID_LENGTH;
 
-        public static final double GRID_OFFSET_BLUE =
-            UnitConverter.FeetToInches(8) + 3;
+        public static final double GRID_OFFSET_BLUE = UnitConverter.FeetToInches(8) + 3;
 
-        public static final double SUBSTATION_SNAP_X = UnitConverter.FeetToInches(
-            52
-        );
+        public static final double SUBSTATION_SNAP_X = UnitConverter.FeetToInches(52);
     }
 
     /*
      * Blue-alliance aligned april tags.
      */
     public static final class TagFieldPositions {
-        //The following is used from FRC 6328 Mechanical Advantage under the MIT license
-        //because frankly open source is way easier than spending hours typing things from the rules
-        //Original can be found at:
-        //https://github.com/Mechanical-Advantage/RobotCode2023/blob/245956d9635309737d78d7f915cfd6d1b94167a1/src/main/java/org/littletonrobotics/frc2023/FieldConstants.java
+        // The following is used from FRC 6328 Mechanical Advantage under the MIT license
+        // because frankly open source is way easier than spending hours typing things from the
+        // rules
+        // Original can be found at:
+        // https://github.com/Mechanical-Advantage/RobotCode2023/blob/245956d9635309737d78d7f915cfd6d1b94167a1/src/main/java/org/littletonrobotics/frc2023/FieldConstants.java
 
-        //Woe be to whoever has to maintain this garbage
+        // Woe be to whoever has to maintain this garbage
 
-        //photonvision works in meters so now this is all in meters
-        //GOD FUCKING DAMMIT I WASTED ALL MY TIME ON THIS
+        // photonvision works in meters so now this is all in meters
+        // GOD FUCKING DAMMIT I WASTED ALL MY TIME ON THIS
         /*public static final AprilTag[] TAG_LOCATIONS = {
             new AprilTag(
                 1,
@@ -147,8 +143,6 @@ public final class FieldConstants {
         );*/
     }
 
-    public static final double FIELD_LENGTH =
-        UnitConverter.FeetToInches(26) + 3.5;
-    public static final double FIELD_WIDTH =
-        UnitConverter.FeetToInches(54) + 3.25;
+    public static final double FIELD_LENGTH = UnitConverter.FeetToInches(26) + 3.5;
+    public static final double FIELD_WIDTH = UnitConverter.FeetToInches(54) + 3.25;
 }

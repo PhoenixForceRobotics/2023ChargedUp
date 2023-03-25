@@ -16,37 +16,25 @@ public class PFRController extends XboxController {
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getLeftX() {
-        return MathUtil.applyDeadband(
-            super.getLeftX(),
-            ControllerConstants.AXIS_DEADZONE
-        );
+        return MathUtil.applyDeadband(super.getLeftX(), ControllerConstants.AXIS_DEADZONE);
     }
 
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getLeftY() {
-        return MathUtil.applyDeadband(
-            super.getLeftY(),
-            ControllerConstants.AXIS_DEADZONE
-        );
+        return MathUtil.applyDeadband(super.getLeftY(), ControllerConstants.AXIS_DEADZONE);
     }
 
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getRightX() {
-        return MathUtil.applyDeadband(
-            super.getRightX(),
-            ControllerConstants.AXIS_DEADZONE
-        );
+        return MathUtil.applyDeadband(super.getRightX(), ControllerConstants.AXIS_DEADZONE);
     }
 
     /** Adds ability to add deadzone (because our controllers drift... :p) */
     @Override
     public double getRightY() {
-        return MathUtil.applyDeadband(
-            super.getRightY(),
-            ControllerConstants.AXIS_DEADZONE
-        );
+        return MathUtil.applyDeadband(super.getRightY(), ControllerConstants.AXIS_DEADZONE);
     }
 
     public double getLeftXSquared() {

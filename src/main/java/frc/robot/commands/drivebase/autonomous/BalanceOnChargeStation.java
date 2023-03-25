@@ -3,7 +3,7 @@ package frc.robot.commands.drivebase.autonomous;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.Constants.DrivebaseConstants;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.utils.PFRPIDController;
+import frc.robot.utils.pid.PFRPIDController;
 
 public class BalanceOnChargeStation extends CommandBase {
     private Drivebase drivebase;
@@ -20,7 +20,8 @@ public class BalanceOnChargeStation extends CommandBase {
 
     @Override
     public void initialize() {
-        // Assume we are already somwhere on the charge station, and perpendicular to the panel (so we don't need to change angle)
+        // Assume we are already somwhere on the charge station, and perpendicular to the panel (so
+        // we don't need to change angle)
         // Also assuming that we move
         this.pidController.reset();
     }

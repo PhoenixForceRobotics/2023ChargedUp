@@ -31,9 +31,7 @@ public class CycleCenterOfRotation extends InstantCommand {
             index = (currentCenterOfRotation.ordinal() + 1) % lengthOfEnum;
         } else if (direction == Direction.DOWN) {
             // Get next lowest CenterOfRotation (or wraps around)
-            index =
-                (currentCenterOfRotation.ordinal() - 1 + lengthOfEnum) %
-                lengthOfEnum;
+            index = (currentCenterOfRotation.ordinal() - 1 + lengthOfEnum) % lengthOfEnum;
         } else {
             // Something went wrong, just go to the original
             index = currentCenterOfRotation.ordinal();

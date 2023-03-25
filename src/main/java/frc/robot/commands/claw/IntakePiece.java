@@ -1,7 +1,7 @@
 package frc.robot.commands.claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ClawConstants;
+import frc.robot.constants.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 public class IntakePiece extends CommandBase {
@@ -20,11 +20,11 @@ public class IntakePiece extends CommandBase {
 
     @Override
     public void initialize() {
-        claw.setMotor(ClawConstants.INTAKE_SPEED);
+        this.claw.setMotor(ClawConstants.INTAKE_SPEED);
     }
 
     @Override
     public void end(boolean interrupted) {
-        claw.setMotor(0);
+        this.claw.setMotor(0);
     }
 }

@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-//import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +33,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.vision.TagProcessing;
 import frc.robot.utils.PFRController;
+import java.io.IOException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,43 +54,38 @@ public class RobotContainer {
     private final PFRController secondaryController = new PFRController(2);
 
     // // The robot's commands are defined here...
-    private final CycleCenterOfRotation cycleCenterOfRotationUp = new CycleCenterOfRotation(
-        this.drivebase,
-        Direction.UP
-    );
-    private final CycleCenterOfRotation cycleCenterOfRotationDown = new CycleCenterOfRotation(
-        this.drivebase,
-        Direction.DOWN
-    );
-    private final MecanumDrive mecanumDrive = new MecanumDrive(
-        this.drivebase,
-        this.driverController
-    );
-    private final DifferentialDrive differentialDrive = new DifferentialDrive(
-        this.drivebase,
-        this.driverController
-    );
-    private final UpdateVisionData updateVisionData = new UpdateVisionData(
-        this.tagProcessing,
-        this.drivebase
-    );
+    private final CycleCenterOfRotation cycleCenterOfRotationUp =
+            new CycleCenterOfRotation(this.drivebase, Direction.UP);
+    private final CycleCenterOfRotation cycleCenterOfRotationDown =
+            new CycleCenterOfRotation(this.drivebase, Direction.DOWN);
+    private final MecanumDrive mecanumDrive =
+            new MecanumDrive(this.drivebase, this.driverController);
+    private final DifferentialDrive differentialDrive =
+            new DifferentialDrive(this.drivebase, this.driverController);
+    private final UpdateVisionData updateVisionData =
+            new UpdateVisionData(this.tagProcessing, this.drivebase);
 
-    private final SetArmVelocities setArmVelocities = new SetArmVelocities(this.arm, this.operatorController, this.secondaryController);
+    private final SetArmVelocities setArmVelocities =
+            new SetArmVelocities(this.arm, this.operatorController, this.secondaryController);
 
     private final IntakePiece intakePiece = new IntakePiece(this.claw);
     private final OutputPiece outputPiece = new OutputPiece(this.claw);
 
     // Separating the auto commands is helpful :)
     private final Command middleGridToBottomPiece =
-            PathPlannerCommandFactory.fromJSON(this.drivebase, "MiddleGridToBottomPiece", false, false);
+            PathPlannerCommandFactory.fromJSON(
+                    this.drivebase, "MiddleGridToBottomPiece", false, false);
     private final Command middleGridToChargeStation =
             PathPlannerCommandFactory.fromJSON(
                     this.drivebase, "MiddleGridToChargeStation", false, false);
     private final ExampleAutonomousRoutine exampleAutonomousRoutine =
             new ExampleAutonomousRoutine(this.drivebase);
-    private final FirstStagePlacement firstStagePlacement = new FirstStagePlacement(this.arm, this.claw);
-    private final SecondStagePlacement secondStagePlacement = new SecondStagePlacement(this.arm, this.claw);
-    private final ThirdStagePlacement thirdStagePlacement = new ThirdStagePlacement(this.arm, this.claw);
+    private final FirstStagePlacement firstStagePlacement =
+            new FirstStagePlacement(this.arm, this.claw);
+    private final SecondStagePlacement secondStagePlacement =
+            new SecondStagePlacement(this.arm, this.claw);
+    private final ThirdStagePlacement thirdStagePlacement =
+            new ThirdStagePlacement(this.arm, this.claw);
     private final IntakeSequence intakeSequence = new IntakeSequence(this.arm, this.claw);
 
     // TODO: REMOVE AFTER TESTING
@@ -100,8 +94,7 @@ public class RobotContainer {
     // And things we want to put on the main tab (SmartDashboard) :)
     private final SendableChooser<Command> autonomousCommandChooser = new SendableChooser<>();
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands.
-     */
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         try {
             this.tagProcessing = new TagProcessing();
@@ -113,7 +106,6 @@ public class RobotContainer {
         System.out.println("Initializing robotContainer");
         this.configureButtonBindings();
         this.initializeListenersAndSendables();
-        
     }
 
     /**
@@ -125,13 +117,28 @@ public class RobotContainer {
     private void configureButtonBindings() {
         this.driverController.dPadDownButton().onTrue(this.cycleCenterOfRotationDown);
         this.driverController.dPadUpButton().onTrue(this.cycleCenterOfRotationUp);
-        this.driverController.rBumper().whileTrue(this.mecanumDrive).whileFalse(this.differentialDrive);
+        this.driverController
+                .rBumper()
+                .whileTrue(this.mecanumDrive)
+                .whileFalse(this.differentialDrive);
 
         // Standard Control
-        this.operatorController.aButton().whileTrue(this.firstStagePlacement).onFalse(this.setArmVelocities);
-        this.operatorController.bButton().whileTrue(this.secondStagePlacement).onFalse(this.setArmVelocities);
-        this.operatorController.yButton().whileTrue(this.thirdStagePlacement).onFalse(this.setArmVelocities);
-        this.operatorController.xButton().whileTrue(this.intakeSequence).onFalse(this.setArmVelocities);
+        this.operatorController
+                .aButton()
+                .whileTrue(this.firstStagePlacement)
+                .onFalse(this.setArmVelocities);
+        this.operatorController
+                .bButton()
+                .whileTrue(this.secondStagePlacement)
+                .onFalse(this.setArmVelocities);
+        this.operatorController
+                .yButton()
+                .whileTrue(this.thirdStagePlacement)
+                .onFalse(this.setArmVelocities);
+        this.operatorController
+                .xButton()
+                .whileTrue(this.intakeSequence)
+                .onFalse(this.setArmVelocities);
         this.operatorController.rBumper().whileTrue(this.stowArm).onFalse(this.setArmVelocities);
         // THE REST ARE HANDLED IN ARM VELOCITIES
 
@@ -148,25 +155,16 @@ public class RobotContainer {
         // Chloe's Bindings (insert joke here)
     }
 
-    public void periodic()
-    {
-
-    }
+    public void periodic() {}
 
     public void initializeListenersAndSendables() {
         // Add options for chooser
         this.autonomousCommandChooser.addOption(
-            "Middle Grid To Bottom Piece",
-            this.middleGridToBottomPiece
-        );
+                "Middle Grid To Bottom Piece", this.middleGridToBottomPiece);
         this.autonomousCommandChooser.addOption(
-            "Middle Grid to Charge Station",
-            this.middleGridToChargeStation
-        );
+                "Middle Grid to Charge Station", this.middleGridToChargeStation);
         this.autonomousCommandChooser.setDefaultOption(
-            "Example autonomous Routine",
-            this.exampleAutonomousRoutine
-        );
+                "Example autonomous Routine", this.exampleAutonomousRoutine);
 
         // Places chooser on mainTab (where all "main stuff" is)
         SmartDashboard.putData("Choose Auto Routine", this.autonomousCommandChooser);
@@ -197,5 +195,4 @@ public class RobotContainer {
     public PFRController getSecondaryController() {
         return this.secondaryController;
     }
-
 }

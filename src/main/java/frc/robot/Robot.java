@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -43,7 +41,6 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        robotContainer.periodic();
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
@@ -58,22 +55,41 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-<<<<<<< HEAD
         this.robotContainer.scheduleAutonomousCommands();
-=======
->>>>>>> dev
     }
+
+    /** This function is called periodically during autonomous. */
+    @Override
+    public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
-<<<<<<< HEAD
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
         this.robotContainer.scheduleTeleopCommands();
-=======
-        robotContainer.scheduleTeleopCommands();
->>>>>>> dev
     }
+
+    /** This function is called periodically during operator control. */
+    @Override
+    public void teleopPeriodic() {}
+
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    /** This function is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {}
+
+    /** This function is called once when the robot is first started up. */
+    @Override
+    public void simulationInit() {}
+
+    /** This function is called periodically whilst in simulation. */
+    @Override
+    public void simulationPeriodic() {}
 }
