@@ -14,7 +14,7 @@ import frc.robot.utils.PFRController;
 import frc.robot.utils.vision.SnapGridMath;
 import frc.robot.utils.vision.VisionMath;
 
-public class MecanumStrafe extends CommandBase {
+public class MecanumGridsnap extends CommandBase {
     private final Drivebase drivebase;
     private final PFRController driverController;
 
@@ -40,29 +40,29 @@ public class MecanumStrafe extends CommandBase {
     // current position
     Pose2d pose;
 
-    public MecanumStrafe(Drivebase drivebase, PFRController driverController) {
+    public MecanumGridsnap(Drivebase drivebase, PFRController driverController) {
         this.drivebase = drivebase;
         this.driverController = driverController;
-        addRequirements(drivebase);
+        this.addRequirements(drivebase);
 
-        targetPos = new Pose2d(0, 0, new Rotation2d(0));
-        gridCoordinates = new int[2];
+        this.targetPos = new Pose2d(0, 0, new Rotation2d(0));
+        this.gridCoordinates = new int[2];
 
-        pidX =
+        this.pidX =
             new PIDController(
                 StrafePIDValues.PID_X_VALUES.P,
                 StrafePIDValues.PID_X_VALUES.I,
                 StrafePIDValues.PID_X_VALUES.D
             );
 
-        pidY =
+        this.pidY =
             new PIDController(
                 StrafePIDValues.PID_Y_VALUES.P,
                 StrafePIDValues.PID_Y_VALUES.I,
                 StrafePIDValues.PID_Y_VALUES.D
             );
 
-        pidTheta =
+        this.pidTheta =
             new PIDController(
                 StrafePIDValues.PID_THETA_VALUES.P,
                 StrafePIDValues.PID_THETA_VALUES.I,
@@ -72,46 +72,46 @@ public class MecanumStrafe extends CommandBase {
 
     @Override
     public void initialize() {
-        alliance = DriverStation.getAlliance();
+        this.alliance = DriverStation.getAlliance();
 
-        drivebase.setMeccanum(true);
+        this.drivebase.setMeccanum(true);
 
-        pose = drivebase.getPose();
-        gridCoordinates[1] = SnapGridMath.snapToGrid(alliance, pose);
+        this.pose = this.drivebase.getPose();
+        this.gridCoordinates[1] = SnapGridMath.snapToGrid(this.alliance, this.pose);
         // checks if it should be automatically canceled (due to distance)
-        autoCancel = gridCoordinates[1] == -2;
+        this.autoCancel = this.gridCoordinates[1] == -2;
         // if the show must go on, then set up PID
-        if (!autoCancel) {
-            pidX.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
-            pidY.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
-            pidTheta.setTolerance(StrafePIDValues.PID_ANGLE_TOLERANCE);
+        if (!this.autoCancel) {
+            this.pidX.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
+            this.pidY.setTolerance(StrafePIDValues.PID_POSITION_TOLERANCE);
+            this.pidTheta.setTolerance(StrafePIDValues.PID_ANGLE_TOLERANCE);
 
-            pidTheta.enableContinuousInput(-180, 180);
+            this.pidTheta.enableContinuousInput(-180, 180);
 
             // remember: this is chained to the line on like ln128ish
-            targetPos =
+            this.targetPos =
                 SnapGridMath.getSnapPositionFromIndex(
-                    alliance,
-                    pose,
-                    gridCoordinates[1]
+                    this.alliance,
+                    this.pose,
+                    this.gridCoordinates[1]
                 );
         }
     }
 
     @Override
     public void execute() {
-        pose = drivebase.getPose();
+        this.pose = this.drivebase.getPose();
 
         // now for the funny (pain)
         // Y is for selecting slot (short distance is Y)
         int yIntent =
             (
-                driverController.getPOV() == ControllerConstants.DPAD_LEFT
+                this.driverController.getPOV() == ControllerConstants.DPAD_LEFT
                     ? 1
                     : 0
             ) -
             (
-                driverController.getPOV() == ControllerConstants.DPAD_RIGHT
+                this.driverController.getPOV() == ControllerConstants.DPAD_RIGHT
                     ? 1
                     : 0
             );
@@ -119,44 +119,44 @@ public class MecanumStrafe extends CommandBase {
 
         // set coords based on intent
         if (yIntent != 0) {
-            if (risingEdgeY) {
-                risingEdgeY = false;
-                gridCoordinates[1] =
+            if (this.risingEdgeY) {
+                this.risingEdgeY = false;
+                this.gridCoordinates[1] =
                     VisionMath.clamp(
-                        gridCoordinates[1] + yIntent,
+                        this.gridCoordinates[1] + yIntent,
                         0,
                         SnapGrid.GRID_SNAP_Y.length
                     );
-                targetPos =
+                this.targetPos =
                     SnapGridMath.getSnapPositionFromIndex(
-                        alliance,
-                        pose,
-                        gridCoordinates[1]
+                        this.alliance,
+                        this.pose,
+                        this.gridCoordinates[1]
                     );
             }
         } else {
             // reset rising edge tracker if not pressing a y axis button (which is x axis on the
             // controller and thus very confusing)
-            risingEdgeY = true;
+            this.risingEdgeY = true;
         }
 
-        drivebase.setFieldRelativeChassisSpeeds(
-            pidX.calculate(pose.getX(), targetPos.getX()),
-            pidY.calculate(pose.getY(), targetPos.getY()),
-            pidTheta.calculate(
-                pose.getRotation().getDegrees(),
-                targetPos.getX()
+        this.drivebase.setFieldRelativeChassisSpeeds(
+            this.pidX.calculate(this.pose.getX(), this.targetPos.getX()),
+            this.pidY.calculate(this.pose.getY(), this.targetPos.getY()),
+            this.pidTheta.calculate(
+                this.pose.getRotation().getDegrees(),
+                this.targetPos.getX()
             )
         );
     }
 
     @Override
     public boolean isFinished() {
-        return autoCancel;
+        return this.autoCancel;
     }
 
     @Override
     public void end(boolean interrupted) {
-        drivebase.stop();
+        this.drivebase.stop();
     }
 }

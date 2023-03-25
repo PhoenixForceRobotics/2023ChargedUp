@@ -42,7 +42,7 @@ public final class FieldConstants {
          * Length of the substation.
          */
         public static final double TOTAL_SUBSTATION_LENGTH =
-            FieldConstants.FIELD_LENGTH - TOTAL_GRID_LENGTH;
+            FieldConstants.FIELD_LENGTH - SnapGrid.TOTAL_GRID_LENGTH;
 
         public static final double GRID_OFFSET_BLUE =
             UnitConverter.FeetToInches(8) + 3;
@@ -64,7 +64,8 @@ public final class FieldConstants {
         //Woe be to whoever has to maintain this garbage
 
         //photonvision works in meters so now this is all in meters
-        public static final AprilTag[] TAG_LOCATIONS = {
+        //GOD FUCKING DAMMIT I WASTED ALL MY TIME ON THIS
+        /*public static final AprilTag[] TAG_LOCATIONS = {
             new AprilTag(
                 1,
                 new Pose3d(
@@ -137,12 +138,12 @@ public final class FieldConstants {
                     new Rotation3d()
                 )
             ),
-        };
+        };*/
 
         public static final AprilTagFieldLayout TAG_GAME_FIELD = new AprilTagFieldLayout(
             Arrays.asList(TAG_LOCATIONS),
-            FIELD_LENGTH,
-            FIELD_WIDTH
+            FieldConstants.FIELD_LENGTH,
+            FieldConstants.FIELD_WIDTH
         );
     }
 
